@@ -33,9 +33,6 @@ export default {
   },
 
   methods: {
-    switchCreate: function () {
-      this.create = !this.create
-    },
     setOptionToHome: function () {
       this.option = 0
     },
