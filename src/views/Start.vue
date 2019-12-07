@@ -25,13 +25,14 @@ export default {
     NewUser,
     LogIn
   },
-  props: {
-    create: {
-      type: Boolean,
-      default: false
+  data () {
+    return {
+      create: {
+        type: Boolean,
+        default: false
+      }
     }
   },
-
   methods: {
     switchCreate: function () {
       this.create = !this.create
