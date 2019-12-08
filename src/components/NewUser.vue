@@ -1,5 +1,6 @@
 <template>
   <div class="new-user">
+    <form >
       <p> Introduce tus datos para crear un usuario </p>
       <label>Nickname</label>
       <br>
@@ -13,29 +14,38 @@
       <label>Contraseña</label>
       <br>
       <input v-model="newPassword" type="text" placeholder="123456"><br>
-    <button class="btn"> Crear</button>
+      <button type="submit" class="btn" @click="addUser"> Crear</button>
+    </form>
   </div>
 </template>
 
 <script>
+
+import { userCollection } from '../firebase.js'
+
 export default {
   name: 'NewUser',
-  props: {
-    newNick: {
-      type: String,
-      default: ''
-    },
-    newName: {
-      type: String,
-      default: ''
-    },
-    newEmail: {
-      type: String,
-      default: ''
-    },
-    newPassword: {
-      type: String,
-      default: ''
+  data () {
+    return {
+      newNick: '',
+      newName: '',
+      newEmail: '',
+      newPassword: '',
+      msg: ''
+    }
+  },
+  methods: {
+    addUser: function () {
+      userCollection.add({
+        nick: this.newNick,
+        name: this.newName,
+        email: this.newEmail,
+        password: this.newPassword
+      })
+      this.newNick = ''
+      this.newPassword = ''
+      this.newEmail = ''
+      this.newName = ''
     }
   }
 }
