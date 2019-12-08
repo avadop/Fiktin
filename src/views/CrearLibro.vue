@@ -13,45 +13,46 @@
     <br><br>
     <span>Seleccione las etiquetas con las que identifique su obra</span>
     <br>
-    <input type="checkbox" id="accionAventura" value="AccionAventura" v-model="etiquetas">
+    <input type="checkbox" id="accionAventura" value="AccionAventura" v-model="tags">
     <label for="checkbox"> Acción y aventura</label>
     <br>
-    <input type="checkbox" id="cienciaFiccion" value="CienciaFiccion" v-model="etiquetas">
+    <input type="checkbox" id="cienciaFiccion" value="CienciaFiccion" v-model="tags">
     <label for="checkbox"> Ciencia ficción</label>
     <br>
-    <input type="checkbox" id="comedia" value="Comedia" v-model="etiquetas">
+    <input type="checkbox" id="comedia" value="Comedia" v-model="tags">
     <label for="checkbox"> Comedia</label>
     <br>
-    <input type="checkbox" id="crimen" value="Crimen" v-model="etiquetas">
+    <input type="checkbox" id="crimen" value="Crimen" v-model="tags">
     <label for="checkbox"> Crimen</label>
     <br>
-    <input type="checkbox" id="drama" value="Drama" v-model="etiquetas">
+    <input type="checkbox" id="drama" value="Drama" v-model="tags">
     <label for="checkbox"> Drama</label>
     <br>
-    <input type="checkbox" id="fantasia" value="Fantasia" v-model="etiquetas">
+    <input type="checkbox" id="fantasia" value="Fantasia" v-model="tags">
     <label for="checkbox"> Fantasia</label>
     <br><br>
     <textarea class="model" v-model="description" placeholder="Descripción"/>
     <br><br>
-    <span>Seleccione una imagen como portada</span>
+    <span>Seleccione una imagen como cover</span>
     <br>
-    <input type="file" name="portada" @change="onFileSelected">
+    <input type="file" name="cover" @change="onFileSelected" accept="image/*">
     <br><br>
-    <button @click="createButton()" :disabled="this.title.length <= 0">Crear</button>
+    <button @click="addBook" :disabled="this.title.length <= 0">Crear</button>
     <button @click="cancelButton()">Cancelar</button>
   </div>
 </template>
 
 <script>
+import { booksCollection } from '../firebase.js'
 export default {
   name: 'CreateLibro',
   data () {
     return {
       title: '',
       author: 'Nombre',
-      etiquetas: [],
+      tags: [],
       description: '',
-      portada: null
+      cover: null
     }
   },
   computed: {
@@ -63,6 +64,20 @@ export default {
     }
   },
   methods: {
+    addBook: function () {
+      booksCollection.add({
+        title: this.title,
+        author: this.author,
+        tags: this.tags,
+        description: this.description,
+        cover: this.cover
+      })
+      this.title = ''
+      this.author = ''
+      this.tags = ''
+      this.description = ''
+      this.cover = ''
+    },
     characterLimitTitle () {
       let titleAux = this.title
       let titleLength = this.title.length
@@ -95,13 +110,13 @@ export default {
     //   return coincidence
     // },
     createButton () {
-      this.$emit('create', this.title, this.author, this.etiquetas, this.description, this.imagen)
+      this.$emit('create', this.title, this.author, this.tags, this.description, this.imagen)
     },
     cancelButton () {
       this.$emit('cancel')
     },
     onFileSelected (event) {
-      this.portada = event.target.files[0]
+      this.cover = event.target.files[0].name // coge el nombre de la primera imagen subida
     }
   }
 }

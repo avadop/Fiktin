@@ -23,3 +23,4 @@ export const db = firebase.firestore()
 // database.enablePersistence();
 
 export const userCollection = db.collection('users')
+export const booksCollection = db.collection('books')
