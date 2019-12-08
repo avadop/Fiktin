@@ -3,6 +3,8 @@ import VueRouter from 'vue-router'
 
 import Start from '../views/Start.vue'
 import Home from '../views/Home.vue'
+import Libros from '../views/Libros.vue'
+import CrearLibro from '../views/CrearLibro.vue'
 // import { userInfo } from 'os'
 
 Vue.use(VueRouter)
@@ -25,6 +27,16 @@ const routes = [
     path: '/home',
     name: 'home',
     component: Home
+  },
+  {
+    path: '/libros',
+    name: 'libros',
+    component: Libros
+  },
+  {
+    path: '/crearLibro',
+    name: 'crearLibro',
+    component: CrearLibro
   }
 ]
 
