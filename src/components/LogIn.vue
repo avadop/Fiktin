@@ -12,6 +12,7 @@
 <script>
 
 import { userCollection } from '../firebase.js'
+import { store } from '../store/index.js'
 
 export default {
   name: 'LogIn',
@@ -29,6 +30,7 @@ export default {
         window.alert('Usuario no existe')
       } else {
         if (this.user[0].password === this.password) {
+          store.commit('logIn', this.user[0].id)
           this.nick = ''
           this.password = ''
           this.$router.push('/home')
@@ -36,6 +38,11 @@ export default {
           window.alert('Contraseña incorrecta')
         }
       }
+    }
+  },
+  computed: {
+    getUser () {
+      return store.state.userID
     }
   }
 }
