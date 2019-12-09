@@ -30,14 +30,19 @@ export default {
       create: {
         type: Boolean,
         default: false
-      }
+      },
+      userID: ''
     }
   },
   methods: {
     switchCreate: function () {
       this.create = !this.create
+    },
+    updateUserID (variable) {
+      this.userID = variable
     }
   }
+
 }
 
 </script>

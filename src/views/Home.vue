@@ -2,16 +2,19 @@
   <div class="home">
     <div id="nav">
       <p> Los siguientes nombres se pueden clicar (aunque no hagan nada) </p>
-      <span @click="setOptionToHome"> Home </span>
-      <span @click="setOptionToBooks"> Libros </span>
-       <span @click="setOptionToLibrary"> Bibliotecas </span>
-      <span @click="setOptionToUser"> Usuario </span>
+      <p>{{userID}}</p>
+      <span class="linkis" @click="setOptionToHome"> Home </span>
+      <span class="linkis" @click="setOptionToBooks"> Libros </span>
+      <span class="linkis" @click="setOptionToLibrary"> Bibliotecas </span>
+      <span class="linkis" @click="setOptionToUser"> Usuario </span> <br>
+      <br>
+      <button @click="logOut"> Log Out para siempre </button>
     </div>
     <div v-if="option === 0"></div>
     <div v-if="option === 1"></div>
     <div v-if="option === 2"></div>
     <div v-if="option === 3">
-      <User/>
+      <User :userKey="userID" :user="user"/>
     </div>
   </div>
 </template>
@@ -19,17 +22,22 @@
 <script>
 
 import User from '@/components/User.vue'
+import { store } from '../store/index.js'
 
 export default {
   name: 'start',
   components: {
     User
   },
-  props: {
-    option: {
-      type: Number,
-      default: 0
+  data () {
+    return {
+      option: 0,
+      userID: '',
+      user: null
     }
+  },
+  mounted () {
+    this.userID = store.state.userID
   },
 
   methods: {
@@ -44,8 +52,22 @@ export default {
     },
     setOptionToUser: function () {
       this.option = 3
+    },
+    setUserID: function (value) {
+      this.userID = value
+    },
+    logOut: function () {
+      store.commit('logOut')
+      this.$router.push('/')
     }
   }
 }
 
 </script>
+
+<style>
+.linkis{
+  text-decoration: underline;
+  padding: 5px;
+}
+</style>
