@@ -4,7 +4,7 @@
       <p> Introduce tus datos para crear un usuario </p>
       <label>Nickname</label>
       <br>
-      <input v-model="newNick" type="text" placeholder="Maririta26"> <br>
+      <input v-model="newNick" type="text" :class="{red: exists}" placeholder="Maririta26"> <br>
       <label>Nombre</label>
       <br>
       <input v-model="newName" type="text" placeholder="Maria Martinez"> <br>
@@ -31,21 +31,39 @@ export default {
       newName: '',
       newEmail: '',
       newPassword: '',
-      msg: ''
+      same_nick: [],
+      exists: false
+    }
+  },
+  watch: {
+    newNick: {
+      inmediate: true,
+      handler (newNick) {
+        this.$bind('same_nick', userCollection.where('nickToSearch', '==', this.newNick.toLowerCase()).limit(1)).then(docs => {
+        })
+      }
+    },
+    same_nick: function () {
+      this.exists = !(this.same_nick.length === 0)
     }
   },
   methods: {
     addUser: function () {
-      userCollection.add({
-        nick: this.newNick,
-        name: this.newName,
-        email: this.newEmail,
-        password: this.newPassword
-      })
-      this.newNick = ''
-      this.newPassword = ''
-      this.newEmail = ''
-      this.newName = ''
+      if (!this.exists) { //  Si no existe user con el mismo nick, creamos usu
+        userCollection.add({
+          nick: this.newNick,
+          name: this.newName,
+          email: this.newEmail,
+          password: this.newPassword,
+          nickToSearch: this.newNick.toLowerCase()
+        })
+        this.newNick = ''
+        this.newPassword = ''
+        this.newEmail = ''
+        this.newName = ''
+      } else {
+        window.alert('El usuario existe ')
+      }
     }
   }
 }
@@ -54,5 +72,8 @@ export default {
 <style>
 .btn {
     margin: 5px;
+}
+.red{
+  border-color: crimson
 }
 </style>
