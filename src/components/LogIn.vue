@@ -5,26 +5,37 @@
       <input v-model="nick" type="text" placeholder="Maririta26"> <br>
       <label>Contraseña</label> <br>
       <input v-model="password" type="text" placeholder="123456"><br>
-    <button class="btn" @click="navigateToUser"> Sign In</button>
+    <button class="btn" @click="logIn"> Sign In</button>
   </div>
 </template>
 
 <script>
+
+import { userCollection } from '../firebase.js'
+
 export default {
   name: 'LogIn',
-  props: {
-    nick: {
-      type: String,
-      default: ''
-    },
-    password: {
-      type: String,
-      default: ''
+  data () {
+    return {
+      nick: '',
+      password: '',
+      user: []
     }
   },
   methods: {
-    navigateToUser: function () {
-      this.$router.push('/home')
+    logIn: async function () {
+      await this.$bind('user', userCollection.where('nickToSearch', '==', this.nick.toLowerCase()).limit(1)).then(docs => {})
+      if (this.user.length === 0) {
+        window.alert('Usuario no existe')
+      } else {
+        if (this.user[0].password === this.password) {
+          this.nick = ''
+          this.password = ''
+          this.$router.push('/home')
+        } else {
+          window.alert('Contraseña incorrecta')
+        }
+      }
     }
   }
 }
