@@ -14,7 +14,7 @@
     <div v-if="option === 1"></div>
     <div v-if="option === 2"></div>
     <div v-if="option === 3">
-      <User :userKey="userID" :user="user"/>
+      <User :userKey="userID"/>
     </div>
   </div>
 </template>
@@ -32,11 +32,10 @@ export default {
   data () {
     return {
       option: 0,
-      userID: '',
-      user: null
+      userID: ''
     }
   },
-  mounted () {
+  created () {
     this.userID = store.state.userID
   },
 

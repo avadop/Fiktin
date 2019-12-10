@@ -65,6 +65,7 @@ export default {
         this.newPassword = ''
         this.newEmail = ''
         this.newName = ''
+        this.newPassword2 = ''
       } else {
         window.alert('El usuario existe ')
       }
