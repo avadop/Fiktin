@@ -24,3 +24,4 @@ export const db = firebase.firestore()
 
 export const userCollection = db.collection('users')
 export const booksCollection = db.collection('books')
+export const librariesCollection = db.collection('libraries')

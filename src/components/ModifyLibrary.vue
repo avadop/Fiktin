@@ -22,10 +22,12 @@
 </template>
 
 <script>
+
+import { librariesCollection } from '../firebase.js'
+
 export default {
   name: 'CreateLibrary',
   props: {
-    librariesNamesList: Array,
     index: Number,
     nameAux: String,
     descriptionAux: String,
@@ -34,9 +36,14 @@ export default {
   data () {
     return {
       name: this.nameAux,
+      namePrevious: this.nameAux,
       description: this.descriptionAux,
-      privacy: this.privacyAux
+      privacy: this.privacyAux,
+      librariesNamesList: []
     }
+  },
+  mounted () {
+    librariesCollection.where('userNick', '==', '1').get().then(snapshot => { snapshot.forEach(doc => { this.librariesNamesList.push({ name: doc.data().name }) }) })
   },
   computed: {
     getNameTam () {
@@ -67,7 +74,7 @@ export default {
       let coincidence = false
       // Comprobamos si el usuario ya tiene una biblioteca con este nombre
       for (let i = 0; i < this.librariesNamesList.length; ++i) {
-        if (this.name === this.librariesNamesList[i]) {
+        if (this.name === this.librariesNamesList[i].name) {
           coincidence = true
           break
         }
@@ -93,7 +100,18 @@ export default {
       return true
     },
     modifyButton () {
-      this.$emit('modify', this.index, this.name, this.description, this.privacy)
+      let uniqueIDPrev = '1' + this.namePrevious
+      let uniqueID = '1' + this.name
+      librariesCollection.doc(uniqueID).set({
+        name: this.name,
+        description: this.description,
+        privacy: this.privacy,
+        userNick: '1'
+      }).then(() => {
+        librariesCollection.doc(uniqueIDPrev).delete().then(() => {
+          this.$emit('modify')
+        })
+      })
     },
     cancelButton () {
       this.$emit('cancel', -1)

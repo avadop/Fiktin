@@ -1,7 +1,7 @@
 <template>
   <div class="CreateLibrary">
     <button v-if="!opened" class="buttonCreate" :disabled="modifying != -1" @click="btnCreateNewLib()">Crear nueva biblioteca</button>
-    <CreateLibrary v-else class="create" :librariesNamesList="getLibrariesNameList()" @cancel="btnCreateNewLib" @create="createLibrary"/>
+    <CreateLibrary v-else class="create" @cancel="btnCreateNewLib" @create="createLibrary"/>
     <h3 v-if="librariesList.length===0">No hay librerias creadas</h3>
     <span v-else>
         <div class="librariesList" v-for="(library, index) in librariesList" :key="library.name">
@@ -15,8 +15,8 @@
           <span v-else>privada</span>
           <br>
           <button v-if="modifying===-1 || modifying !==index" class="buttonModify" :disabled="opened || modifying != -1" @click="btnModifyLib(index)">Modificar</button>
-          <ModifyLibrary v-else-if="modifying===index" class="modify" :disabled="opened || modifying != -1" :librariesNamesList="getLibrariesNameListModify(index)" :index="index" :nameAux="librariesList[index].name" :descriptionAux="librariesList[index].description" :privacyAux="librariesList[index].privacy" @cancel="btnModifyLib" @modify="modifyLibrary"/>
-          <button v-if="modifying!==index" class="buttonModify" :disabled="opened || modifying != -1" @click="btnDeleteLib(index)">Eliminar</button>
+          <ModifyLibrary v-else-if="modifying===index" class="modify" :disabled="opened || modifying != -1" :index="index" :nameAux="librariesList[index].name" :descriptionAux="librariesList[index].description" :privacyAux="librariesList[index].privacy" @cancel="btnModifyLib" @modify="modifyLibrary"/>
+          <button v-if="modifying!==index" class="buttonModify" :disabled="opened || modifying != -1" @click="btnDeleteLib(library.name)">Eliminar</button>
         </div>
     </span>
   </div>
@@ -25,6 +25,7 @@
 <script>
 import CreateLibrary from '@/components/CreateLibrary.vue'
 import ModifyLibrary from '@/components/ModifyLibrary.vue'
+import { librariesCollection } from '../firebase.js'
 
 export default {
   name: 'libraries',
@@ -34,28 +35,18 @@ export default {
   },
   data () {
     return {
-      librariesList: [
-        { name: 'prueba 1', description: '4', privacy: 'public' },
-        { name: 'prueba 2', description: '', privacy: 'private' }
-      ],
+      librariesList: [],
       opened: false,
       modifying: -1
     }
   },
+  mounted () {
+    this.refresh()
+  },
   methods: {
-    getLibrariesNameList () {
-      let nameList = new Array(this.librariesList.length)
-      for (let i = 0; i < this.librariesList.length; ++i) {
-        nameList[i] = this.librariesList[i].name
-      }
-      return nameList
-    },
-    getLibrariesNameListModify (index) {
-      let nameList = new Array(this.librariesList.length)
-      for (let i = 0; i < this.librariesList.length; ++i) {
-        if (this.librariesList[i].name !== this.librariesList[index].name) nameList[i] = this.librariesList[i].name
-      }
-      return nameList
+    refresh () {
+      this.librariesList = []
+      librariesCollection.where('userNick', '==', '1').get().then(snapshot => { snapshot.forEach(doc => { this.librariesList.push({ name: doc.data().name, description: doc.data().description, privacy: doc.data().privacy }) }) })
     },
     btnCreateNewLib () {
       this.opened = !this.opened
@@ -63,17 +54,21 @@ export default {
     btnModifyLib (index) {
       this.modifying = index
     },
-    btnDeleteLib (index) {
-      this.librariesList.splice(index, 1)
+    btnDeleteLib (name, index) {
+      let uniqueID = '1' + name
+      Promise.all(
+        this.librariesList.map(id => (
+          librariesCollection.doc(uniqueID).delete()
+        ))
+      )
+      this.refresh()
     },
-    createLibrary (name, description, privacy) {
-      this.librariesList.push({ name: name, description: description, privacy: privacy })
+    createLibrary () {
+      this.refresh()
       this.btnCreateNewLib()
     },
-    modifyLibrary (index, name, description, privacy) {
-      this.librariesList[index].name = name
-      this.librariesList[index].description = description
-      this.librariesList[index].privacy = privacy
+    modifyLibrary () {
+      this.refresh()
       this.btnModifyLib(-1)
     }
   }
