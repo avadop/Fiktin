@@ -1,11 +1,11 @@
 <template>
   <div class="create" >
-    <input v-if="name.length===0" class="modelName" v-model="name" placeholder="Nombre" @keydown.space.prevent @input="characterLimitName" @paste="characterLimitName"/>
-    <input v-else v-model="name" class="modelName" placeholder="Nombre" @input="characterLimitName" @paste="characterLimitName"/>
+    <textarea v-if="name.length===0" class="modelName" :class="{red: name.length===0}" v-model="name" placeholder="Nombre" @keydown.space.prevent @input="characterLimitName" @paste="characterLimitName"/>
+    <textarea v-else v-model="name" class="modelName" :class="{red: checkNames()}" placeholder="Nombre" @input="characterLimitName" @paste="characterLimitName"/>
     <span> {{getNameTam}} / 50 </span>
     <br><br>
-    <textarea v-if="description.length===0" class="modelDesc" v-model="description" placeholder="Descripción" @keydown.space.prevent @keydown.enter.prevent @input="characterLimitDescription" @paste="characterLimitDescription"/>
-    <textarea v-else v-model="description" class="modelDesc" placeholder="Descripción" @keydown.enter.prevent @input="characterLimitDescription" @paste="characterLimitDescription"/>
+    <textarea v-if="description.length===0" class="modelDesc" :class="{red: description.length===0}" v-model="description" placeholder="Descripción" @keydown.space.prevent @keydown.enter.prevent @input="characterLimitDescription" @paste="characterLimitDescription"/>
+    <textarea v-else v-model="description" class="modelDesc" :class="{red: !checkDescription()}" placeholder="Descripción" @keydown.enter.prevent @input="characterLimitDescription" @paste="characterLimitDescription"/>
     <span> {{getDescriptionTam}} / 300</span>
     <br><br>
     <span>¿Cómo deseas la privacidad de tu biblioteca?</span>
@@ -107,8 +107,16 @@ export default {
   padding: 10px;
 }
 
+.red {
+  border-style: solid;
+  border-width: 1px;
+  border-color: #DE8F8F;
+}
+
 .modelName {
   width: 75%;
+  height: 15px;
+  resize: none;
 }
 
 .modelDesc {
