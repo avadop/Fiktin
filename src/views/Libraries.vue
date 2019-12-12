@@ -2,7 +2,7 @@
   <div class="CreateLibrary">
     <button v-if="!opened" class="buttonCreate" :disabled="modifying != -1" @click="btnCreateNewLib()">Crear nueva biblioteca</button>
     <CreateLibrary v-else class="create" @cancel="btnCreateNewLib" @create="createLibrary"/>
-    <h3 v-if="librariesList.length===0">No hay librerias creadas</h3>
+    <h3 v-if="librariesList.length===0">No hay bibliotecas creadas</h3>
     <span v-else>
         <div class="librariesList" v-for="(library, index) in librariesList" :key="library.name">
           <span class="text">Nombre: {{ library.name }}</span>
@@ -45,8 +45,9 @@ export default {
   },
   methods: {
     refresh () {
-      this.librariesList = []
-      librariesCollection.where('userNick', '==', '1').get().then(snapshot => { snapshot.forEach(doc => { this.librariesList.push({ name: doc.data().name, description: doc.data().description, privacy: doc.data().privacy }) }) })
+      let librariesListAux = []
+      librariesCollection.where('userNick', '==', '1').get().then(snapshot => { snapshot.forEach(doc => { librariesListAux.push({ name: doc.data().name, description: doc.data().description, privacy: doc.data().privacy }) }) })
+      this.librariesList = librariesListAux
     },
     btnCreateNewLib () {
       this.opened = !this.opened

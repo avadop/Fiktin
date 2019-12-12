@@ -4,7 +4,7 @@
     <textarea v-else v-model="name" class="modelName" :class="{red: checkNames()}" placeholder="Nombre" @input="characterLimitName" @paste="characterLimitName"/>
     <span> {{getNameTam}} / 50 </span>
     <br><br>
-    <textarea v-if="description.length===0" class="modelDesc" :class="{red: description.length===0}" v-model="description" placeholder="Descripción" @keydown.space.prevent @keydown.enter.prevent @input="characterLimitDescription" @paste="characterLimitDescription"/>
+    <textarea v-if="description.length===0" class="modelDesc" v-model="description" placeholder="Descripción" @keydown.space.prevent @keydown.enter.prevent @input="characterLimitDescription" @paste="characterLimitDescription"/>
     <textarea v-else v-model="description" class="modelDesc" :class="{red: !checkDescription()}" placeholder="Descripción" @keydown.enter.prevent @input="characterLimitDescription" @paste="characterLimitDescription"/>
     <span> {{getDescriptionTam}} / 300</span>
     <br><br>
@@ -43,7 +43,7 @@ export default {
     }
   },
   mounted () {
-    librariesCollection.where('userNick', '==', '1').get().then(snapshot => { snapshot.forEach(doc => { this.librariesNamesList.push({ name: doc.data().name }) }) })
+    librariesCollection.where('userNick', '==', '1').get().then(snapshot => { snapshot.forEach(doc => { if (doc.data().name !== this.nameAux) this.librariesNamesList.push({ name: doc.data().name }) }) })
   },
   computed: {
     getNameTam () {
@@ -102,16 +102,29 @@ export default {
     modifyButton () {
       let uniqueIDPrev = '1' + this.namePrevious
       let uniqueID = '1' + this.name
-      librariesCollection.doc(uniqueID).set({
-        name: this.name,
-        description: this.description,
-        privacy: this.privacy,
-        userNick: '1'
-      }).then(() => {
-        librariesCollection.doc(uniqueIDPrev).delete().then(() => {
+      if (this.name === this.nameAux) {
+        // En caso de que no se modifique el nombre, no se actualiza el id, luego solo hay que actualizar el documento
+        librariesCollection.doc(uniqueIDPrev).update({
+          name: this.name,
+          description: this.description,
+          privacy: this.privacy,
+          userNick: '1'
+        }).then(() => {
           this.$emit('modify')
         })
-      })
+      } else {
+        // En caso de que el nombre se haya modificado, se actualiza el id. Hay que clonar y borrar el anterior
+        librariesCollection.doc(uniqueID).set({
+          name: this.name,
+          description: this.description,
+          privacy: this.privacy,
+          userNick: '1'
+        }).then(() => {
+          librariesCollection.doc(uniqueIDPrev).delete().then(() => {
+            this.$emit('modify')
+          })
+        })
+      }
     },
     cancelButton () {
       this.$emit('cancel', -1)

@@ -4,7 +4,7 @@
     <textarea v-else v-model="name" class="modelName" :class="{red: checkNames()}" placeholder="Nombre" @input="characterLimitName" @paste="characterLimitName"/>
     <span> {{getNameTam}} / 50 </span>
     <br><br>
-    <textarea v-if="description.length===0" class="modelDesc" :class="{red: description.length===0}" v-model="description" placeholder="Descripción" @keydown.space.prevent @keydown.enter.prevent @input="characterLimitDescription" @paste="characterLimitDescription"/>
+    <textarea v-if="description.length===0" class="modelDesc" v-model="description" placeholder="Descripción" @keydown.space.prevent @keydown.enter.prevent @input="characterLimitDescription" @paste="characterLimitDescription"/>
     <textarea v-else v-model="description" class="modelDesc" :class="{red: !checkDescription()}" placeholder="Descripción" @keydown.enter.prevent @input="characterLimitDescription" @paste="characterLimitDescription"/>
     <span> {{getDescriptionTam}} / 300</span>
     <br><br>
