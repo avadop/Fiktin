@@ -94,26 +94,11 @@ export default {
         this.description = descAux.slice(0, -descLength)
       }
     },
-    // checkTitles () {
-    //   let coincidence = false
-    //   // Comprobamos si el usuario ya tiene una biblioteca con este nombre
-    //   for (let i = 0; i < this.librariesTitlesList.length; ++i) {
-    //     if (this.title === this.librariesTitlesList[i]) {
-    //       coincidence = true
-    //       break
-    //     }
-    //   }
-    //   // Comprobamos si tiene espacios al final
-    //   if (!coincidence) {
-    //     if (this.title[this.title.length - 1] === ' ') coincidence = true
-    //   }
-    //   return coincidence
-    // },
     createButton () {
       this.$emit('create', this.title, this.author, this.tags, this.description, this.imagen)
     },
     cancelButton () {
-      this.$emit('cancel')
+      router.push('/libros')
     },
     onFileSelected (event) {
       this.cover = event.target.files[0].name // coge el nombre de la primera imagen subida
