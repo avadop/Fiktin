@@ -65,9 +65,9 @@
         </div>
         <br>
       </span>
-      <span v-else>
+      <span v-if="modifyID === book.ID">
         Etiquetas:
-        <div class="etiquetas" v-show="modifyID === book.ID">
+        <div class="etiquetas">
           <input type="checkbox" id="accionAventura" value="AccionAventura" v-model="tags">
           <label for="checkbox"> Acción y aventura</label>
           <br>
@@ -88,13 +88,12 @@
         </div>
         <br>
       </span>
-      <br>
 
       <!-- Botones -->
-      <button class="button" @click="deleteBook(book.ID)">Eliminar libro</button>
+      <button class="button-danger" @click="deleteBook(book.ID)">Eliminar libro</button>
       <button id="modifyButton" class="button" @click="modifyBook(book)" v-show="modifyID !== book.ID">Modificar libro</button>
       <button class="button" @click="discardChangesBook()" v-show="modifyID === book.ID">Descartar cambios</button>
-      <button class="button" @click="saveChangesBook(book.ID)" v-show="modifyID === book.ID">Guardar cambios</button>
+      <button class="button-accept" @click="saveChangesBook(book.ID)" v-show="modifyID === book.ID">Guardar cambios</button>
     </div>
   </div>
 </template>
@@ -167,6 +166,9 @@ export default {
       })
       this.modifyID = null
       this.refresh()
+    },
+    onFileSelected (event) {
+      this.cover = event.target.files[0].name // coge el nombre de la primera imagen subida
     }
   }
 }
@@ -190,6 +192,20 @@ export default {
 
 .button {
   background-color: #96e9f2;
+  border: 1px solid #000000;
+  margin-top: 5px;
+  margin-left: 30px;
+}
+
+.button-danger {
+  background-color: #f29696;
+  border: 1px solid #000000;
+  margin-top: 5px;
+  margin-left: 30px;
+}
+
+.button-accept {
+  background-color: #acf296;
   border: 1px solid #000000;
   margin-top: 5px;
   margin-left: 30px;
