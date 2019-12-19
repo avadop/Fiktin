@@ -98,7 +98,7 @@ export default {
       this.$emit('create', this.title, this.author, this.tags, this.description, this.imagen)
     },
     cancelButton () {
-      router.push('/libros')
+      this.$router.push('/libros')
     },
     onFileSelected (event) {
       this.cover = event.target.files[0].name // coge el nombre de la primera imagen subida
