@@ -1,5 +1,6 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'
+import 'firebase/database'
 
 // Your web app's Firebase configuration
 const config = {
@@ -22,6 +23,10 @@ export const db = firebase.firestore()
 
 // database.enablePersistence();
 
+// Estado de la conexión
+export const connectedRef = firebase.database().ref('.info/connected')
+
+// Colecciones
 export const userCollection = db.collection('users')
 export const booksCollection = db.collection('books')
 export const librariesCollection = db.collection('libraries')

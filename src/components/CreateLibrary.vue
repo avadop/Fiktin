@@ -38,7 +38,7 @@ export default {
     }
   },
   mounted () {
-    librariesCollection.where('userNick', '==', '1').get().then(snapshot => { snapshot.forEach(doc => { this.librariesNamesList.push({ name: doc.data().name }) }) })
+    librariesCollection.where('nick', '==', '1').get().then(snapshot => { snapshot.forEach(doc => { this.librariesNamesList.push({ name: doc.data().name }) }) })
   },
   computed: {
     getNameTam () {
@@ -95,12 +95,12 @@ export default {
       return true
     },
     createButton () {
-      let uniqueID = '1' + this.name
-      librariesCollection.doc(uniqueID).set({
+      librariesCollection.doc().set({
         name: this.name,
         description: this.description,
         privacy: this.privacy,
-        userNick: '1'
+        nick: '1',
+        array_keys: []
       }).then(() => {
         this.$emit('create')
       })
@@ -142,6 +142,7 @@ export default {
 }
 
 .button {
+  cursor: pointer;
   background-color: lightgreen;
   border: 1px solid darkgreen;
   margin-right: 5px;
