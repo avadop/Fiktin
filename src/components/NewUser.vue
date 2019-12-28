@@ -25,6 +25,7 @@
 <script>
 
 import { userCollection } from '../firebase.js'
+// import { userCollection, librariesCollection } from '../firebase.js'
 
 export default {
   name: 'NewUser',
@@ -54,20 +55,37 @@ export default {
   methods: {
     addUser: function () {
       if (!this.exists) { //  Si no existe user con el mismo nick, creamos usu
+        var historial = this.newNick.toLowerCase() + '_historial'
+        var obras = this.newNick.toLowerCase() + '_mis_obras'
         userCollection.add({
           nick: this.newNick,
           name: this.newName,
           email: this.newEmail,
           password: this.newPassword,
-          nickToSearch: this.newNick.toLowerCase()
+          nick_to_search: this.newNick.toLowerCase(),
+          clave_bibliotecas: [historial, obras]
         })
+        // librariesCollection.doc(historial).set({
+        //   name: 'Historial',
+        //   description: 'Aqui se guardaran los ultimos libros consultados',
+        //   privacy: 'privado',
+        //   nick: this.nick.toLowerCase(),
+        //   array_keys: []
+        // })
+        // librariesCollection.doc(obras).set({
+        //   name: 'Mis obras',
+        //   description: 'Aqui se guardaran tus libros escritos',
+        //   privacy: 'privado',
+        //   nick: this.nick.toLowerCase(),
+        //   array_keys: []
+        // })
         this.newNick = ''
         this.newPassword = ''
         this.newEmail = ''
         this.newName = ''
         this.newPassword2 = ''
       } else {
-        window.alert('El usuario existe ')
+        window.alert('El usuario existe')
       }
     }
   },
