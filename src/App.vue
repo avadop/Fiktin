@@ -1,14 +1,43 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Start Page</router-link> |
+    <div id="nav" v-if="loggedIn">
+      <router-link to="/home">Home</router-link> |
       <router-link to="/libros">Libros </router-link> |
       <router-link to="/libraries">Bibliotecas </router-link> |
-      <router-link to="/home">Home </router-link>
+      <router-link to="/user">Usuario </router-link> |
+      <router-link to="/" @click.native="logOut">Log Out</router-link>
+      <router-view/>
     </div>
-    <router-view/>
+    <div v-else>
+      <start @loggedIn="logIn"/>
+    </div>
   </div>
 </template>
+
+<script>
+import Start from './components/Start.vue'
+import { store } from './store/index.js'
+export default {
+  name: 'App',
+  components: {
+    Start
+  },
+  data () {
+    return {
+      loggedIn: false
+    }
+  },
+  methods: {
+    logIn: function () {
+      this.loggedIn = true
+    },
+    logOut: function () {
+      store.commit('logOut')
+      this.loggedIn = false
+    }
+  }
+}
+</script>
 
 <style>
 #app {
