@@ -56,7 +56,6 @@ export default {
   methods: {
     update: function () {
       if (!this.exists) {
-        this.$emit('modifications', this.newNick, this.newName, this.newEmail)
         userCollection.doc(this.userKey).update({
           name: this.newName,
           nick: this.newNick,
