@@ -5,7 +5,8 @@ Vue.use(Vuex)
 
 export const store = new Vuex.Store({
   state: {
-    userID: 'store'
+    userID: '',
+    userNick: ''
   },
   mutations: {
     logIn (state, id) {
@@ -13,6 +14,9 @@ export const store = new Vuex.Store({
     },
     logOut (state) {
       state.userID = ''
+    },
+    nickChange (state, nick) {
+      state.userNick = nick
     }
   },
   actions: {

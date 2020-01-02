@@ -25,7 +25,8 @@
 
 <script>
 
-import { librariesCollection } from '../firebase.js'
+import { librariesCollection, userCollection } from '../firebase.js'
+import { store } from '@/store/index.js'
 
 export default {
   name: 'CreateLibrary',
@@ -38,7 +39,8 @@ export default {
     }
   },
   mounted () {
-    librariesCollection.where('nick', '==', '1').get().then(snapshot => { snapshot.forEach(doc => { this.librariesNamesList.push({ name: doc.data().name }) }) })
+    var userNick = store.state.userNick
+    librariesCollection.where('nick', '==', userNick).get().then(snapshot => { snapshot.forEach(doc => { this.librariesNamesList.push({ name: doc.data().name }) }) })
   },
   computed: {
     getNameTam () {
@@ -94,19 +96,33 @@ export default {
       }
       return true
     },
-    createButton () {
-      librariesCollection.doc().set({
+    async createButton () {
+      var userNick = store.state.userNick
+      var libraryKey
+      await librariesCollection.add({
         name: this.name,
         description: this.description,
         privacy: this.privacy,
-        nick: '1',
+        nick: userNick,
         array_keys: []
-      }).then(() => {
-        this.$emit('create')
+      }).then(doc => {
+        libraryKey = doc.id
       })
+      this.updateUser(libraryKey)
+      this.$emit('create')
     },
     cancelButton () {
       this.$emit('cancel')
+    },
+    async updateUser (libraryKey) {
+      var userKey = store.state.userID
+      var userData
+      await userCollection.doc(userKey).get().then(doc => {
+        var data = doc.data()
+        data.libraries_keys.push(libraryKey)
+        userData = data
+      })
+      userCollection.doc(userKey).set(userData)
     }
   }
 }

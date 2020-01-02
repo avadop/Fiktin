@@ -24,6 +24,7 @@
 <script>
 
 import { librariesCollection } from '../firebase.js'
+import { store } from '@/store/index.js'
 
 export default {
   name: 'CreateLibrary',
@@ -43,7 +44,8 @@ export default {
     }
   },
   mounted () {
-    librariesCollection.where('nick', '==', '1').get().then(snapshot => { snapshot.forEach(doc => { if (doc.data().name !== this.nameAux) this.librariesNamesList.push({ name: doc.data().name }) }) })
+    var userNick = store.state.userNick
+    librariesCollection.where('nick', '==', userNick).get().then(snapshot => { snapshot.forEach(doc => { if (doc.data().name !== this.nameAux) this.librariesNamesList.push({ name: doc.data().name }) }) })
   },
   computed: {
     getNameTam () {
@@ -100,12 +102,13 @@ export default {
       return true
     },
     modifyButton () {
+      var userNick = store.state.userNick
       if (this.nameAux !== this.name || this.descriptionAux !== this.description || this.privacyAux !== this.privacy) {
         librariesCollection.doc(this.id).update({
           name: this.name,
           description: this.description,
           privacy: this.privacy,
-          nick: '1'
+          nick: userNick
         }).then(() => {
           this.$emit('modify')
         })

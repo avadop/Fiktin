@@ -35,6 +35,7 @@
 import CreateLibrary from '@/components/CreateLibrary.vue'
 import ModifyLibrary from '@/components/ModifyLibrary.vue'
 import { librariesCollection, connectedRef } from '../firebase.js'
+import { store } from '@/store/index.js'
 
 export default {
   name: 'libraries',
@@ -68,7 +69,8 @@ export default {
     refresh: async function () {
       this.numberOfLibraries = -1
       let librariesListAux = []
-      await librariesCollection.where('nick', '==', '1').get().then(snapshot => {
+      var userNick = store.state.userNick
+      await librariesCollection.where('nick', '==', userNick).get().then(snapshot => {
         snapshot.forEach(doc => {
           librariesListAux.push({
             id: doc.id,
