@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { userCollection } from '../firebase.js'
+import { userCollection, librariesCollection } from '../firebase.js'
 import ModifyUser from '@/components/ModifyUser.vue'
 import { store } from '../store/index.js'
 
@@ -38,23 +38,24 @@ export default {
       name: '',
       password: '',
       edit: false,
-      userKey: ''
+      userKey: '',
+      libraryKeys: []
     }
   },
-  created () {
-    this.userKey = store.state.userID
-  },
   mounted () {
+    this.userKey = store.state.userID
     userCollection.doc(this.userKey).get().then(doc => {
       const data = doc.data()
       this.nick = data.nick
       this.email = data.email
       this.name = data.name
       this.password = data.password
+      this.libraryKeys = data.clave_bibliotecas
     })
   },
   methods: {
     deleteUser: function () {
+      this.deleteLibraries()
       userCollection.doc(this.userKey).delete()
       store.commit('logOut')
       this.$router.push('/')
@@ -70,6 +71,11 @@ export default {
     },
     newEmail (value) {
       this.email = value
+    },
+    deleteLibraries: async function () {
+      await this.libraryKeys.forEach(element => {
+        librariesCollection.doc(element).delete()
+      })
     }
   },
   computed: {

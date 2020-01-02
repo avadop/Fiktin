@@ -1,5 +1,6 @@
 <template>
-  <div class="start">
+<div class = "start">
+  <!-- <modal name="start"> -->
     <h1>Bienvenidos a Fiktin</h1>
     <h3>Es necesario registrarse e iniciar sesion antes de acceder a la aplicacion</h3>
     <div id="options-menu">
@@ -12,6 +13,7 @@
         <button class="btn" @click="switchCreate"> Log In</button>
       </div>
     </div>
+  <!-- </modal> -->
   </div>
 </template>
 

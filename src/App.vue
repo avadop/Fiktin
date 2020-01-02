@@ -5,7 +5,8 @@
       <router-link to="/libros">Libros </router-link> |
       <router-link to="/libraries">Bibliotecas </router-link> |
       <router-link to="/user">Usuario </router-link> |
-      <router-link to="/" @click.native="logOut">Log Out</router-link>
+      <router-link to="/" @click.native="confirmLogOut">Cerrar Sesion</router-link>
+      <v-dialog/>
       <router-view/>
     </div>
     <div v-else>
@@ -17,6 +18,7 @@
 <script>
 import Start from './components/Start.vue'
 import { store } from './store/index.js'
+
 export default {
   name: 'App',
   components: {
@@ -34,6 +36,22 @@ export default {
     logOut: function () {
       store.commit('logOut')
       this.loggedIn = false
+      this.$router.push('/')
+    },
+    confirmLogOut: function () {
+      this.$modal.show('dialog', {
+        text: '¿Está seguro que desea cerrar sesión?',
+        buttons: [
+          {
+            title: 'SI',
+            default: true,
+            handler: () => { this.logOut() }
+          },
+          {
+            title: 'Cancelar'
+          }
+        ]
+      })
     }
   }
 }
