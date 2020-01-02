@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { userCollection } from '../firebase.js'
+import { userCollection, librariesCollection } from '../firebase.js'
 
 export default {
   name: 'ModifyUser',
@@ -45,22 +45,29 @@ export default {
     newNick: {
       inmediate: true,
       handler (newNick) {
-        this.$bind('same_nick', userCollection.where('nickToSearch', '==', this.newNick.toLowerCase()).limit(1)).then(docs => {
+        this.$bind('same_nick', userCollection.where('nick_to_search', '==', this.newNick.toLowerCase()).limit(1)).then(docs => {
         })
       }
     },
     same_nick: function () {
-      this.exists = !(this.same_nick.length === 0) && !(this.same_nick[0].nickToSearch === this.newNick.toLowerCase())
+      this.exists = !(this.same_nick.length === 0) && !(this.same_nick[0].nick_to_search === this.newNick.toLowerCase())
     }
   },
   methods: {
-    update: function () {
+    update: async function () {
       if (!this.exists) {
+        //  Si son distintos hay que updatear las libraries
+        if (this.newNick !== this.nick) {
+          await this.updateLibraries()
+        }
+        var historial = this.newNick.toLowerCase() + '_historial'
+        var obras = this.newNick.toLowerCase() + '_mis_obras'
         userCollection.doc(this.userKey).update({
           name: this.newName,
           nick: this.newNick,
           email: this.newEmail,
-          nickToSearch: this.newNick.toLowerCase()
+          nick_to_search: this.newNick.toLowerCase(),
+          clave_bibliotecas: [historial, obras]
         })
         // this.$emit('modifications', this.newNick, this.newName, this.newEmail)
         this.$emit('new-name', this.newName)
@@ -70,6 +77,36 @@ export default {
       } else {
         window.alert('Nombre de usuario ya en uso')
       }
+    },
+    updateLibraries: async function () {
+      var libraries
+      await userCollection.doc(this.userKey).get().then(doc => {
+        const data = doc.data()
+        libraries = data.clave_bibliotecas
+      })
+      var historial = '_historial'
+      var obras = '_mis_obras'
+      libraries.forEach(async element => {
+        if ((element === (this.nick.toLowerCase() + historial)) || (element === (this.nick.toLowerCase() + obras))) {
+          var libData
+          await librariesCollection.doc(element).get().then(doc => {
+            var data = doc.data()
+            data.nick = this.newNick
+            libData = data
+          })
+          console.log(element)
+          librariesCollection.doc(element).delete()
+          if (element === this.nick.toLowerCase() + historial) {
+            librariesCollection.doc(this.newNick.toLowerCase() + historial).set(libData)
+          } else {
+            librariesCollection.doc(this.newNick.toLowerCase() + obras).set(libData)
+          }
+        } else {
+          librariesCollection.doc(element).update({
+            nick: this.newNick
+          })
+        }
+      })
     }
   }
 }
