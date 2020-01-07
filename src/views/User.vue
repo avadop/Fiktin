@@ -50,7 +50,7 @@ export default {
       this.email = data.email
       this.name = data.name
       this.password = data.password
-      this.libraryKeys = data.clave_bibliotecas
+      this.libraryKeys = data.libraries_keys
     })
   },
   methods: {

@@ -32,6 +32,7 @@ export default {
       } else {
         if (this.user[0].password === this.password) {
           store.commit('logIn', this.user[0].id)
+          store.commit('nickChange', this.user[0].nick)
           this.nick = ''
           this.password = ''
           this.$emit('loggedIn')

@@ -67,7 +67,7 @@ export default {
           nick: this.newNick,
           email: this.newEmail,
           nick_to_search: this.newNick.toLowerCase(),
-          clave_bibliotecas: [historial, obras]
+          libraries_keys: [historial, obras]
         })
         // this.$emit('modifications', this.newNick, this.newName, this.newEmail)
         this.$emit('new-name', this.newName)
@@ -82,7 +82,7 @@ export default {
       var libraries
       await userCollection.doc(this.userKey).get().then(doc => {
         const data = doc.data()
-        libraries = data.clave_bibliotecas
+        libraries = data.libraries_keys
       })
       var historial = '_historial'
       var obras = '_mis_obras'
@@ -94,7 +94,6 @@ export default {
             data.nick = this.newNick
             libData = data
           })
-          console.log(element)
           librariesCollection.doc(element).delete()
           if (element === this.nick.toLowerCase() + historial) {
             librariesCollection.doc(this.newNick.toLowerCase() + historial).set(libData)
@@ -108,6 +107,8 @@ export default {
         }
       })
     }
+    // updateBooks: async function () {
+    // }
   }
 }
 </script>

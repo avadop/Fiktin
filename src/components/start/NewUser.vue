@@ -63,7 +63,7 @@ export default {
           email: this.newEmail,
           password: this.newPassword,
           nick_to_search: this.newNick.toLowerCase(),
-          clave_bibliotecas: [historial, obras]
+          libraries_keys: [historial, obras]
         })
         librariesCollection.doc(historial).set({
           name: 'Historial',
