@@ -1,5 +1,6 @@
 <template>
   <div class="viewLibrary">
+    <!-- Cabecera -->
     <button class="buttonBack" @click="goBack()">Atrás</button>
     <br><br>
     <span class="title">{{ name }} </span>
@@ -7,23 +8,37 @@
     <span class="nBooks" v-else-if="numberOfBooks===1"> {{ numberOfBooks }} libro</span>
     <span class="nBooks" v-else> {{ numberOfBooks }} libros</span>
     <br><br>
+    <!-- Comprobamos conexión -->
     <h3 v-if="this.numberOfBooks === 0 && this.internetConnection === 0">No hay libros en esta biblioteca</h3>
     <h3 v-else-if="this.numberOfBooks === -1 && this.internetConnection === 0">Cargando</h3>
     <h3 v-else-if="this.internetConnection === -1">vaya, parece que no tienes conexión y no podemos mostrar los libros de esta biblioteca<br>Revisa tu conexión y actualiza la página para solucionar el problema</h3>
     <span v-else>
-      <div class="booksList" v-for="(book, index) in booksList" :key="book.id">
-        <span class="text">Nombre: {{ book.title }}</span>
-        <br>
-        <span>Autor: {{ book.author }}</span>
-        <br>
-        <span v-if="book.description!==''">Descripción: {{ book.description }}</span>
-        <span v-else>Sin descripción</span>
-        <br>
-        <span>Fecha de publicación: Todavía no está implementada esta función </span>
-        <br><br>
-        <button class="button" @click="deleteButton(index)">Eliminar</button>
-        <button class="button" @click="upButton(index)" :disabled="index===0">Subir</button>
-        <button class="button" @click="downButton(index)" :disabled="index===booksList.length-1">Bajar</button>
+      <!-- Lista de libros -->
+      <div v-for="(book, index) in booksList" :key="book.id">
+        <div class="booksListSuccess" v-if="book.found==1"> <!--En caso de libro encontrado-->
+          <span class="text">Nombre: {{ book.title }}</span>
+          <br>
+          <span>Autor: {{ book.author }}</span>
+          <br>
+          <span v-if="book.description!==''">Descripción: {{ book.description }}</span>
+          <span v-else>Sin descripción</span>
+          <br>
+          <span>Fecha de publicación: Todavía no está implementada esta función </span>
+          <br><br>
+          <button class="buttonSuccess" @click="deleteButton(index)">Eliminar</button>
+          <button class="buttonSuccess" @click="upButton(index)" :disabled="index===0">Subir</button>
+          <button class="buttonSuccess" @click="downButton(index)" :disabled="index===booksList.length-1">Bajar</button>
+        </div>
+        <div class="booksListError" v-else> <!--En caso de libro no encontrado-->
+          <span class="textError">Libro no encontrado :(</span>
+          <br>
+          <span>Puede que este libro no se encuentre publicado o haya sido eliminado</span>
+          <br><br>
+          <button class="buttonError" @click="deleteButton(index)">Eliminar</button>
+          <button class="buttonError" @click="upButton(index)" :disabled="index===0">Subir</button>
+          <button class="buttonError" @click="downButton(index)" :disabled="index===booksList.length-1">Bajar</button>
+          <span class="textInfo">(Código del libro: {{ book.id }})</span>
+        </div>
       </div>
     </span>
   </div>
@@ -38,6 +53,18 @@ export default {
     libID: String,
     name: String
   },
+  /**
+   * booksList: Array con los datos de los libros.
+   * numberOfBooks: Indica la cantidad de libros presentes en la biblioteca. Tiene varios valores:
+   *  -3: No se ha iniciado.
+   *  -1: No se ha encontrado la biblioteca o se están cargando.
+   *  >=0: Indica la cantidad de libros en la biblioteca.
+   * referencesList: Hace alusión al campo "array_keys" de la tabla de bibliotecas de la base de datos.Cada vez que un elemento del array se modifica, se manda a la bbdd.
+   * internetConnection: Indica el estado de la conexión a Internet. Tiene varios valores:
+   *  -1: No hay conexión a Internet.
+   *  0: Hay conexión a Internet.
+   *  1: No se ha iniciado el valor.
+   */
   data () {
     return {
       booksList: [],
@@ -46,6 +73,10 @@ export default {
       internetConnection: 1
     }
   },
+  /**
+   * En este método comprobamos que la biblioteca exista, volviendo a la vista anterior si no.
+   * Una vez realizada esa comprobación, probamos la conexión a Internet. Si hay conexión, se actualiza la lista de libros, si no, no.
+   */
   mounted () {
     // Comprobamos la conexión
     if (this.libID == null) this.goBack()
@@ -65,12 +96,18 @@ export default {
     // if (this.libID == null) this.goBack() Esto lo he escrito arriba. No olvidarse de quitarlo en caso de persistencia
   },
   methods: {
+    /**
+     * Refrescamos la página consultando la bbdd.
+     * Para ello, extraemos las ids de los libros de la biblioteca y a continuación cogemos de cada uno sus datos.
+     * Después actualizamos el campo "numberOfBooks" al número de libros totales, incluídos aquellos que no se han encontrado.
+     * Se llama a este método cada vez que montamos la página y cada vez que hacemos un cambio en "referencesList".
+     */
     refresh: async function () {
       let booksKeys
       this.booksList = []
       this.referencesList = []
       this.numberOfBooks = -1
-      // Extraemos las ids de los libros en la librería
+      // Extraemos las ids de los libros en la biblioteca
       await librariesCollection.doc(this.libID).get().then(doc => {
         booksKeys = doc.data().array_keys
       })
@@ -82,29 +119,57 @@ export default {
         await booksCollection.doc(a).get().then(doc => {
           if (doc.exists) {
             this.booksList.push({
+              found: 1,
               id: a,
               title: doc.data().title,
               author: doc.data().author,
               description: doc.data().description
+            })
+          } else {
+            this.booksList.push({
+              found: 0,
+              id: a
             })
           }
         })
       }
       this.numberOfBooks = this.booksList.length
     },
+    /**
+     * Volvemos a la vista anterior.
+     */
     goBack () {
       this.$router.go(-1)
     },
+    /**
+     * Actualizamos el campo "array_keys" de la bbdd en base a la lista "referencesList".
+     */
     updateReferencesList () {
       librariesCollection.doc(this.libID).update({
         array_keys: this.referencesList
       })
     },
+    /**
+     * @param {int} index: Índice en "booksList" del libro eliminado.
+     * Cada vez que se presiona el botón de borrar un libro se accede a este método.
+     * Su procedimiento es:
+     *  Elimina el libro del array "referencesList".
+     *  Llama a "updateReferencesList()" para actualizar la bbdd.
+     *  Refresca la página.
+     */
     deleteButton (index) {
       this.referencesList.splice(index, 1)
       this.updateReferencesList()
       this.refresh()
     },
+    /**
+     * @param {int} index: Índice en "booksList" del libro subido.
+     * Cada vez que se presiona el botón de subir un libro se accede a este método.
+     * Su procedimiento es:
+     *  Actualiza el array "referencesList" subiendo el libro de "index" y bajando el de "preIndex".
+     *  Llama a "updateReferencesList()" para actualizar la bbdd.
+     *  Refresca la página.
+     */
     upButton (index) {
       let preIndex = index - 1
       let aux = this.referencesList[preIndex]
@@ -113,6 +178,14 @@ export default {
       this.updateReferencesList()
       this.refresh()
     },
+    /**
+     * @param {int} index: Índice en "booksList" del libro bajado.
+     * Cada vez que se presiona el botón de bajar un libro se accede a este método.
+     * Su procedimiento es:
+     *  Actualiza el array "referencesList" bajando el libro de "index" y subiendo el de "posIndex".
+     *  Llama a "updateReferencesList()" para actualizar la bbdd.
+     *  Refresca la página.
+     */
     downButton (index) {
       let posIndex = index + 1
       let aux = this.referencesList[posIndex]
@@ -137,7 +210,7 @@ export default {
   border: 1px solid darkgreen;
 }
 
-.booksList {
+.booksListSuccess {
   text-align: justify;
   background-color: #E9FFE2;
   border: 1px solid #DBECD5;
@@ -147,10 +220,28 @@ export default {
   padding-bottom: 10px;
 }
 
-.button {
+.booksListError {
+  text-align: justify;
+  background-color: #ffeaea;
+  border: 1px solid #ebdbdb;
+  margin-top: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-bottom: 10px;
+}
+
+.buttonSuccess {
   cursor: pointer;
   background-color: lightgreen;
   border: 1px solid darkgreen;
+  margin-right: 5px;
+  text-align: center;
+}
+
+.buttonError {
+  cursor: pointer;
+  background-color: #ee9090;
+  border: 1px solid #640000;
   margin-right: 5px;
   text-align: center;
 }
@@ -167,5 +258,14 @@ export default {
 
 .text {
   font: bold 14px/30px Arial;
+}
+
+.textInfo {
+  font: 12px/12px Arial;
+}
+
+.textError {
+  font: bold 14px/30px Arial;
+  color: #C24D4D;
 }
 </style>

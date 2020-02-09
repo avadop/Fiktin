@@ -43,15 +43,35 @@ export default {
     CreateLibrary,
     ModifyLibrary
   },
+  /**
+   * librariesList: Array con los datos de las librerías del usuario con la sesión iniciada.
+   * searchNick: Nombre en minúsculas de la biblioteca "mis obras" del usuario con la sesión iniciada.
+   * opened: Booleano que indica si el botón de crear biblioteca ha sido presionado o no. false para no, true para sí.
+   * opened: Entero que indica si el botón de modificar biblioteca ha sido presionado o no. Tiene varios valores:
+   *  -1: No se ha presionado.
+   *  >=0: Índice de la biblioteca a modificar.
+   * numberOfLibraries: Número de bibliotecas que tiene el usuario (menos la biblioteca "mis obras"). Tiene varios valores:
+   *  -3: No se ha iniciado.
+   *  -1: No se ha encontrado ninguna biblioteca o se están cargando.
+   *  >=0: Indica la cantidad de libros en la biblioteca.
+   * internetConnection: Indica el estado de la conexión a Internet. Tiene varios valores:
+   *  -1: No hay conexión a Internet.
+   *  0: Hay conexión a Internet.
+   *  1: No se ha iniciado el valor.
+   */
   data () {
     return {
       librariesList: [],
+      searchNick: store.state.userNick.concat('_mis_obras').toLowerCase(),
       opened: false,
       modifying: -1,
       numberOfLibraries: -3,
       internetConnection: 1
     }
   },
+  /**
+   * En este método comprobamos la conexión a Internet. Si hay conexión, se actualiza la lista de bibliotecas, si no, no.
+   */
   mounted () {
     // Comprobamos la conexión
     connectedRef.on('value', snap => {
@@ -66,31 +86,55 @@ export default {
     })
   },
   methods: {
+    /**
+     * Refrescamos la página consultando la bbdd.
+     * Para ello, consultamos las bibliotecas del usuario con la sesión iniciada e insertamos sus atos en "librariesListAux".
+     * Después actualizamos el campo "numberOfLibraries" al número de bibliotecas totales.
+     * Se llama a este método cada vez que montamos la página y cada vez que hacemos un cambio en "librariesList".
+     */
     refresh: async function () {
       this.numberOfLibraries = -1
       let librariesListAux = []
       var userNick = store.state.userNick
       await librariesCollection.where('nick', '==', userNick).get().then(snapshot => {
         snapshot.forEach(doc => {
-          librariesListAux.push({
-            id: doc.id,
-            name: doc.data().name,
-            description: doc.data().description,
-            privacy: doc.data().privacy,
-            numberOfBooks: doc.data().array_keys.length
-          })
+          // Comprobamos que no se agregue la biblioteca de la variable "searchNick"
+          if (doc.id !== this.searchNick) {
+            librariesListAux.push({
+              id: doc.id,
+              name: doc.data().name,
+              description: doc.data().description,
+              privacy: doc.data().privacy,
+              numberOfBooks: doc.data().array_keys.length
+            })
+          }
         })
       })
       this.librariesList = librariesListAux
       this.numberOfLibraries = this.librariesList.length
     },
+    /**
+     * Se modifica el valor de "opened", negándolo (si era true, ahora es false, y viceversa).
+     */
     btnCreateNewLib () {
       this.opened = !this.opened
     },
+    /**
+     * @param {int} index: Índice en "librariesList" de la biblioteca a modificar.
+     * Cada vez que se presiona el botón de modificar biblioteca se llama a este método.
+     * Se modifica el valor de "modifying" con el índice del libro que se va a modificar.
+     */
     btnModifyLib (index) {
       this.modifying = index
     },
-    btnDeleteLib (idAux, index) {
+    /**
+     * @param {String} idAux: ID en la bbdd de la biblioteca a eliminar.
+     * Cada vez que se presiona el botón de eliminar biblioteca se llama a este método.
+     * Su procedimiento es:
+     *  Actualiza la bbdd eliminando la biblioteca.
+     *  Refresca la página.
+     */
+    btnDeleteLib (idAux) {
       Promise.all(
         this.librariesList.map(id => (
           librariesCollection.doc(idAux).delete()
@@ -98,14 +142,32 @@ export default {
       )
       this.refresh()
     },
+    /**
+     * Cada vez que se presiona el botón de crear biblioteca en el componente "CreateLibrary" se llama a este método.
+     * Su procedimiento es:
+     *  Refresca la página.
+     *  Llama a "btnCreateNewLib()".
+     */
     createLibrary () {
       this.refresh()
       this.btnCreateNewLib()
     },
+    /**
+     * Cada vez que se presiona el botón de modificar biblioteca en el componente "ModifyLibrary" se llama a este método.
+     * Su procedimiento es:
+     *  Refresca la página.
+     *  Llama a "btnModifyLib()" con un valor de -1, indicando que se ha cerrado el apartado de modificar biblioteca correspondiente.
+     */
     modifyLibrary () {
       this.refresh()
       this.btnModifyLib(-1)
     },
+    /**
+     * @param {String} id: ID (en la bbdd) de la biblioteca que se desea ver.
+     * @param {String} name: Nombre de la biblioteca que se desea ver.
+     * @param {String} nBooks: Cantidad de libros de la biblioteca a eliminar.
+     * Llama a la vista "ViewLibrary" para mostrar el contenido de la biblioteca seleccionada
+     */
     viewLibrary (id, name, nBooks) {
       if (this.modifying === -1 && !this.opened) this.$router.push({ name: 'viewLibrary', params: { libID: id, name: name, numberOfBooks: nBooks } })
     }
