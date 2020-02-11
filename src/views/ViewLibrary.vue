@@ -135,12 +135,14 @@ export default {
       }
       this.numberOfBooks = this.booksList.length
     },
+
     /**
      * Volvemos a la vista anterior.
      */
     goBack () {
       this.$router.go(-1)
     },
+
     /**
      * Actualizamos el campo "array_keys" de la bbdd en base a la lista "referencesList".
      */
@@ -149,6 +151,7 @@ export default {
         array_keys: this.referencesList
       })
     },
+
     /**
      * @param {int} index: Índice en "booksList" del libro eliminado.
      * Cada vez que se presiona el botón de borrar un libro se accede a este método.
@@ -162,6 +165,7 @@ export default {
       this.updateReferencesList()
       this.refresh()
     },
+
     /**
      * @param {int} index: Índice en "booksList" del libro subido.
      * Cada vez que se presiona el botón de subir un libro se accede a este método.
@@ -178,6 +182,7 @@ export default {
       this.updateReferencesList()
       this.refresh()
     },
+
     /**
      * @param {int} index: Índice en "booksList" del libro bajado.
      * Cada vez que se presiona el botón de bajar un libro se accede a este método.

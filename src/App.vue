@@ -36,7 +36,7 @@ export default {
     logOut: function () {
       store.commit('logOut')
       this.loggedIn = false
-      this.$router.push('/')
+      this.$router.push('/#/')
     },
     confirmLogOut: function () {
       this.$modal.show('dialog', {

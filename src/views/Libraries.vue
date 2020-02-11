@@ -24,7 +24,7 @@
         <br>
         <button v-if="modifying===-1 || modifying !==index" class="buttonModify" :disabled="opened || modifying != -1" @click.stop="btnModifyLib(index)">Modificar</button>
         <ModifyLibrary v-else-if="modifying===index" class="modify" :disabled="opened || modifying != -1" :index="index" :nameAux="librariesList[index].name" :descriptionAux="librariesList[index].description" :privacyAux="librariesList[index].privacy" :id="librariesList[index].id" @cancel="btnModifyLib" @modify="modifyLibrary"/>
-        <button v-if="modifying!==index" class="buttonModify" :disabled="opened || modifying != -1" @click.stop="btnDeleteLib(library.id)">Eliminar</button>
+        <button v-if="modifying!==index && library.id !== searchHistory" class="buttonModify" :disabled="opened || modifying != -1" @click.stop="btnDeleteHandler(library.id)">Eliminar</button>
       </div>
     </span>
   </div>
@@ -46,6 +46,7 @@ export default {
   /**
    * librariesList: Array con los datos de las librerías del usuario con la sesión iniciada.
    * searchNick: Nombre en minúsculas de la biblioteca "mis obras" del usuario con la sesión iniciada.
+   * searchHistory: Nombre en minúsculas de la biblioteca "historial" del usuario con la sesión iniciada.
    * opened: Booleano que indica si el botón de crear biblioteca ha sido presionado o no. false para no, true para sí.
    * opened: Entero que indica si el botón de modificar biblioteca ha sido presionado o no. Tiene varios valores:
    *  -1: No se ha presionado.
@@ -63,6 +64,7 @@ export default {
     return {
       librariesList: [],
       searchNick: store.state.userNick.concat('_mis_obras').toLowerCase(),
+      searchHistory: store.state.userNick.concat('_historial').toLowerCase(),
       opened: false,
       modifying: -1,
       numberOfLibraries: -3,
@@ -100,25 +102,38 @@ export default {
         snapshot.forEach(doc => {
           // Comprobamos que no se agregue la biblioteca de la variable "searchNick"
           if (doc.id !== this.searchNick) {
-            librariesListAux.push({
-              id: doc.id,
-              name: doc.data().name,
-              description: doc.data().description,
-              privacy: doc.data().privacy,
-              numberOfBooks: doc.data().array_keys.length
-            })
+            // Comprobamos que siempre se muestre el historial delante del resto de bibliotecas
+            if (doc.id === this.searchHistory) {
+              librariesListAux.unshift({ // insertamos en la primera posición del array
+                id: doc.id,
+                name: doc.data().name,
+                description: doc.data().description,
+                privacy: doc.data().privacy,
+                numberOfBooks: doc.data().array_keys.length
+              })
+            } else {
+              librariesListAux.push({
+                id: doc.id,
+                name: doc.data().name,
+                description: doc.data().description,
+                privacy: doc.data().privacy,
+                numberOfBooks: doc.data().array_keys.length
+              })
+            }
           }
         })
       })
       this.librariesList = librariesListAux
       this.numberOfLibraries = this.librariesList.length
     },
+
     /**
      * Se modifica el valor de "opened", negándolo (si era true, ahora es false, y viceversa).
      */
     btnCreateNewLib () {
       this.opened = !this.opened
     },
+
     /**
      * @param {int} index: Índice en "librariesList" de la biblioteca a modificar.
      * Cada vez que se presiona el botón de modificar biblioteca se llama a este método.
@@ -127,14 +142,45 @@ export default {
     btnModifyLib (index) {
       this.modifying = index
     },
+
+    /**
+     * @param {String} idAux: ID en la bbdd de la biblioteca a eliminar. No se usa en este método más que para pasárselo al de borrar.
+     * Cada vez que se presiona el botón de eliminar, se llama a este método.
+     * Se encarga de mostrar en una pequeña ventana emergente una confirmación del borrado de una biblioteca.
+     * Se ofrecen dos opciones para pulsar:
+     *  "Sí", en cuyo caso se cierra la ventana emergente y se borra la biblioteca.
+     *  "No", en cuyo caso se cierra la ventana emergente.
+     * Si se pulsa fuera de la ventana emergente, esta se cierra.
+     * Si se pulsa la tecla "Intro", la ventana emergente se cierra.
+     */
+    btnDeleteHandler (idAux) {
+      // Usamos un modal dinámico
+      this.$modal.show('dialog', {
+        text: '¿Estás seguro de que deseas borrar esta biblioteca?',
+        buttons: [
+          {
+            title: 'Sí',
+            handler: () => {
+              this.$modal.hide('dialog') // Escondemos el modal
+              this.deleteLib(idAux)
+            }
+          },
+          {
+            title: 'No',
+            default: true // Si se pulsa la tecla intro, se activa esta opción
+          }
+        ]
+      })
+    },
+
     /**
      * @param {String} idAux: ID en la bbdd de la biblioteca a eliminar.
-     * Cada vez que se presiona el botón de eliminar biblioteca se llama a este método.
+     * Cada vez que se presiona el botón de confirmación de eliminar biblioteca (en la ventana emergente) se llama a este método.
      * Su procedimiento es:
      *  Actualiza la bbdd eliminando la biblioteca.
      *  Refresca la página.
      */
-    btnDeleteLib (idAux) {
+    deleteLib (idAux) {
       Promise.all(
         this.librariesList.map(id => (
           librariesCollection.doc(idAux).delete()
@@ -142,6 +188,7 @@ export default {
       )
       this.refresh()
     },
+
     /**
      * Cada vez que se presiona el botón de crear biblioteca en el componente "CreateLibrary" se llama a este método.
      * Su procedimiento es:
@@ -152,6 +199,7 @@ export default {
       this.refresh()
       this.btnCreateNewLib()
     },
+
     /**
      * Cada vez que se presiona el botón de modificar biblioteca en el componente "ModifyLibrary" se llama a este método.
      * Su procedimiento es:
@@ -162,6 +210,7 @@ export default {
       this.refresh()
       this.btnModifyLib(-1)
     },
+
     /**
      * @param {String} id: ID (en la bbdd) de la biblioteca que se desea ver.
      * @param {String} name: Nombre de la biblioteca que se desea ver.
