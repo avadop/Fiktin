@@ -2,7 +2,7 @@
   <div id="app">
     <div id="nav" v-if="loggedIn">
       <router-link to="/home">Home</router-link> |
-      <router-link to="/libros">Libros </router-link> |
+      <router-link to="/books">Libros </router-link> |
       <router-link to="/libraries">Bibliotecas </router-link> |
       <router-link to="/user">Usuario </router-link> |
       <router-link to="/" @click.native="confirmLogOut">Cerrar Sesion</router-link>

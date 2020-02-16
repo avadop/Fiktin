@@ -3,11 +3,17 @@ import VueRouter from 'vue-router'
 
 import User from '../views/User.vue'
 import Home from '../views/Home.vue'
-import Libros from '../views/Libros.vue'
-import CrearLibro from '../views/CrearLibro.vue'
+import Books from '../views/Books.vue'
 import Libraries from '../views/Libraries.vue'
 import ViewLibrary from '../views/ViewLibrary.vue'
 // import { userInfo } from 'os'
+
+// bootstrap
+import BootstrapVue from 'bootstrap-vue'
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+
+Vue.use(BootstrapVue)
 
 Vue.use(VueRouter)
 
@@ -23,14 +29,9 @@ const routes = [
     component: Home
   },
   {
-    path: '/libros',
-    name: 'libros',
-    component: Libros
-  },
-  {
-    path: '/crearLibro',
-    name: 'crearLibro',
-    component: CrearLibro
+    path: '/books',
+    name: 'books',
+    component: Books
   },
   {
     path: '/libraries',
