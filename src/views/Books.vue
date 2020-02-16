@@ -28,8 +28,10 @@
         </span>
 
         <!-- Portada -->
-        <span v-if="book.cover">
-          Portada: {{ book.cover }}
+        <span v-if="book.cover != null">
+          Portada:
+          <br>
+          <img width="320" :src="book.cover">
           <br>
         </span>
 
@@ -56,8 +58,8 @@
       </div>
 
       <!-- Botones -->
-      <b-button variant="danger" v-if="modifyID !== book.ID" @click="deleteBook(book.ID)">Eliminar libro</b-button>
-      <b-button variant="primary" id="modifyButton" @click="modifyBook(book)" v-show="modifyID !== book.ID">Modificar libro</b-button>
+      <b-button variant="danger" v-if="modifyID !== book.ID" @click="deleteBook(book.ID)">Eliminar</b-button>
+      <b-button variant="primary" id="modifyButton" @click="modifyBook(book)" v-show="modifyID !== book.ID">Modificar</b-button>
     </div>
   </div>
 </template>

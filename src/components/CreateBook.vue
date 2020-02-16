@@ -28,17 +28,17 @@
     </span>
 
     <!-- portada -->
-<!--
-    <progress value="UploadValue" max="100" id="uploader"/>
-    <input type="file" name="cover" @change="onFileSelected" accept="image/*">
-    <button @click="onUpload">Subir</button>
-    <img width="320" :src="this.picture">
--->
     <span>
       Portada:
-      <input type="file" name="cover" @change="onFileSelected" accept="image/*">
+      <br>
+      <img width="320" :src="this.cover">
+      <b-button v-if="this.cover != null" variant="danger" @click="removeImg">Eliminar</b-button>
       <br>
     </span>
+
+    <br>
+    <input type="file" name="cover" @change="onFileSelected" accept="image/*">
+    <br>
 
     <!-- etiquetas -->
     <span>
@@ -82,15 +82,13 @@
 
     <!-- botones -->
     <b-button variant="secondary" @click="cancelButton">Cancelar</b-button>
-    <b-button variant="success" @click="createButton">Crear libro</b-button>
+    <b-button variant="success" @click="createButton" :disabled="this.UploadValue != 0 && this.UploadValue != 100">Crear libro</b-button>
   </div>
 </template>
 
 <script>
-import { booksCollection } from '../firebase.js'
-// import { booksCollection, storageFirebase } from '../firebase.js'
+import { booksCollection, storageFirebase } from '../firebase.js'
 import { store } from '../store/index.js'
-// import firebase from 'firebase/app'
 
 export default {
   name: 'CreateBook',
@@ -101,35 +99,38 @@ export default {
       author: 'Nombre',
       tags: [],
       description: '',
-      cover: '',
+      cover: null,
       published: false,
       userID: store.state.userID,
 
       selectedFile: null,
-      UploadValue: 0,
-      picture: null
+      UploadValue: 0
     }
   },
   methods: {
+    removeImg () {
+      this.cover = null
+    },
     onFileSelected (event) {
       this.selectedFile = event.target.files[0]
+      this.onUpload()
     },
-    // onUpload () {
-    //   const storageRef = firebase.storage().ref(`/img/covers/${this.selectedFile.name}`)
-    //   const task = storageRef.put(this.selectedFile)
-    //   task.on('state_changed', snapshot => {
-    //     let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-    //     this.UploadValue = percentage
-    //   }, error => { console.log(error.message) },
-    //   () => {
-    //     this.UploadValue = 100
-    //     // downloadURL
-    //     task.snapshot.ref.getDownloadURL().then((url) => {
-    //       this.picture = url
-    //       console.log(this.picture)
-    //     })
-    //   })
-    // },
+    onUpload () {
+      const storageRef = storageFirebase.ref(`/img/covers/${this.selectedFile.name}`)
+      const task = storageRef.put(this.selectedFile)
+      task.on('state_changed', snapshot => {
+        let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        this.UploadValue = percentage
+      }, error => { console.log(error.message) },
+      () => {
+        this.UploadValue = 100
+        // downloadURL
+        task.snapshot.ref.getDownloadURL().then((url) => {
+          this.cover = url
+          console.log(this.cover)
+        })
+      })
+    },
     createButton () {
       booksCollection.add({
         title: this.title,
@@ -140,7 +141,6 @@ export default {
         published: this.published,
         user_id: this.userID
       })
-      // this.onUpload()
       this.title = ''
       this.author = ''
       this.tags = []
