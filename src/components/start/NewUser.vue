@@ -68,14 +68,14 @@ export default {
         librariesCollection.doc(historial).set({
           name: 'Historial',
           description: ('Aqui se guardaran los ultimos libros consultados de ' + this.newNick),
-          privacy: 'privado',
+          privacy: 'private',
           nick: this.newNick,
           array_keys: []
         })
         librariesCollection.doc(obras).set({
           name: 'Mis obras',
           description: ('Aqui se guardaran tus libros escritos de ' + this.newNick),
-          privacy: 'privado',
+          privacy: 'private',
           nick: this.newNick,
           array_keys: []
         })

@@ -117,7 +117,7 @@ export default {
         this.referencesList.push(booksKeys[i])
         // ...cogemos sus datos
         await booksCollection.doc(a).get().then(doc => {
-          if (doc.exists) {
+          if (doc.exists && doc.data().published) { // Comprobamos que el documento exista y sea público
             this.booksList.push({
               found: 1,
               id: a,

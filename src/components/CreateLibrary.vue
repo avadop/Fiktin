@@ -1,7 +1,7 @@
 <template>
   <div class="create" >
-    <textarea v-if="name.length===0" class="modelName" :class="{red: name.length===0}" v-model="name" placeholder="Nombre" @keydown.space.prevent @input="characterLimitName" @paste="characterLimitName"/>
-    <textarea v-else v-model="name" class="modelName" :class="{red: checkNames()}" placeholder="Nombre" @input="characterLimitName" @paste="characterLimitName"/>
+    <textarea v-if="name.length===0" class="modelName" :class="{red: name.length===0}" v-model="name" placeholder="Nombre" @keydown.space.prevent @keydown.enter.prevent @input="characterLimitName" @paste="characterLimitName"/>
+    <textarea v-else v-model="name" class="modelName" :class="{red: checkNames()}" placeholder="Nombre" @keydown.enter.prevent @input="characterLimitName" @paste="characterLimitName"/>
     <span> {{getNameTam}} / 50 </span>
     <br><br>
     <textarea v-if="description.length===0" class="modelDesc" v-model="description" placeholder="Descripción" @keydown.space.prevent @keydown.enter.prevent @input="characterLimitDescription" @paste="characterLimitDescription"/>
@@ -143,7 +143,7 @@ export default {
 
 .modelName {
   width: 75%;
-  height: 15px;
+  height: 30px;
   resize: none;
 }
 

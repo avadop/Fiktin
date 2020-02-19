@@ -22,8 +22,8 @@
         <span v-else-if="library.numberOfBooks === 1">{{ library.numberOfBooks }} libro </span>
         <span v-else>{{ library.numberOfBooks }} libros </span>
         <br>
-        <button v-if="modifying===-1 || modifying !==index" class="buttonModify" :disabled="opened || modifying != -1" @click.stop="btnModifyLib(index)">Modificar</button>
-        <ModifyLibrary v-else-if="modifying===index" class="modify" :disabled="opened || modifying != -1" :index="index" :nameAux="librariesList[index].name" :descriptionAux="librariesList[index].description" :privacyAux="librariesList[index].privacy" :id="librariesList[index].id" @cancel="btnModifyLib" @modify="modifyLibrary"/>
+        <button v-if="(modifying===-1 || modifying !==index) && library.id !== searchHistory" class="buttonModify" :disabled="opened || modifying != -1" @click.stop="btnModifyLib(index)">Modificar</button>
+        <ModifyLibrary v-else-if="modifying===index || library.id !== searchHistory" class="modify" :disabled="opened || modifying != -1" :index="index" :nameAux="librariesList[index].name" :descriptionAux="librariesList[index].description" :privacyAux="librariesList[index].privacy" :id="librariesList[index].id" @cancel="btnModifyLib" @modify="modifyLibrary"/>
         <button v-if="modifying!==index && library.id !== searchHistory" class="buttonModify" :disabled="opened || modifying != -1" @click.stop="btnDeleteHandler(library.id)">Eliminar</button>
       </div>
     </span>
@@ -34,7 +34,7 @@
 // import router from '../router/index.js'
 import CreateLibrary from '@/components/CreateLibrary.vue'
 import ModifyLibrary from '@/components/ModifyLibrary.vue'
-import { librariesCollection, connectedRef } from '../firebase.js'
+import { librariesCollection, userCollection, connectedRef } from '../firebase.js'
 import { store } from '@/store/index.js'
 
 export default {
@@ -163,6 +163,7 @@ export default {
             handler: () => {
               this.$modal.hide('dialog') // Escondemos el modal
               this.deleteLib(idAux)
+              this.updateUser(idAux) // Actualizamos el perfil del usuario
             }
           },
           {
@@ -209,6 +210,29 @@ export default {
     modifyLibrary () {
       this.refresh()
       this.btnModifyLib(-1)
+    },
+
+    /**
+     * @param {String} libraryKey: ID en la bbdd de la biblioteca a eliminar.
+     * Al eliminar una biblioteca, esta se debe borrar de la lista de bibliotecas del usuario.
+     * De lo que se encarga este método es de borrar esa entrada en la lista.
+     * Para ello, sigue los siguientes pasos:
+     *  Recoge el nick del usuario.
+     *  Recoge en la bbdd los datos del usuario.
+     *  Busca en el campos "libraries_keys" (el campo que contiene las IDs de las bibliotecas de ese usuario) el campo "libraryKey".
+     *  Elimina el campo "libraryKey" de "libraries_keys".
+     *  Actualiza el usuario.
+     */
+    async updateUser (libraryKey) {
+      var userKey = store.state.userID
+      var userData
+      await userCollection.doc(userKey).get().then(doc => {
+        var data = doc.data()
+        var pos = data.libraries_keys.indexOf(libraryKey)
+        if (pos !== -1) { data.libraries_keys.splice(pos, 1) }
+        userData = data
+      })
+      userCollection.doc(userKey).set(userData)
     },
 
     /**
