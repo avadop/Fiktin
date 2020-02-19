@@ -1,6 +1,7 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'
 import 'firebase/database'
+import 'firebase/storage'
 
 // Your web app's Firebase configuration
 const config = {
@@ -25,6 +26,7 @@ export const db = firebase.firestore()
 
 // Estado de la conexión
 export const connectedRef = firebase.database().ref('.info/connected')
+export const storageFirebase = firebase.storage()
 
 // Colecciones
 export const userCollection = db.collection('users')

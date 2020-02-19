@@ -30,9 +30,15 @@
     <!-- portada -->
     <span>
       Portada:
-      <input type="file" name="cover" @change="onFileSelected" accept="image/*">
+      <br>
+      <img width="320" :src="this.cover">
+      <b-button v-if="this.cover != null" variant="danger" @click="removeImg">Eliminar</b-button>
       <br>
     </span>
+
+    <br>
+    <input type="file" name="modify_cover" @change="onFileSelected" accept="image/*">
+    <br>
 
     <!-- etiquetas -->
     <span>
@@ -75,15 +81,14 @@
     </span>
 
     <!-- botones -->
-    <b-button variant="danger" @click="deleteButton">Eliminar libro</b-button>
-    <b-button variant="secondary" @click="cancelButton">Descartar cambios</b-button>
-    <b-button variant="success" @click="saveButton">Guardar cambios</b-button>
+    <b-button variant="danger" @click="deleteButton">Eliminar</b-button>
+    <b-button variant="secondary" @click="cancelButton">Descartar</b-button>
+    <b-button variant="success" @click="saveButton" :disabled="this.UploadValue != 0 && this.UploadValue != 100">Guardar</b-button>
   </div>
 </template>
 
 <script>
-
-import { booksCollection } from '../firebase.js'
+import { booksCollection, storageFirebase } from '../firebase.js'
 
 export default {
   name: 'ModifyBook',
@@ -97,12 +102,35 @@ export default {
       tags: this.bookAux.tags,
       published: this.bookAux.published,
       userID: this.bookAux.userID,
-      id: this.bookAux.ID
+      id: this.bookAux.ID,
+
+      selectedFile: null,
+      UploadValue: 0
     }
   },
   methods: {
+    removeImg () {
+      this.cover = null
+    },
     onFileSelected (event) {
-      this.cover = event.target.files[0].name // coge el nombre de la primera imagen subida
+      this.selectedFile = event.target.files[0] // coge el nombre de la primera imagen subida
+      this.onUpload()
+    },
+    onUpload () {
+      const storageRef = storageFirebase.ref(`/img/covers/${this.selectedFile.name}`)
+      const task = storageRef.put(this.selectedFile)
+      task.on('state_changed', snapshot => {
+        let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        this.UploadValue = percentage
+      }, error => { console.log(error.message) },
+      () => {
+        this.UploadValue = 100
+        // downloadURL
+        task.snapshot.ref.getDownloadURL().then((url) => {
+          this.cover = url
+          console.log(this.cover)
+        })
+      })
     },
     saveButton () {
       booksCollection.doc(this.bookAux.ID).set({
