@@ -6,60 +6,44 @@
     <p>Tienes {{ books.length }} libros creados.</p>
     <CreateBook v-show="create" id="createBook" class="booksBox" @cancel="discardChangesBook" @create="saveChangesBook()"/>
     <!-- lista de libros -->
-    <div v-show="!create" class="booksBox" v-for="(book, idx) in books" :key="idx">
-      <br>
+    <div v-show="!create" v-for="(book, idx) in books" :key="idx">
       <div v-if="modifyID !== book.ID">
-        <!-- Titulo -->
-        <span>
-          Título: {{ book.title }}
-        </span>
-        <br>
+        <b-card
+          :title="book.title"
+          :img-src="book.cover"
+          img-alt="Image"
+          img-top
+          tag="article"
+          style="max-width: 20rem;"
+          class="mb-2"
+        >
+          <h6 v-if="book.author == 'Nombre'">{{ name }} </h6>
+          <h6 v-else>{{ nick }}</h6>
+          <b-card-text>
+            {{ book.description}}
+          </b-card-text>
 
-        <!-- Autor -->
-        <span>
-          Autor: {{ book.author }}
-        </span>
-        <br>
+          <b-badge v-for="(tag, idt) in book.tags" :key="idt" variant="secondary">{{ tag }}</b-badge>
 
-        <!-- Descripcion -->
-        <span v-if="book.description">
-          Descripción: {{ book.description }}
-          <br>
-        </span>
+          <!-- Publicado -->
+          <span>
+            <!-- <br> -->
+            <p class="h1 mb-2" v-if="book.published"><b-icon icon="eye"></b-icon></p>
+            <p class="h1 mb-2" v-else><b-icon icon="eye-slash"></b-icon></p>
+          </span>
 
-        <!-- Portada -->
-        <span v-if="book.cover != null">
-          Portada:
-          <br>
-          <img width="320" :src="book.cover">
-          <br>
-        </span>
-
-        <!-- Etiquetas -->
-        <span class="etiquetas" v-if="book.tags.length > 0">
-          Etiquetas:
-          <div class="etiqueta">
-            <li v-for="(tag, idt) in book.tags" :key="idt">{{ tag }}</li>
+          <!-- Botones -->
+          <div class="d-flex justify-content-end">
+            <b-button variant="danger" class="mr-auto" v-if="modifyID !== book.ID" @click="deleteBook(book.ID)">Eliminar</b-button>
+            <b-button variant="primary" id="modifyButton" @click="modifyBook(book)" v-show="modifyID !== book.ID">Modificar</b-button>
           </div>
-          <br>
-        </span>
-
-        <!-- Publicado -->
-        <span>
-          <a v-if="book.published"> Público </a>
-          <a v-else> Privado </a>
-          <br>
-        </span>
+        </b-card>
       </div>
 
       <!-- componente modificar libro -->
       <div v-else>
         <ModifyBook :bookAux="book" @delete="deleteBook(book.id)" @cancel="discardChangesBook" @save="saveChangesBook()"/>
       </div>
-
-      <!-- Botones -->
-      <b-button variant="danger" v-if="modifyID !== book.ID" @click="deleteBook(book.ID)">Eliminar</b-button>
-      <b-button variant="primary" id="modifyButton" @click="modifyBook(book)" v-show="modifyID !== book.ID">Modificar</b-button>
     </div>
   </div>
 </template>
@@ -67,7 +51,7 @@
 <script>
 import ModifyBook from '@/components/ModifyBook.vue'
 import CreateBook from '@/components/CreateBook.vue'
-import { booksCollection } from '../firebase.js'
+import { booksCollection, userCollection } from '../firebase.js'
 import { store } from '../store/index.js'
 
 export default {
@@ -77,7 +61,9 @@ export default {
       books: [],
       modifyID: null,
       create: false,
-      userID: store.state.userID
+      userID: store.state.userID,
+      nick: '',
+      name: ''
     }
   },
   components: {
@@ -87,6 +73,11 @@ export default {
   mounted () {
     // if (!this.userID || this.userID === 'store') return this.$router.push('/404')
     this.refresh()
+    userCollection.doc(this.userID).get().then(doc => {
+      const data = doc.data()
+      this.nick = data.nick
+      this.name = data.name
+    })
   },
   methods: {
     refresh () {
