@@ -1,43 +1,24 @@
 <template>
 <div class="home">
   <h1>HOME</h1>
-  <div class="booksBox" v-for="(book, idx) in books" :key="idx">
-    <br>
-    <div>
-      <!-- Titulo -->
-      <span>
-        Título: {{ book.title }}
-      </span>
-      <br>
-
-      <!-- Autor -->
+  <div v-for="(book, idx) in books" :key="idx">
+    <b-card
+      :title="book.title"
+      :img-src="book.cover"
+      img-alt="Image"
+      img-top
+      tag="article"
+      style="max-width: 20rem;"
+      class="mb-2"
+    >
       <h6 v-if="book.author == 'Nombre'">{{ book.name }} </h6>
       <h6 v-else>{{ book.nick }}</h6>
-      <br>
+      <b-card-text>
+        {{ book.description}}
+      </b-card-text>
 
-      <!-- Descripcion -->
-      <span v-if="book.description">
-        Descripción: {{ book.description }}
-        <br>
-      </span>
-
-      <!-- Portada -->
-      <span v-if="book.cover != null">
-        Portada:
-        <br>
-        <img width="320" :src="book.cover">
-        <br>
-      </span>
-
-      <!-- Etiquetas -->
-      <span class="etiquetas" v-if="book.tags.length > 0">
-        Etiquetas:
-        <div class="etiqueta">
-          <li v-for="(tag, idt) in book.tags" :key="idt">{{ tag }}</li>
-        </div>
-        <br>
-      </span>
-    </div>
+      <b-badge v-for="(tag, idt) in book.tags" :key="idt" variant="secondary">{{ tag }}</b-badge>
+    </b-card>
   </div>
 </div>
 </template>
