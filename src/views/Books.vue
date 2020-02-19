@@ -6,43 +6,45 @@
     <p>Tienes {{ books.length }} libros creados.</p>
     <CreateBook v-show="create" id="createBook" @cancel="discardChangesBook" @create="saveChangesBook()"/>
     <!-- lista de libros -->
-    <div v-show="!create" v-for="(book, idx) in books" :key="idx">
-      <div v-if="modifyID !== book.ID">
-        <b-card
-          :title="book.title"
-          :img-src="book.cover"
-          img-alt="Image"
-          img-top
-          tag="article"
-          style="max-width: 20rem;"
-          class="mb-2"
-        >
-          <h6 v-if="book.author == 'Nombre'">{{ name }} </h6>
-          <h6 v-else>{{ nick }}</h6>
-          <b-card-text>
-            {{ book.description}}
-          </b-card-text>
+    <div class="row">
+      <div v-show="!create" v-for="(book, idx) in books" :key="idx">
+        <div v-if="modifyID !== book.ID">
+          <b-card
+            :title="book.title"
+            :img-src="book.cover"
+            img-alt="Image"
+            img-top
+            tag="article"
+            style="max-width: 20rem;"
+            class="mb-2"
+          >
+            <h6 v-if="book.author == 'Nombre'">{{ name }} </h6>
+            <h6 v-else>{{ nick }}</h6>
+            <b-card-text>
+              {{ book.description}}
+            </b-card-text>
 
-          <b-badge v-for="(tag, idt) in book.tags" :key="idt" variant="secondary">{{ tag }}</b-badge>
+            <b-badge v-for="(tag, idt) in book.tags" :key="idt" variant="secondary">{{ tag }}</b-badge>
 
-          <!-- Publicado -->
-          <span>
-            <!-- <br> -->
-            <p class="h1 mb-2" v-if="book.published"><b-icon icon="eye"></b-icon></p>
-            <p class="h1 mb-2" v-else><b-icon icon="eye-slash"></b-icon></p>
-          </span>
+            <!-- Publicado -->
+            <span>
+              <!-- <br> -->
+              <p class="h1 mb-2" v-if="book.published"><b-icon icon="eye"></b-icon></p>
+              <p class="h1 mb-2" v-else><b-icon icon="eye-slash"></b-icon></p>
+            </span>
 
-          <!-- Botones -->
-          <div class="d-flex justify-content-end">
-            <b-button variant="danger" class="mr-auto" v-if="modifyID !== book.ID" @click="deleteBook(book.ID)">Eliminar</b-button>
-            <b-button variant="primary" id="modifyButton" @click="modifyBook(book)" v-show="modifyID !== book.ID">Modificar</b-button>
-          </div>
-        </b-card>
-      </div>
+            <!-- Botones -->
+            <div class="d-flex justify-content-end">
+              <b-button variant="danger" class="mr-auto" v-if="modifyID !== book.ID" @click="deleteBook(book.ID)">Eliminar</b-button>
+              <b-button variant="primary" id="modifyButton" @click="modifyBook(book)" v-show="modifyID !== book.ID">Modificar</b-button>
+            </div>
+          </b-card>
+        </div>
 
-      <!-- componente modificar libro -->
-      <div v-else>
-        <ModifyBook :bookAux="book" @delete="deleteBook(book.id)" @cancel="discardChangesBook" @save="saveChangesBook()"/>
+        <!-- componente modificar libro -->
+        <div v-else>
+          <ModifyBook :bookAux="book" @delete="deleteBook(book.id)" @cancel="discardChangesBook" @save="saveChangesBook()"/>
+        </div>
       </div>
     </div>
   </div>

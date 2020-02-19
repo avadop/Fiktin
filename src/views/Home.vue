@@ -1,24 +1,26 @@
 <template>
 <div class="home">
   <h1>HOME</h1>
-  <div v-for="(book, idx) in books" :key="idx">
-    <b-card
-      :title="book.title"
-      :img-src="book.cover"
-      img-alt="Image"
-      img-top
-      tag="article"
-      style="max-width: 20rem;"
-      class="mb-2"
-    >
-      <h6 v-if="book.author == 'Nombre'">{{ book.name }} </h6>
-      <h6 v-else>{{ book.nick }}</h6>
-      <b-card-text>
-        {{ book.description}}
-      </b-card-text>
+  <div class="row">
+    <div v-for="(book, idx) in books" :key="idx">
+      <b-card
+        :title="book.title"
+        :img-src="book.cover"
+        img-alt="Image"
+        img-top
+        tag="article"
+        style="max-width: 20rem;"
+        class="mb-2"
+      >
+        <h6 v-if="book.author == 'Nombre'">{{ book.name }} </h6>
+        <h6 v-else>{{ book.nick }}</h6>
+        <b-card-text>
+          {{ book.description}}
+        </b-card-text>
 
-      <b-badge v-for="(tag, idt) in book.tags" :key="idt" variant="secondary">{{ tag }}</b-badge>
-    </b-card>
+        <b-badge v-for="(tag, idt) in book.tags" :key="idt" variant="secondary">{{ tag }}</b-badge>
+      </b-card>
+    </div>
   </div>
 </div>
 </template>
