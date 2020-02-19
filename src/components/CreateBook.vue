@@ -1,88 +1,118 @@
 <template>
   <div class="create" >
-    <!-- titulo -->
-    <span>
-      Título: <input v-model="title" type="text" placeholder="Título del libro">
-    </span>
-    <br>
+    <b-card>
+      <h4>Crear libro</h4>
+      <b-container class="row">
+        <b-container class="col">
+          <!-- titulo -->
+          <b-container fluid class="row">
+            <b-row class="my-1">
+              <b-form-group>
+                <label>Título</label>
+                <b-form-input type="text" v-model="title" placeholder="Título del libro"></b-form-input>
+              </b-form-group>
+            </b-row>
+          </b-container>
 
-    <!-- autor -->
-    <span>
-      Autor:
-      <div class="etiquetas">
-        <input type="radio" id="nombre" value="Nombre" v-model="author">
-        <label for="one"> Nombre de usuario</label>
-        <br>
-        <input type="radio" id="nick" value="Nick" v-model="author">
-        <label for="two"> Nickname</label>
+          <!-- autor -->
+          <b-container fluid class="row">
+            <b-row class="my-1">
+              <b-form-group>
+                <label>Autor</label>
+                <b-form-group>
+                  <b-form-radio v-model="author" value="Nombre"> Nombre de usuario</b-form-radio>
+                  <b-form-radio v-model="author" value="Nick"> Nickname</b-form-radio>
+                </b-form-group>
+              </b-form-group>
+            </b-row>
+          </b-container>
+        </b-container>
+
+        <!-- portada -->
+        <b-container fluid class="col">
+          <b-row class="my-1">
+            <b-container sm="3">
+              <label>Portada</label>
+              <b-form-file
+                @change="onFileSelected"
+                class="my-2"
+                placeholder="Selecciona una imagen o arrastrala aquí..."
+                drop-placeholder="Arrastra aquí la imagen..."
+                accept="image/*"
+              ></b-form-file>
+            </b-container>
+          </b-row>
+          <b-row class="my-1">
+            <b-col sm="9">
+              <b-img :src="this.cover" fluid width="250%" alt="No has subido ninguna imagen"></b-img>
+              <b-button v-if="this.cover != null" class="my-2" variant="danger" @click="removeImg">Eliminar</b-button>
+            </b-col>
+          </b-row>
+        </b-container>
+      </b-container>
+
+      <b-container class="row">
+        <!-- etiquetas -->
+        <b-container fluid class="col">
+          <b-row class="my-1">
+            <b-form-group>
+              <label>Etiquetas</label>
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="accion_aventura_id" value="AccionAventura" v-model="tags">
+              <label class="custom-control-label" for="accion_aventura_id"> Acción y aventura</label>
+            </div>
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="ciencia_ficcion_id" value="CienciaFiccion" v-model="tags">
+              <label class="custom-control-label" for="ciencia_ficcion_id"> Ciencia ficción</label>
+            </div>
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="comedia_id" value="Comedia" v-model="tags">
+              <label class="custom-control-label" for="comedia_id"> Comedia</label>
+            </div>
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="crimen_id" value="Crimen" v-model="tags">
+              <label class="custom-control-label" for="crimen_id"> Crimen</label>
+            </div>
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="drama_id" value="Drama" v-model="tags">
+              <label class="custom-control-label" for="drama_id"> Drama</label>
+            </div>
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="fantasia_id" value="Fantasia" v-model="tags">
+              <label class="custom-control-label" for="fantasia_id"> Fantasia</label>
+            </div>
+            </b-form-group>
+          </b-row>
+        </b-container>
+
+        <!-- descripcion -->
+        <b-container fluid class="col">
+          <b-row class="my-1">
+            <b-container sm="3">
+              <label>Descripción</label>
+              <b-form-textarea
+                v-model="description"
+                placeholder="Descripción"
+                rows="3"
+                max-rows="6"
+              ></b-form-textarea>
+            </b-container>
+          </b-row>
+        </b-container>
+      </b-container>
+
+      <!-- botones -->
+      <div class="d-flex justify-content-end">
+        <!-- publicado -->
+        <div class="custom-control custom-checkbox my-4">
+          <input type="checkbox" class="custom-control-input" id="published_id" v-model="published">
+          <label class="custom-control-label" for="published_id"> Publicar</label>
+        </div>
+
+        <b-button variant="secondary" @click="cancelButton">Cancelar</b-button>
+        <b-button variant="success" @click="createButton" :disabled="this.UploadValue != 0 && this.UploadValue != 100">Crear libro</b-button>
       </div>
-    </span>
-    <br>
-
-    <!-- descripcion -->
-    <span>
-      Descripción:
-      <br>
-      <textarea class="model" v-model="description" placeholder="Descripción"/>
-      <br>
-    </span>
-
-    <!-- portada -->
-    <span>
-      Portada:
-      <br>
-      <img width="320" :src="this.cover">
-      <b-button v-if="this.cover != null" variant="danger" @click="removeImg">Eliminar</b-button>
-      <br>
-    </span>
-
-    <br>
-    <input type="file" name="cover" @change="onFileSelected" accept="image/*">
-    <br>
-
-    <!-- etiquetas -->
-    <span>
-      Etiquetas:
-      <div class="etiquetas">
-        <div class="custom-control custom-checkbox">
-          <input type="checkbox" class="custom-control-input" id="accion_aventura_id" value="AccionAventura" v-model="tags">
-          <label class="custom-control-label" for="accion_aventura_id"> Acción y aventura</label>
-        </div>
-        <div class="custom-control custom-checkbox">
-          <input type="checkbox" class="custom-control-input" id="ciencia_ficcion_id" value="CienciaFiccion" v-model="tags">
-          <label class="custom-control-label" for="ciencia_ficcion_id"> Ciencia ficción</label>
-        </div>
-        <div class="custom-control custom-checkbox">
-          <input type="checkbox" class="custom-control-input" id="comedia_id" value="Comedia" v-model="tags">
-          <label class="custom-control-label" for="comedia_id"> Comedia</label>
-        </div>
-        <div class="custom-control custom-checkbox">
-          <input type="checkbox" class="custom-control-input" id="crimen_id" value="Crimen" v-model="tags">
-          <label class="custom-control-label" for="crimen_id"> Crimen</label>
-        </div>
-        <div class="custom-control custom-checkbox">
-          <input type="checkbox" class="custom-control-input" id="drama_id" value="Drama" v-model="tags">
-          <label class="custom-control-label" for="drama_id"> Drama</label>
-        </div>
-        <div class="custom-control custom-checkbox">
-          <input type="checkbox" class="custom-control-input" id="fantasia_id" value="Fantasia" v-model="tags">
-          <label class="custom-control-label" for="fantasia_id"> Fantasia</label>
-        </div>
-      </div>
-      <br>
-    </span>
-
-    <!-- publicado -->
-    <span>
-      <div class="custom-control custom-checkbox">
-        <input type="checkbox" class="custom-control-input" id="published_id" v-model="published">
-        <label class="custom-control-label" for="published_id"> Publicar</label>
-      </div>
-    </span>
-
-    <!-- botones -->
-    <b-button variant="secondary" @click="cancelButton">Cancelar</b-button>
-    <b-button variant="success" @click="createButton" :disabled="this.UploadValue != 0 && this.UploadValue != 100">Crear libro</b-button>
+    </b-card>
   </div>
 </template>
 

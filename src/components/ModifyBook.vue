@@ -109,6 +109,7 @@
           <input type="checkbox" class="custom-control-input" id="published_modify_id" v-model="published">
           <label class="custom-control-label" for="published_modify_id"> Publicar</label>
         </div>
+
         <b-button variant="secondary" @click="cancelButton">Descartar</b-button>
         <b-button variant="success" @click="saveButton" :disabled="this.UploadValue != 0 && this.UploadValue != 100">Guardar</b-button>
       </div>

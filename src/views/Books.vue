@@ -4,7 +4,7 @@
     <b-button variant="primary" v-show = "!create" @click="createButton">Crear libro</b-button>
     <!-- <p v-if="books.length === 0">Todavia no tienes ningun libro creado. Pulsa <router-link to="/crearLibro">aquí</router-link> para crear uno.</p> -->
     <p>Tienes {{ books.length }} libros creados.</p>
-    <CreateBook v-show="create" id="createBook" class="booksBox" @cancel="discardChangesBook" @create="saveChangesBook()"/>
+    <CreateBook v-show="create" id="createBook" @cancel="discardChangesBook" @create="saveChangesBook()"/>
     <!-- lista de libros -->
     <div v-show="!create" v-for="(book, idx) in books" :key="idx">
       <div v-if="modifyID !== book.ID">
