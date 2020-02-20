@@ -19,6 +19,11 @@
         </b-card-text>
 
         <b-badge v-for="(tag, idt) in book.tags" :key="idt" variant="secondary">{{ tag }}</b-badge>
+
+        <!-- Botones -->
+        <div class="d-flex justify-content-end">
+          <b-button variant="danger"><b-icon icon="plus"></b-icon> Añadir a biblioteca</b-button>
+        </div>
       </b-card>
     </div>
   </div>
