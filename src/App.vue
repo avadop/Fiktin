@@ -8,7 +8,7 @@
 
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav>
-            <b-nav-item href="/books">Libros</b-nav-item>
+            <b-nav-item href="/books">Mis libros</b-nav-item>
             <b-nav-item href="/libraries">Bibliotecas</b-nav-item>
             <label class="my-2">Bonito, pero no funciona (por eso de que se cierra la sesión al recargar la página)</label>
           </b-navbar-nav>
@@ -42,7 +42,7 @@
     </div>
     <div id="nav" v-if="loggedIn">
       <router-link to="/home">Home</router-link> |
-      <router-link to="/books">Libros </router-link> |
+      <router-link to="/books">Mis libros </router-link> |
       <router-link to="/libraries">Bibliotecas </router-link> |
       <router-link to="/user">Usuario </router-link> |
       <router-link to="/" @click.native="confirmLogOut">Cerrar Sesion</router-link>

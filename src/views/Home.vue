@@ -14,11 +14,14 @@
       >
         <h6 v-if="book.author == 'Nombre'">{{ book.name }} </h6>
         <h6 v-else>{{ book.nick }}</h6>
-        <b-card-text>
+        <b-card-text v-if="book.description !== ''">
           {{ book.description}}
         </b-card-text>
 
         <b-badge v-for="(tag, idt) in book.tags" :key="idt" variant="secondary">{{ tag }}</b-badge>
+        <br>
+        <b-button variant="success" @click="addToLibraryButton(idx)">Añadir a bibliotecas</b-button>
+        <AddToLibraryModal v-if="showModal===idx" :bookId="primaryKeys[idx]" @add="addToLibrary" @cancel="addToLibraryButton"/>
       </b-card>
     </div>
   </div>
@@ -26,25 +29,32 @@
 </template>
 
 <script>
-import { booksCollection, userCollection } from '../firebase.js'
+import AddToLibraryModal from '@/components/modals/AddToLibraryModal.vue'
+import { booksCollection, userCollection, librariesCollection } from '../firebase.js'
 
 export default {
   name: 'homeBooksList',
+  components: {
+    AddToLibraryModal
+  },
   data () {
     return {
-      books: []
+      books: [],
+      primaryKeys: [],
+      showModal: -1
     }
   },
   mounted () {
     this.refresh()
   },
   methods: {
-    refresh () {
+    refresh: async function () {
       this.books = []
-      booksCollection.get().then(snapshot => {
+      await booksCollection.get().then(snapshot => {
         snapshot.forEach(doc1 => {
           if (doc1.data().published) {
             userCollection.doc(doc1.data().user_id).get().then(doc2 => {
+              this.primaryKeys.push(doc1.id)
               this.books.push({
                 author: doc1.data().author,
                 title: doc1.data().title,
@@ -59,6 +69,24 @@ export default {
           }
         })
       })
+    },
+    addToLibraryButton (idx) {
+      this.showModal = idx
+    },
+    addToLibrary: async function (selectedLibraries) {
+      for (var i = 0; i < selectedLibraries.length; ++i) {
+        var a
+        await librariesCollection.doc(selectedLibraries[i]).get().then(doc => {
+          if (doc.exists) {
+            a = doc.data().array_keys
+          }
+        })
+        a.push(this.primaryKeys[this.showModal])
+        librariesCollection.doc(selectedLibraries[i]).update({
+          array_keys: a
+        })
+      }
+      this.addToLibraryButton(-1)
     }
   }
 }
