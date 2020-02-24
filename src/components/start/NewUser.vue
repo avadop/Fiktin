@@ -52,12 +52,12 @@ export default {
     }
   },
   methods: {
-    addUser: function () {
+    addUser: async function () {
       if (!this.exists) { //  Si no existe user con el mismo nick, creamos usu
         var historial = this.newNick.toLowerCase() + '_historial'
         var obras = this.newNick.toLowerCase() + '_mis_obras'
 
-        userCollection.add({
+        let doc = await userCollection.add({
           nick: this.newNick,
           name: this.newName,
           email: this.newEmail,
@@ -70,14 +70,16 @@ export default {
           description: ('Aqui se guardaran los ultimos libros consultados de ' + this.newNick),
           privacy: 'private',
           nick: this.newNick,
-          array_keys: []
+          array_keys: [],
+          user_id: doc.id
         })
         librariesCollection.doc(obras).set({
           name: 'Mis obras',
           description: ('Aqui se guardaran tus libros escritos de ' + this.newNick),
           privacy: 'private',
           nick: this.newNick,
-          array_keys: []
+          array_keys: [],
+          user_id: doc.id
         })
         this.newNick = ''
         this.newPassword = ''

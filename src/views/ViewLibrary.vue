@@ -15,7 +15,7 @@
     <span v-else>
       <!-- Lista de libros -->
       <div v-for="(book, index) in booksList" :key="book.id">
-        <div class="booksListSuccess" v-if="book.found==1"> <!--En caso de libro encontrado-->
+        <div class="booksListSuccess" v-if="book.found==1"> <!--En caso de libro encontrado y publicado-->
           <span class="text">Nombre: {{ book.title }}</span>
           <br>
           <span>Autor: {{ book.author }}</span>
@@ -29,7 +29,17 @@
           <button class="buttonSuccess" @click="upButton(index)" :disabled="index===0">Subir</button>
           <button class="buttonSuccess" @click="downButton(index)" :disabled="index===booksList.length-1">Bajar</button>
         </div>
-        <div class="booksListError" v-else> <!--En caso de libro no encontrado-->
+        <div class="booksListError" v-else-if="book.found==2"> <!--En caso de libro encontrado pero no publicado-->
+          <span class="textError">Libro no publicado :(</span>
+          <br>
+          <span>El autor de este libro ha decidido no publicar su libro. Cuando lo publique, se podrá leer de forma normal</span>
+          <br><br>
+          <button class="buttonError" @click="deleteButton(index)">Eliminar</button>
+          <button class="buttonError" @click="upButton(index)" :disabled="index===0">Subir</button>
+          <button class="buttonError" @click="downButton(index)" :disabled="index===booksList.length-1">Bajar</button>
+          <span class="textInfo">(Código del libro: {{ book.id }})</span>
+        </div>
+        <div class="booksListError" v-else> <!--En caso de libro no encontrado o error-->
           <span class="textError">Libro no encontrado :(</span>
           <br>
           <span>Puede que este libro no se encuentre publicado o haya sido eliminado</span>
@@ -54,7 +64,10 @@ export default {
     name: String
   },
   /**
-   * booksList: Array con los datos de los libros.
+   * booksList: Array con los datos de los libros. Contiene, además de los datos del propio libro, el campo found para indicar si el libro existe y está publicado. Adquiere los valores:
+   *  0: El libro no existe en la base de datos
+   *  1: El libro existe y se encuentra publicado
+   *  2: El libro existe pero no se encuentra publicado
    * numberOfBooks: Indica la cantidad de libros presentes en la biblioteca. Tiene varios valores:
    *  -3: No se ha iniciado.
    *  -1: No se ha encontrado la biblioteca o se están cargando.
@@ -99,7 +112,7 @@ export default {
     /**
      * Refrescamos la página consultando la bbdd.
      * Para ello, extraemos las ids de los libros de la biblioteca y a continuación cogemos de cada uno sus datos.
-     * Después actualizamos el campo "numberOfBooks" al número de libros totales, incluídos aquellos que no se han encontrado.
+     * Después actualizamos el campo "numberOfBooks" al número de libros totales, incluídos aquellos que no se han encontrado o no se han publicado.
      * Se llama a este método cada vez que montamos la página y cada vez que hacemos un cambio en "referencesList".
      */
     refresh: async function () {
@@ -124,6 +137,11 @@ export default {
               title: doc.data().title,
               author: doc.data().author,
               description: doc.data().description
+            })
+          } else if (doc.exists) {
+            this.booksList.push({
+              found: 2,
+              id: a
             })
           } else {
             this.booksList.push({

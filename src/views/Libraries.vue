@@ -90,15 +90,15 @@ export default {
   methods: {
     /**
      * Refrescamos la página consultando la bbdd.
-     * Para ello, consultamos las bibliotecas del usuario con la sesión iniciada e insertamos sus atos en "librariesListAux".
+     * Para ello, consultamos las bibliotecas del usuario con la sesión iniciada e insertamos sus datos en "librariesListAux".
      * Después actualizamos el campo "numberOfLibraries" al número de bibliotecas totales.
      * Se llama a este método cada vez que montamos la página y cada vez que hacemos un cambio en "librariesList".
      */
     refresh: async function () {
       this.numberOfLibraries = -1
       let librariesListAux = []
-      var userNick = store.state.userNick
-      await librariesCollection.where('nick', '==', userNick).get().then(snapshot => {
+      var userID = store.state.userID
+      await librariesCollection.where('user_id', '==', userID).get().then(snapshot => {
         snapshot.forEach(doc => {
           // Comprobamos que no se agregue la biblioteca de la variable "searchNick"
           if (doc.id !== this.searchNick) {
@@ -181,12 +181,8 @@ export default {
      *  Actualiza la bbdd eliminando la biblioteca.
      *  Refresca la página.
      */
-    deleteLib (idAux) {
-      Promise.all(
-        this.librariesList.map(id => (
-          librariesCollection.doc(idAux).delete()
-        ))
-      )
+    async deleteLib (idAux) {
+      await librariesCollection.doc(idAux).delete()
       this.refresh()
     },
 

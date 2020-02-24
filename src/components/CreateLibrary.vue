@@ -104,11 +104,12 @@ export default {
         description: this.description,
         privacy: this.privacy,
         nick: userNick,
+        user_id: store.state.userID,
         array_keys: []
       }).then(doc => {
         libraryKey = doc.id
       })
-      this.updateUser(libraryKey)
+      await this.updateUser(libraryKey)
       this.$emit('create')
     },
     cancelButton () {
