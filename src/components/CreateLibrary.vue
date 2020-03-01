@@ -106,24 +106,11 @@ export default {
         nick: userNick,
         user_id: store.state.userID,
         array_keys: []
-      }).then(doc => {
-        libraryKey = doc.id
       })
-      await this.updateUser(libraryKey)
       this.$emit('create')
     },
     cancelButton () {
       this.$emit('cancel')
-    },
-    async updateUser (libraryKey) {
-      var userKey = store.state.userID
-      var userData
-      await userCollection.doc(userKey).get().then(doc => {
-        var data = doc.data()
-        data.libraries_keys.push(libraryKey)
-        userData = data
-      })
-      userCollection.doc(userKey).set(userData)
     }
   }
 }

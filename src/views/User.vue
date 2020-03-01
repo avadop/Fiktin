@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { userCollection, librariesCollection } from '../firebase.js'
+import { userCollection } from '../firebase.js'
 import ModifyUser from '@/components/ModifyUser.vue'
 import { store } from '../store/index.js'
 
@@ -50,12 +50,10 @@ export default {
       this.email = data.email
       this.name = data.name
       this.password = data.password
-      this.libraryKeys = data.libraries_keys
     })
   },
   methods: {
     deleteUser: function () {
-      this.deleteLibraries()
       userCollection.doc(this.userKey).delete()
       store.commit('logOut')
       this.$router.push('/')
@@ -71,11 +69,6 @@ export default {
     },
     newEmail (value) {
       this.email = value
-    },
-    deleteLibraries: async function () {
-      await this.libraryKeys.forEach(element => {
-        librariesCollection.doc(element).delete()
-      })
     }
   },
   computed: {

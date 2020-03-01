@@ -163,7 +163,6 @@ export default {
             handler: () => {
               this.$modal.hide('dialog') // Escondemos el modal
               this.deleteLib(idAux)
-              this.updateUser(idAux) // Actualizamos el perfil del usuario
             }
           },
           {
@@ -206,29 +205,6 @@ export default {
     modifyLibrary () {
       this.refresh()
       this.btnModifyLib(-1)
-    },
-
-    /**
-     * @param {String} libraryKey: ID en la bbdd de la biblioteca a eliminar.
-     * Al eliminar una biblioteca, esta se debe borrar de la lista de bibliotecas del usuario.
-     * De lo que se encarga este método es de borrar esa entrada en la lista.
-     * Para ello, sigue los siguientes pasos:
-     *  Recoge el nick del usuario.
-     *  Recoge en la bbdd los datos del usuario.
-     *  Busca en el campos "libraries_keys" (el campo que contiene las IDs de las bibliotecas de ese usuario) el campo "libraryKey".
-     *  Elimina el campo "libraryKey" de "libraries_keys".
-     *  Actualiza el usuario.
-     */
-    async updateUser (libraryKey) {
-      var userKey = store.state.userID
-      var userData
-      await userCollection.doc(userKey).get().then(doc => {
-        var data = doc.data()
-        var pos = data.libraries_keys.indexOf(libraryKey)
-        if (pos !== -1) { data.libraries_keys.splice(pos, 1) }
-        userData = data
-      })
-      userCollection.doc(userKey).set(userData)
     },
 
     /**
