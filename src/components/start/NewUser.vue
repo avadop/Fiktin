@@ -62,9 +62,9 @@ export default {
           name: this.newName,
           email: this.newEmail,
           password: this.newPassword,
-          nick_to_search: this.newNick.toLowerCase(),
-          libraries_keys: [historial, obras]
+          nick_to_search: this.newNick.toLowerCase()
         })
+
         librariesCollection.doc(historial).set({
           name: 'Historial',
           description: ('Aqui se guardaran los ultimos libros consultados de ' + this.newNick),
@@ -73,6 +73,7 @@ export default {
           array_keys: [],
           user_id: doc.id
         })
+        
         librariesCollection.doc(obras).set({
           name: 'Mis obras',
           description: ('Aqui se guardaran tus libros escritos de ' + this.newNick),
@@ -81,6 +82,7 @@ export default {
           array_keys: [],
           user_id: doc.id
         })
+
         this.newNick = ''
         this.newPassword = ''
         this.newEmail = ''
