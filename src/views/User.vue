@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { userCollection } from '../firebase.js'
+import { userCollection, librariesCollection } from '../firebase.js'
 import ModifyUser from '@/components/ModifyUser.vue'
 import { store } from '../store/index.js'
 
@@ -37,8 +37,7 @@ export default {
       name: '',
       password: '',
       edit: false,
-      userKey: '',
-      libraryKeys: []
+      userKey: ''
     }
   },
   mounted () {
@@ -52,7 +51,12 @@ export default {
     })
   },
   methods: {
-    deleteUser: function () {
+    deleteUser: async function () {
+      await librariesCollection.where('user_id', '==', this.userKey).get().then(snapshot => {
+        snapshot.forEach(doc => {
+          librariesCollection.doc(doc.id).delete()
+        })
+      })
       userCollection.doc(this.userKey).delete()
       store.commit('logOut')
       this.$router.push('/')
