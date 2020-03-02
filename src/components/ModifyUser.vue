@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { userCollection, librariesCollection } from '../firebase.js'
+import { userCollection } from '../firebase.js'
 
 export default {
   name: 'ModifyUser',
@@ -35,11 +35,13 @@ export default {
   },
   methods: {
     update: async function () {
-      // this.$emit('modifications', this.newName, this.newEmail)
+      userCollection.doc(this.userKey).update({
+        name: this.newName,
+        email: this.newEmail
+      })
       this.$emit('new-name', this.newName)
       this.$emit('new-email', this.newEmail)
       this.$emit('flip-edit')
-      
     }
   }
 }
