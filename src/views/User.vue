@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { userCollection, librariesCollection } from '../firebase.js'
+import { userCollection, librariesCollection, booksCollection } from '../firebase.js'
 import ModifyUser from '@/components/ModifyUser.vue'
 import { store } from '../store/index.js'
 
@@ -57,6 +57,12 @@ export default {
           librariesCollection.doc(doc.id).delete()
         })
       })
+      await booksCollection.where('user_id', '==', this.userKey)
+        .where('published', '==', false).get().then(snapshot => {
+          snapshot.forEach(doc => {
+            booksCollection.doc(doc.id).delete()
+          })
+        })
       userCollection.doc(this.userKey).delete()
       store.commit('logOut')
       this.$router.push('/')
