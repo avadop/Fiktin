@@ -9,8 +9,8 @@
             <button class="btn" @click="deleteUser"> Eliminar</button>
         </div>
         <div v-else>
-            <ModifyUser :email="email" :name="name" :userKey="userKey" @new-name="newName"
-            @new-email="newEmail" @flip-edit="switchEdit"/>
+            <ModifyUser :email="email" :name="name" :userKey="userKey" :password="password"
+            @new-name="newName" @new-email="newEmail" @flip-edit="switchEdit"/>
             <button class="btn" @click="switchEdit"> Cancelar</button>
         </div>
     </div>
