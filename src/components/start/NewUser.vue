@@ -54,41 +54,43 @@ export default {
   methods: {
     addUser: async function () {
       if (!this.exists) { //  Si no existe user con el mismo nick, creamos usu
-        var historial = this.newNick.toLowerCase() + '_historial'
-        var obras = this.newNick.toLowerCase() + '_mis_obras'
+        if (this.same_passwords) {
+          var historial = this.newNick.toLowerCase() + '_historial'
+          var obras = this.newNick.toLowerCase() + '_mis_obras'
 
-        let doc = await userCollection.add({
-          nick: this.newNick,
-          name: this.newName,
-          email: this.newEmail,
-          password: this.newPassword,
-          nick_to_search: this.newNick.toLowerCase()
-        })
+          let doc = await userCollection.add({
+            nick: this.newNick,
+            name: this.newName,
+            email: this.newEmail,
+            password: this.newPassword,
+            nick_to_search: this.newNick.toLowerCase()
+          })
 
-        librariesCollection.doc(historial).set({
-          name: 'Historial',
-          description: ('Aqui se guardaran los ultimos libros consultados de ' + this.newNick),
-          privacy: 'private',
-          nick: this.newNick,
-          array_keys: [],
-          user_id: doc.id
-        })
-        
-        librariesCollection.doc(obras).set({
-          name: 'Mis obras',
-          description: ('Aqui se guardaran tus libros escritos de ' + this.newNick),
-          privacy: 'private',
-          nick: this.newNick,
-          array_keys: [],
-          user_id: doc.id
-        })
-
-        this.newNick = ''
-        this.newPassword = ''
-        this.newEmail = ''
-        this.newName = ''
-        this.newPassword2 = ''
-        this.$emit('switch-create')
+          librariesCollection.doc(historial).set({
+            name: 'Historial',
+            description: ('Aqui se guardaran los ultimos libros consultados de ' + this.newNick),
+            privacy: 'private',
+            nick: this.newNick,
+            array_keys: [],
+            user_id: doc.id
+          })
+          librariesCollection.doc(obras).set({
+            name: 'Mis obras',
+            description: ('Aqui se guardaran tus libros escritos de ' + this.newNick),
+            privacy: 'private',
+            nick: this.newNick,
+            array_keys: [],
+            user_id: doc.id
+          })
+          this.newNick = ''
+          this.newPassword = ''
+          this.newEmail = ''
+          this.newName = ''
+          this.newPassword2 = ''
+          this.$emit('switch-create')
+        } else {
+          window.alert('Contraseñas diferentes')
+        }
       } else {
         window.alert('El usuario existe')
       }
