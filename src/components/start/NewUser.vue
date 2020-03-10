@@ -38,7 +38,7 @@
         </b-row>
       </b-container>
 
-      <button type="submit" class="btn" @click="addUser"> Crear</button>
+      <b-button variant="success" type="submit" @click="addUser"> Crear</b-button>
     </form>
   </div>
 </template>
@@ -156,10 +156,6 @@ export default {
 </script>
 
 <style>
-.btn {
-    margin: 5px;
-    font-size: 20px;
-}
 .red{
   border-color: crimson
 }

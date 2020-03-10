@@ -6,13 +6,13 @@
             <p>Nombre: {{ name }}</p>
             <p>email: {{ email }}</p>
             <b-img :src="this.picture" fluid width="250%" alt="No tienes imagen de perfil"></b-img>
-            <button class="btn" @click="switchEdit"> Modificar</button>
-            <button class="btn" @click="deleteUser"> Eliminar</button>
+            <b-button variant="primary" @click="switchEdit"> Modificar</b-button>
+            <b-button variant="danger" class="mr-auto" @click="deleteUser"> Eliminar</b-button>
         </div>
         <div v-else>
             <ModifyUser :email="email" :name="name" :userKey="userKey" :password="password" :picture="picture"
             @new-name="newName" @new-email="newEmail" @new-picture="newPicture" @flip-edit="switchEdit"/>
-            <button class="btn" @click="switchEdit"> Cancelar</button>
+            <b-button variant="primary" class="mr-auto" @click="switchEdit"> Cancelar</b-button>
         </div>
     </div>
     <div v-else>
@@ -92,7 +92,5 @@ export default {
 </script>
 
 <style>
-.btn {
-    margin: 10px;
-}
+
 </style>

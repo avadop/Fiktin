@@ -31,12 +31,12 @@
         <b-row class="my-1">
           <b-col sm="9">
             <b-img :src="this.newPicture" fluid width="250%" alt="No has subido ninguna imagen"></b-img>
-            <b-button v-if="this.newPicture != null" class="my-2" variant="danger" @click="removeImg">Eliminar</b-button>
+            <b-button v-if="this.newPicture != null" class="my-2" variant="danger" @click="removeImg">Eliminar imagen</b-button>
           </b-col>
         </b-row>
       </b-container>
 
-      <button class="btn" type="submit" @click="update"> Confirmar</button>
+      <b-button variant="success" type="submit" @click="update"> Confirmar</b-button>
     </form>
   </div>
 </template>
@@ -118,12 +118,3 @@ export default {
   }
 }
 </script>
-
-<style>
-.btn {
-    margin: 10px;
-}
-.red{
-  border-color: crimson
-}
-</style>

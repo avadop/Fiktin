@@ -5,7 +5,7 @@
       <input v-model="nick" type="text" placeholder="Maririta26"> <br>
       <label>Contraseña</label> <br>
       <input v-model="password" type="text" placeholder="123456"><br>
-    <button class="btn" @click="logIn"> Sign In</button>
+    <b-button variant="success" @click="logIn"> Sign In</b-button>
   </div>
 </template>
 
