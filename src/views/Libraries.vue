@@ -34,7 +34,7 @@
 // import router from '../router/index.js'
 import CreateLibrary from '@/components/CreateLibrary.vue'
 import ModifyLibrary from '@/components/ModifyLibrary.vue'
-import { librariesCollection, userCollection, connectedRef } from '../firebase.js'
+import { librariesCollection, connectedRef } from '../firebase.js'
 import { store } from '@/store/index.js'
 
 export default {

@@ -17,14 +17,35 @@
       <label>Confirmar contraseña</label>
       <br>
       <input v-model="newPassword2" type="text" :class="{red: !same_passwords}" placeholder="123456"><br>
-      <button type="submit" class="btn" @click="addUser"> Crear</button>
+
+      <!-- Imagen de perfil -->
+      <b-container fluid class="col">
+        <b-row class="my-1">
+          <b-container sm="3">
+            <label>Portada</label>
+            <b-form-file @change="onFileSelected"
+              class="my-2"
+              placeholder="Selecciona una imagen o arrastrala aquí..."
+              drop-placeholder="Arrastra aquí la imagen..."
+              accept="image/*"></b-form-file>
+          </b-container>
+        </b-row>
+        <b-row class="my-1">
+          <b-col sm="9">
+            <b-img :src="this.picture" fluid width="250%" alt="No has subido ninguna imagen"></b-img>
+            <b-button v-if="this.picture != null" class="my-2" variant="danger" @click="removeImg">Eliminar</b-button>
+          </b-col>
+        </b-row>
+      </b-container>
+
+      <b-button variant="success" type="submit" @click="addUser"> Crear</b-button>
     </form>
   </div>
 </template>
 
 <script>
 
-import { userCollection, librariesCollection } from '@/firebase.js'
+import { userCollection, librariesCollection, storageFirebase } from '@/firebase.js'
 
 export default {
   name: 'NewUser',
@@ -36,7 +57,11 @@ export default {
       newPassword: '',
       newPassword2: '',
       same_nick: [],
-      exists: false
+      exists: false,
+      picture: null,
+
+      selectedFile: null,
+      uploadValue: 0
     }
   },
   watch: {
@@ -52,6 +77,29 @@ export default {
     }
   },
   methods: {
+    removeImg () {
+      this.picture = null
+    },
+    onFileSelected (event) {
+      this.selectedFile = event.target.files[0]
+      this.onUpload()
+    },
+    onUpload () {
+      const storageRef = storageFirebase.ref(`/img/profile_pictures/${this.newNick.toLowerCase()}/${this.selectedFile.name}`)
+      const task = storageRef.put(this.selectedFile)
+      task.on('state_changed', snapshot => {
+        let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        this.uploadValue = percentage
+      }, error => { console.log(error.message) },
+      () => {
+        this.UploadValue = 100
+        // downloadURL
+        task.snapshot.ref.getDownloadURL().then((url) => {
+          this.picture = url
+          console.log(this.picture)
+        })
+      })
+    },
     addUser: async function () {
       if (!this.exists) { //  Si no existe user con el mismo nick, creamos usu
         if (this.same_passwords) {
@@ -63,6 +111,7 @@ export default {
             name: this.newName,
             email: this.newEmail,
             password: this.newPassword,
+            profile_picture: this.picture,
             nick_to_search: this.newNick.toLowerCase()
           })
 
@@ -74,6 +123,7 @@ export default {
             array_keys: [],
             user_id: doc.id
           })
+
           librariesCollection.doc(obras).set({
             name: 'Mis obras',
             description: ('Aqui se guardaran tus libros escritos de ' + this.newNick),
@@ -87,6 +137,7 @@ export default {
           this.newEmail = ''
           this.newName = ''
           this.newPassword2 = ''
+          this.picture = ''
           this.$emit('switch-create')
         } else {
           window.alert('Contraseñas diferentes')
@@ -105,10 +156,6 @@ export default {
 </script>
 
 <style>
-.btn {
-    margin: 5px;
-    font-size: 20px;
-}
 .red{
   border-color: crimson
 }

@@ -5,13 +5,14 @@
             <p>Nick: {{ nick }}</p>
             <p>Nombre: {{ name }}</p>
             <p>email: {{ email }}</p>
-            <button class="btn" @click="switchEdit"> Modificar</button>
-            <button class="btn" @click="deleteUser"> Eliminar</button>
+            <b-img :src="this.picture" fluid width="250%" alt="No tienes imagen de perfil"></b-img>
+            <b-button variant="primary" @click="switchEdit"> Modificar</b-button>
+            <b-button variant="danger" class="mr-auto" @click="deleteUser"> Eliminar</b-button>
         </div>
         <div v-else>
-            <ModifyUser :email="email" :name="name" :userKey="userKey" :password="password"
-            @new-name="newName" @new-email="newEmail" @flip-edit="switchEdit"/>
-            <button class="btn" @click="switchEdit"> Cancelar</button>
+            <ModifyUser :email="email" :name="name" :userKey="userKey" :password="password" :picture="picture"
+            @new-name="newName" @new-email="newEmail" @new-picture="newPicture" @flip-edit="switchEdit"/>
+            <b-button variant="primary" class="mr-auto" @click="switchEdit"> Cancelar</b-button>
         </div>
     </div>
     <div v-else>
@@ -37,7 +38,8 @@ export default {
       name: '',
       password: '',
       edit: false,
-      userKey: ''
+      userKey: '',
+      picture: ''
     }
   },
   mounted () {
@@ -48,6 +50,7 @@ export default {
       this.email = data.email
       this.name = data.name
       this.password = data.password
+      this.picture = data.profile_picture
     })
   },
   methods: {
@@ -73,8 +76,8 @@ export default {
     newName (value) {
       this.name = value
     },
-    newNick (value) {
-      this.nick = value
+    newPicture (value) {
+      this.picture = value
     },
     newEmail (value) {
       this.email = value
@@ -89,7 +92,5 @@ export default {
 </script>
 
 <style>
-.btn {
-    margin: 10px;
-}
+
 </style>
