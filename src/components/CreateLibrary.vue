@@ -25,7 +25,7 @@
 
 <script>
 
-import { librariesCollection, userCollection } from '../firebase.js'
+import { librariesCollection } from '../firebase.js'
 import { store } from '@/store/index.js'
 
 export default {
@@ -98,7 +98,6 @@ export default {
     },
     async createButton () {
       var userNick = store.state.userNick
-      var libraryKey
       await librariesCollection.add({
         name: this.name,
         description: this.description,
