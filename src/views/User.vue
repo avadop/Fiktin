@@ -5,6 +5,7 @@
             <p>Nick: {{ nick }}</p>
             <p>Nombre: {{ name }}</p>
             <p>email: {{ email }}</p>
+            <b-img :src="this.picture" fluid width="250%" alt="No tienes imagen de perfil"></b-img>
             <button class="btn" @click="switchEdit"> Modificar</button>
             <button class="btn" @click="deleteUser"> Eliminar</button>
         </div>
