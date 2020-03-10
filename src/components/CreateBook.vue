@@ -134,7 +134,7 @@ export default {
       userID: store.state.userID,
 
       selectedFile: null,
-      UploadValue: 0
+      uploadValue: 0
     }
   },
   methods: {
@@ -150,7 +150,7 @@ export default {
       const task = storageRef.put(this.selectedFile)
       task.on('state_changed', snapshot => {
         let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-        this.UploadValue = percentage
+        this.uploadValue = percentage
       }, error => { console.log(error.message) },
       () => {
         this.UploadValue = 100
