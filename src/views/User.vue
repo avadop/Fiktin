@@ -11,7 +11,7 @@
         </div>
         <div v-else>
             <ModifyUser :email="email" :name="name" :userKey="userKey" :password="password" :picture="picture"
-            @new-name="newName" @new-email="newEmail" @new-picture="newPicture" @flip-edit="switchEdit"/>
+            @new-name="newName" @new-email="newEmail" @new-password="newPassword" @new-picture="newPicture" @flip-edit="switchEdit"/>
             <b-button variant="primary" class="mr-auto" @click="switchEdit"> Cancelar</b-button>
         </div>
     </div>
@@ -81,6 +81,9 @@ export default {
     },
     newEmail (value) {
       this.email = value
+    },
+    newPassword (value) {
+      this.password = value
     }
   },
   computed: {
