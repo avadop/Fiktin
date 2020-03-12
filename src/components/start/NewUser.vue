@@ -16,12 +16,12 @@
       <input v-model="newEmail" type="text" placeholder="email@fiktin.com"> <br>
       <label>Contraseña</label>
       <br>
-      <input v-model="newPassword" type="text" placeholder="123456"><br>
+      <input v-model="newPassword" type="password" placeholder="123456"><br>
       <span v-if="minPassword" class="red_letter">Minimo 6 caracteres</span><br v-if="minPassword">
       <span v-if="maxPassword" class="red_letter">Contraseña muy larga</span><br v-if="maxPassword">
       <label>Confirmar contraseña</label>
       <br>
-      <input v-model="newPassword2" type="text" :class="{red_box: !samePasswords}" placeholder="123456"><br>
+      <input v-model="newPassword2" type="password" :class="{red_box: !samePasswords}" placeholder="123456"><br>
       <span v-if="!samePasswords" class="red_letter">Las contraseñas deben coincidir</span><br>
 
       <!-- Imagen de perfil -->
