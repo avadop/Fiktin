@@ -109,6 +109,7 @@ export default {
             })
             this.$emit('new-name', this.newName)
             this.$emit('new-email', this.newEmail)
+            this.$emit('new-password', this.newPassword)
             this.$emit('new-picture', this.newPicture)
             this.$emit('flip-edit')
           } else {
