@@ -110,45 +110,49 @@ export default {
       if (this.correctNick) {
         if (this.correctPassword) {
           if (!this.exists) { //  Si no existe user con el mismo nick, creamos usu
-            if (this.samePasswords) {
-              var historial = this.newNick.toLowerCase() + '_historial'
-              var obras = this.newNick.toLowerCase() + '_mis_obras'
+            if (this.validEmail) {
+              if (this.samePasswords) {
+                var historial = this.newNick.toLowerCase() + '_historial'
+                var obras = this.newNick.toLowerCase() + '_mis_obras'
 
-              let doc = await userCollection.add({
-                nick: this.newNick,
-                name: this.newName,
-                email: this.newEmail,
-                password: this.newPassword,
-                profile_picture: this.picture,
-                nick_to_search: this.newNick.toLowerCase()
-              })
+                let doc = await userCollection.add({
+                  nick: this.newNick,
+                  name: this.newName,
+                  email: this.newEmail,
+                  password: this.newPassword,
+                  profile_picture: this.picture,
+                  nick_to_search: this.newNick.toLowerCase()
+                })
 
-              librariesCollection.doc(historial).set({
-                name: 'Historial',
-                description: ('Aqui se guardaran los ultimos libros consultados de ' + this.newNick),
-                privacy: 'private',
-                nick: this.newNick,
-                array_keys: [],
-                user_id: doc.id
-              })
+                librariesCollection.doc(historial).set({
+                  name: 'Historial',
+                  description: ('Aqui se guardaran los ultimos libros consultados de ' + this.newNick),
+                  privacy: 'private',
+                  nick: this.newNick,
+                  array_keys: [],
+                  user_id: doc.id
+                })
 
-              librariesCollection.doc(obras).set({
-                name: 'Mis obras',
-                description: ('Aqui se guardaran tus libros escritos de ' + this.newNick),
-                privacy: 'private',
-                nick: this.newNick,
-                array_keys: [],
-                user_id: doc.id
-              })
-              this.newNick = ''
-              this.newPassword = ''
-              this.newEmail = ''
-              this.newName = ''
-              this.newPassword2 = ''
-              this.picture = ''
-              this.$emit('switch-create')
+                librariesCollection.doc(obras).set({
+                  name: 'Mis obras',
+                  description: ('Aqui se guardaran tus libros escritos de ' + this.newNick),
+                  privacy: 'private',
+                  nick: this.newNick,
+                  array_keys: [],
+                  user_id: doc.id
+                })
+                this.newNick = ''
+                this.newPassword = ''
+                this.newEmail = ''
+                this.newName = ''
+                this.newPassword2 = ''
+                this.picture = ''
+                this.$emit('switch-create')
+              } else {
+                window.alert('Contraseñas diferentes')
+              }
             } else {
-              window.alert('Contraseñas diferentes')
+              window.alert('Necesitas introducir un email valido')
             }
           } else {
             window.alert('El usuario existe')
@@ -184,6 +188,9 @@ export default {
     },
     correctNick () {
       return this.newNick.length >= 4 && this.newNick.length < 12
+    },
+    validEmail () {
+      return this.newEmail.includes('@') && this.newEmail.includes('.')
     }
   }
 }
