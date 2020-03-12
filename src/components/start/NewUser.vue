@@ -4,7 +4,10 @@
       <h4> Introduce tus datos para crear un usuario </h4>
       <label>Nickname</label>
       <br>
-      <input v-model="newNick" type="text" :class="{red: exists}" placeholder="Maririta26"> <br>
+      <input v-model="newNick" type="text" :class="{red_box: exists}" placeholder="Maririta26"><br>
+      <span v-if="exists" class="red_letter">Nick ya existe</span><br v-if="exists">
+      <span v-if="minNick && !exists">Minimo 4 caracteres</span><br v-if="minNick && !exists">
+      <span v-if="maxNick && !exists">Nick muy largo (max. 10 caracteres)</span><br v-if="maxNick && !exists">
       <label>Nombre</label>
       <br>
       <input v-model="newName" type="text" placeholder="Maria Martinez"> <br>
@@ -14,9 +17,12 @@
       <label>Contraseña</label>
       <br>
       <input v-model="newPassword" type="text" placeholder="123456"><br>
+      <span v-if="minPassword">Minimo 6 caracteres</span><br v-if="minPassword">
+      <span v-if="maxPassword">Contraseña muy larga</span><br v-if="maxPassword">
       <label>Confirmar contraseña</label>
       <br>
-      <input v-model="newPassword2" type="text" :class="{red: !same_passwords}" placeholder="123456"><br>
+      <input v-model="newPassword2" type="text" :class="{red_box: !samePasswords}" placeholder="123456"><br>
+      <span v-if="!samePasswords" class="red_letter">Las contraseñas deben coincidir</span><br>
 
       <!-- Imagen de perfil -->
       <b-container fluid class="col">
@@ -56,7 +62,7 @@ export default {
       newEmail: '',
       newPassword: '',
       newPassword2: '',
-      same_nick: [],
+      sameNick: [],
       exists: false,
       picture: null,
 
@@ -68,12 +74,12 @@ export default {
     newNick: {
       inmediate: true,
       handler (newNick) {
-        this.$bind('same_nick', userCollection.where('nick_to_search', '==', this.newNick.toLowerCase()).limit(1)).then(docs => {
+        this.$bind('sameNick', userCollection.where('nick_to_search', '==', this.newNick.toLowerCase()).limit(1)).then(docs => {
         })
       }
     },
-    same_nick: function () {
-      this.exists = !(this.same_nick.length === 0)
+    sameNick: function () {
+      this.exists = !(this.sameNick.length === 0)
     }
   },
   methods: {
@@ -101,62 +107,89 @@ export default {
       })
     },
     addUser: async function () {
-      if (!this.exists) { //  Si no existe user con el mismo nick, creamos usu
-        if (this.same_passwords) {
-          var historial = this.newNick.toLowerCase() + '_historial'
-          var obras = this.newNick.toLowerCase() + '_mis_obras'
+      if (!this.minNick && !this.maxNick) {
+        if (!this.minPassword && !this.maxPassword) {
+          if (!this.exists) { //  Si no existe user con el mismo nick, creamos usu
+            if (this.samePasswords) {
+              var historial = this.newNick.toLowerCase() + '_historial'
+              var obras = this.newNick.toLowerCase() + '_mis_obras'
 
-          let doc = await userCollection.add({
-            nick: this.newNick,
-            name: this.newName,
-            email: this.newEmail,
-            password: this.newPassword,
-            profile_picture: this.picture,
-            nick_to_search: this.newNick.toLowerCase()
-          })
+              let doc = await userCollection.add({
+                nick: this.newNick,
+                name: this.newName,
+                email: this.newEmail,
+                password: this.newPassword,
+                profile_picture: this.picture,
+                nick_to_search: this.newNick.toLowerCase()
+              })
 
-          librariesCollection.doc(historial).set({
-            name: 'Historial',
-            description: ('Aqui se guardaran los ultimos libros consultados de ' + this.newNick),
-            privacy: 'private',
-            nick: this.newNick,
-            array_keys: [],
-            user_id: doc.id
-          })
+              librariesCollection.doc(historial).set({
+                name: 'Historial',
+                description: ('Aqui se guardaran los ultimos libros consultados de ' + this.newNick),
+                privacy: 'private',
+                nick: this.newNick,
+                array_keys: [],
+                user_id: doc.id
+              })
 
-          librariesCollection.doc(obras).set({
-            name: 'Mis obras',
-            description: ('Aqui se guardaran tus libros escritos de ' + this.newNick),
-            privacy: 'private',
-            nick: this.newNick,
-            array_keys: [],
-            user_id: doc.id
-          })
-          this.newNick = ''
-          this.newPassword = ''
-          this.newEmail = ''
-          this.newName = ''
-          this.newPassword2 = ''
-          this.picture = ''
-          this.$emit('switch-create')
+              librariesCollection.doc(obras).set({
+                name: 'Mis obras',
+                description: ('Aqui se guardaran tus libros escritos de ' + this.newNick),
+                privacy: 'private',
+                nick: this.newNick,
+                array_keys: [],
+                user_id: doc.id
+              })
+              this.newNick = ''
+              this.newPassword = ''
+              this.newEmail = ''
+              this.newName = ''
+              this.newPassword2 = ''
+              this.picture = ''
+              this.$emit('switch-create')
+            } else {
+              window.alert('Contraseñas diferentes')
+            }
+          } else {
+            window.alert('El usuario existe')
+          }
         } else {
-          window.alert('Contraseñas diferentes')
+          window.alert('Longitud de contraseña inválida')
         }
       } else {
-        window.alert('El usuario existe')
+        window.alert('Longitud de nick inválida')
       }
     }
   },
   computed: {
-    same_passwords () {
+    samePasswords () {
       return this.newPassword === this.newPassword2
+    },
+    // Cumple el minimo requisito de password?
+    minPassword () {
+      return this.newPassword.length < 6 && this.newPassword.length > 0
+    },
+    // Se pasa del limite?
+    maxPassword () {
+      return this.newPassword.length > 12
+    },
+    minNick () {
+      return this.newNick.length < 4 && this.newNick.length > 0
+    },
+    maxNick () {
+      return this.newNick.length > 10
     }
   }
 }
 </script>
 
 <style>
-.red{
-  border-color: crimson
+.red_box{
+  border-style: solid;
+  border-width: 1px;
+  border-color: crimson;
+}
+.red_letter{
+  color: crimson;
 }
 </style>
