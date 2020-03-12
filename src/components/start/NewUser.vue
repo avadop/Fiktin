@@ -33,7 +33,7 @@
         <b-row class="my-1">
           <b-col sm="9">
             <b-img :src="this.picture" fluid width="250%" alt="No has subido ninguna imagen"></b-img>
-            <b-button v-if="this.picture != null" class="my-2" variant="danger" @click="removeImg">Eliminar</b-button>
+            <b-button v-if="this.picture != null" class="my-2" variant="danger" @click="removeImg">Eliminar imagen</b-button>
           </b-col>
         </b-row>
       </b-container>
