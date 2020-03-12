@@ -6,8 +6,8 @@
       <br>
       <input v-model="newNick" type="text" :class="{red_box: exists}" placeholder="Maririta26"><br>
       <span v-if="exists" class="red_letter">Nick ya existe</span><br v-if="exists">
-      <span v-if="minNick && !exists">Minimo 4 caracteres</span><br v-if="minNick && !exists">
-      <span v-if="maxNick && !exists">Nick muy largo (max. 10 caracteres)</span><br v-if="maxNick && !exists">
+      <span v-if="minNick && !exists" class="red_letter">Minimo 4 caracteres</span><br v-if="minNick && !exists">
+      <span v-if="maxNick && !exists" class="red_letter">Nick muy largo (max. 10 caracteres)</span><br v-if="maxNick && !exists">
       <label>Nombre</label>
       <br>
       <input v-model="newName" type="text" placeholder="Maria Martinez"> <br>
@@ -17,8 +17,8 @@
       <label>Contraseña</label>
       <br>
       <input v-model="newPassword" type="text" placeholder="123456"><br>
-      <span v-if="minPassword">Minimo 6 caracteres</span><br v-if="minPassword">
-      <span v-if="maxPassword">Contraseña muy larga</span><br v-if="maxPassword">
+      <span v-if="minPassword" class="red_letter">Minimo 6 caracteres</span><br v-if="minPassword">
+      <span v-if="maxPassword" class="red_letter">Contraseña muy larga</span><br v-if="maxPassword">
       <label>Confirmar contraseña</label>
       <br>
       <input v-model="newPassword2" type="text" :class="{red_box: !samePasswords}" placeholder="123456"><br>
@@ -184,10 +184,10 @@ export default {
       return this.newNick.length > 10
     },
     correctPassword () {
-      return this.newPassword.length >= 6 && this.newPassword.length < 12
+      return this.newPassword.length >= 6 && this.newPassword.length <= 12
     },
     correctNick () {
-      return this.newNick.length >= 4 && this.newNick.length < 12
+      return this.newNick.length >= 4 && this.newNick.length <= 10
     },
     validEmail () {
       return this.newEmail.includes('@') && this.newEmail.includes('.')

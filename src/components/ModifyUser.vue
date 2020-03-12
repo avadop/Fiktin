@@ -12,9 +12,12 @@
       <label>Contraseña</label>
       <br>
       <input v-model="newPassword" type="text" placeholder="123456"><br>
+      <span v-if="minPassword" class="red_letter">Minimo 6 caracteres</span><br v-if="minPassword">
+      <span v-if="maxPassword" class="red_letter">Contraseña muy larga</span><br v-if="maxPassword">
       <label>Confirmar contraseña</label>
       <br>
-      <input v-model="newPassword2" type="text" :class="{red: !same_passwords}" placeholder="123456"><br>
+      <input v-model="newPassword2" type="text" :class="{red_box: !samePasswords}" placeholder="123456"><br>
+      <span v-if="!samePasswords" class="red_letter">Las contraseñas deben coincidir</span><br>
 
       <!-- Imagen de perfil -->
       <b-container fluid class="col">
@@ -95,26 +98,59 @@ export default {
       })
     },
     update: async function () {
-      if (this.same_passwords) {
-        userCollection.doc(this.userKey).update({
-          name: this.newName,
-          email: this.newEmail,
-          password: this.newPassword,
-          profile_picture: this.newPicture
-        })
-        this.$emit('new-name', this.newName)
-        this.$emit('new-email', this.newEmail)
-        this.$emit('new-picture', this.newPicture)
-        this.$emit('flip-edit')
+      if (this.correctPassword) {
+        if (this.validEmail) {
+          if (this.samePasswords) {
+            userCollection.doc(this.userKey).update({
+              name: this.newName,
+              email: this.newEmail,
+              password: this.newPassword,
+              profile_picture: this.newPicture
+            })
+            this.$emit('new-name', this.newName)
+            this.$emit('new-email', this.newEmail)
+            this.$emit('new-picture', this.newPicture)
+            this.$emit('flip-edit')
+          } else {
+            window.alert('Contraseñas diferentes')
+          }
+        } else {
+          window.alert('Necesitas introducir un email valido')
+        }
       } else {
-        window.alert('Contraseñas diferentes')
+        window.alert('Longitud de contraseña inválida')
       }
     }
   },
   computed: {
-    same_passwords () {
+    samePasswords () {
       return this.newPassword === this.newPassword2
+    },
+    // Cumple el minimo requisito de password?
+    minPassword () {
+      return this.newPassword.length < 6 && this.newPassword.length > 0
+    },
+    // Se pasa del limite?
+    maxPassword () {
+      return this.newPassword.length > 12
+    },
+    validEmail () {
+      return this.newEmail.includes('@') && this.newEmail.includes('.')
+    },
+    correctPassword () {
+      return this.newPassword.length >= 6 && this.newPassword.length <= 12
     }
   }
 }
 </script>
+
+<style>
+.red_box{
+  border-style: solid;
+  border-width: 1px;
+  border-color: crimson;
+}
+.red_letter{
+  color: crimson;
+}
+</style>
