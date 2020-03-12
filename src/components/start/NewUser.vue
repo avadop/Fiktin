@@ -107,8 +107,8 @@ export default {
       })
     },
     addUser: async function () {
-      if (!this.minNick && !this.maxNick) {
-        if (!this.minPassword && !this.maxPassword) {
+      if (this.correctNick) {
+        if (this.correctPassword) {
           if (!this.exists) { //  Si no existe user con el mismo nick, creamos usu
             if (this.samePasswords) {
               var historial = this.newNick.toLowerCase() + '_historial'
@@ -178,6 +178,12 @@ export default {
     },
     maxNick () {
       return this.newNick.length > 10
+    },
+    correctPassword () {
+      return this.newPassword.length >= 6 && this.newPassword.length < 12
+    },
+    correctNick () {
+      return this.newNick.length >= 4 && this.newNick.length < 12
     }
   }
 }
