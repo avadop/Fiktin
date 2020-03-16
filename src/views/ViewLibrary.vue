@@ -6,7 +6,7 @@
     <span class="title">{{ name }} </span>
     <span class="nBooks" v-if="numberOfBooks===-1"></span> <!--No mostramos nada-->
     <span class="nBooks" v-else-if="numberOfBooks===1"> {{ numberOfBooks }} libro</span>
-    <span class="nBooks" v-else> {{ numberOfBooks }} libros</span>
+    <span class="nBooks" v-else-if="numberOfBooks>1"> {{ numberOfBooks }} libros</span>
     <br><br>
     <!-- Comprobamos conexión -->
     <h3 v-if="this.numberOfBooks === 0 && this.internetConnection === 0">No hay libros en esta biblioteca</h3>
@@ -32,7 +32,7 @@
         <div class="booksListError" v-else-if="book.found==2"> <!--En caso de libro encontrado pero no publicado-->
           <span class="textError">Libro no publicado :(</span>
           <br>
-          <span>El autor de este libro ha decidido no publicar su libro. Cuando lo publique, se podrá leer de forma normal</span>
+          <span>El autor de este libro ha decidido no publicarlo. Se podrá leer cuando se publique.</span>
           <br><br>
           <button class="buttonError" @click="deleteButton(index)">Eliminar</button>
           <button class="buttonError" @click="upButton(index)" :disabled="index===0">Subir</button>
@@ -42,7 +42,7 @@
         <div class="booksListError" v-else> <!--En caso de libro no encontrado o error-->
           <span class="textError">Libro no encontrado :(</span>
           <br>
-          <span>Puede que este libro no se encuentre publicado o haya sido eliminado</span>
+          <span>No se encuentra este libro, quizá haya sido eliminado.</span>
           <br><br>
           <button class="buttonError" @click="deleteButton(index)">Eliminar</button>
           <button class="buttonError" @click="upButton(index)" :disabled="index===0">Subir</button>

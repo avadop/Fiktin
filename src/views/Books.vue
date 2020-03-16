@@ -110,8 +110,8 @@ export default {
         })
       })
     },
-    deleteBook: function (ID) {
-      booksCollection.doc(ID).delete()
+    deleteBook: async function (ID) {
+      await booksCollection.doc(ID).delete()
       this.refresh()
     },
     modifyBook: function (book) {

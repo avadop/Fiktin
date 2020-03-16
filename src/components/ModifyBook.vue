@@ -162,15 +162,14 @@ export default {
         })
       })
     },
-    saveButton () {
-      booksCollection.doc(this.bookAux.ID).set({
+    async saveButton () {
+      await booksCollection.doc(this.bookAux.ID).update({
         title: this.title,
         author: this.author,
         tags: this.tags,
         description: this.description,
         cover: this.cover,
-        published: this.published,
-        user_id: this.userID
+        published: this.published
       })
       this.$emit('save')
     },
