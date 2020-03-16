@@ -5,14 +5,14 @@
             <p>Nick: {{ nick }}</p>
             <p>Nombre: {{ name }}</p>
             <p>email: {{ email }}</p>
-            <button class="btn" @click="switchEdit"> Modificar</button>
-            <button class="btn" @click="deleteUser"> Eliminar</button>
+            <b-img :src="this.picture" fluid width="250%" alt="No tienes imagen de perfil"></b-img>
+            <b-button variant="primary" @click="switchEdit"> Modificar</b-button>
+            <b-button variant="danger" class="mr-auto" @click="deleteUser"> Eliminar</b-button>
         </div>
         <div v-else>
-            <ModifyUser :email="email" :nick="nick" :name="name" :userKey="userKey" @new-name="newName"
-            @new-nick="newNick" @new-email="newEmail" @flip-edit="switchEdit"/>
-            <!-- <ModifyUser :email="email" :nick="nick" :name="name" @updateData="modifications"/> -->
-            <button class="btn" @click="switchEdit"> Cancelar</button>
+            <ModifyUser :email="email" :name="name" :userKey="userKey" :password="password" :picture="picture"
+            @new-name="newName" @new-email="newEmail" @new-password="newPassword" @new-picture="newPicture" @flip-edit="switchEdit"/>
+            <b-button variant="primary" class="mr-auto" @click="switchEdit"> Cancelar</b-button>
         </div>
     </div>
     <div v-else>
@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { userCollection, librariesCollection } from '../firebase.js'
+import { userCollection, librariesCollection, booksCollection } from '../firebase.js'
 import ModifyUser from '@/components/ModifyUser.vue'
 import { store } from '../store/index.js'
 
@@ -39,7 +39,7 @@ export default {
       password: '',
       edit: false,
       userKey: '',
-      libraryKeys: []
+      picture: ''
     }
   },
   mounted () {
@@ -50,12 +50,22 @@ export default {
       this.email = data.email
       this.name = data.name
       this.password = data.password
-      this.libraryKeys = data.libraries_keys
+      this.picture = data.profile_picture
     })
   },
   methods: {
-    deleteUser: function () {
-      this.deleteLibraries()
+    deleteUser: async function () {
+      await librariesCollection.where('user_id', '==', this.userKey).get().then(snapshot => {
+        snapshot.forEach(doc => {
+          librariesCollection.doc(doc.id).delete()
+        })
+      })
+      await booksCollection.where('user_id', '==', this.userKey)
+        .where('published', '==', false).get().then(snapshot => {
+          snapshot.forEach(doc => {
+            booksCollection.doc(doc.id).delete()
+          })
+        })
       userCollection.doc(this.userKey).delete()
       store.commit('logOut')
       this.$router.push('/')
@@ -66,16 +76,14 @@ export default {
     newName (value) {
       this.name = value
     },
-    newNick (value) {
-      this.nick = value
+    newPicture (value) {
+      this.picture = value
     },
     newEmail (value) {
       this.email = value
     },
-    deleteLibraries: async function () {
-      await this.libraryKeys.forEach(element => {
-        librariesCollection.doc(element).delete()
-      })
+    newPassword (value) {
+      this.password = value
     }
   },
   computed: {
@@ -87,7 +95,5 @@ export default {
 </script>
 
 <style>
-.btn {
-    margin: 10px;
-}
+
 </style>

@@ -6,11 +6,11 @@
     <div id="options-menu">
       <div v-if="!create">
         <LogIn @loggedIn="logIn"/>
-        <button class="btn" @click="switchCreate"> Crear Usuario</button>
+        <b-button variant="primary" @click="switchCreate"> Crear Usuario</b-button>
       </div>
       <div v-else>
         <NewUser @switch-create="switchCreate"/>
-        <button class="btn" @click="switchCreate"> Log In</button>
+        <b-button variant="primary" @click="switchCreate"> Log In</b-button>
       </div>
     </div>
   <!-- </modal> -->

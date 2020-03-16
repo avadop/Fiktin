@@ -1,123 +1,157 @@
 <template>
   <div class="user">
     <form >
-      <p> Cambia los datos que desees modificar </p>
-      <label>Nickname</label>
       <br>
-      <input v-model="newNick" type="text" :class="{red: exists}" placeholder="Maririta26"> <br>
+      <p> Cambia los datos que desees modificar </p>
       <label>Nombre</label>
       <br>
       <input v-model="newName" type="text" placeholder="Maria Martinez"> <br>
       <label>Email</label>
       <br>
       <input v-model="newEmail" type="text" placeholder="email@fiktin.com"> <br>
-      <button class="btn" type="submit" @click="update"> Confirmar</button>
+      <label>Contraseña</label>
+      <br>
+      <input v-model="newPassword" type="password" placeholder="123456"><br>
+      <span v-if="minPassword" class="red_letter">Minimo 6 caracteres</span><br v-if="minPassword">
+      <span v-if="maxPassword" class="red_letter">Contraseña muy larga</span><br v-if="maxPassword">
+      <label>Confirmar contraseña</label>
+      <br>
+      <input v-model="newPassword2" type="password" :class="{red_box: !samePasswords}" placeholder="123456"><br>
+      <span v-if="!samePasswords" class="red_letter">Las contraseñas deben coincidir</span><br>
+
+      <!-- Imagen de perfil -->
+      <b-container fluid class="col">
+        <b-row class="my-1">
+          <b-container sm="3">
+            <label>Portada</label>
+            <b-form-file @change="onFileSelected"
+              class="my-2"
+              placeholder="Selecciona una imagen o arrastrala aquí..."
+              drop-placeholder="Arrastra aquí la imagen..."
+              accept="image/*"></b-form-file>
+          </b-container>
+        </b-row>
+        <b-row class="my-1">
+          <b-col sm="9">
+            <b-img :src="this.newPicture" fluid width="250%" alt="No has subido ninguna imagen"></b-img>
+            <b-button v-if="this.newPicture != null" class="my-2" variant="danger" @click="removeImg">Eliminar imagen</b-button>
+          </b-col>
+        </b-row>
+      </b-container>
+
+      <b-button variant="success" type="submit" @click="update"> Confirmar</b-button>
     </form>
   </div>
 </template>
 
 <script>
-import { userCollection, librariesCollection } from '../firebase.js'
+import { userCollection, storageFirebase } from '../firebase.js'
+import { store } from '@/store/index.js'
 
 export default {
   name: 'ModifyUser',
   data () {
     return {
-      same_nick: [],
-      exists: false,
-      newNick: '',
       newName: '',
-      newEmail: ''
+      newEmail: '',
+      newPassword: '',
+      newPassword2: '',
+      newPicture: ''
     }
   },
   props: {
     userKey: String,
-    nick: String,
     email: String,
-    name: String
+    name: String,
+    password: String,
+    picture: String
   },
   created () {
-    this.newNick = this.nick
     this.newName = this.name
     this.newEmail = this.email
-  },
-  watch: {
-    newNick: {
-      inmediate: true,
-      handler (newNick) {
-        this.$bind('same_nick', userCollection.where('nick_to_search', '==', this.newNick.toLowerCase()).limit(1)).then(docs => {
-        })
-      }
-    },
-    same_nick: function () {
-      this.exists = !(this.same_nick.length === 0) && !(this.same_nick[0].nick_to_search === this.newNick.toLowerCase())
-    }
+    this.newPassword = this.password
+    this.newPassword2 = this.password
+    this.newPicture = this.picture
   },
   methods: {
-    update: async function () {
-      if (!this.exists) {
-        //  Si son distintos hay que updatear las libraries
-        if (this.newNick !== this.nick) {
-          await this.updateLibraries()
-        }
-        var historial = this.newNick.toLowerCase() + '_historial'
-        var obras = this.newNick.toLowerCase() + '_mis_obras'
-        userCollection.doc(this.userKey).update({
-          name: this.newName,
-          nick: this.newNick,
-          email: this.newEmail,
-          nick_to_search: this.newNick.toLowerCase(),
-          libraries_keys: [historial, obras]
-        })
-        // this.$emit('modifications', this.newNick, this.newName, this.newEmail)
-        this.$emit('new-name', this.newName)
-        this.$emit('new-nick', this.newNick)
-        this.$emit('new-email', this.newEmail)
-        this.$emit('flip-edit')
-      } else {
-        window.alert('Nombre de usuario ya en uso')
-      }
+    removeImg () {
+      this.newPicture = null
     },
-    updateLibraries: async function () {
-      var libraries
-      await userCollection.doc(this.userKey).get().then(doc => {
-        const data = doc.data()
-        libraries = data.libraries_keys
+    onFileSelected (event) {
+      this.selectedFile = event.target.files[0]
+      this.onUpload()
+    },
+    onUpload () {
+      const storageRef = storageFirebase.ref(`/img/profile_pictures/${store.state.userNick}/${this.selectedFile.name}`)
+      const task = storageRef.put(this.selectedFile)
+      task.on('state_changed', snapshot => {
+        let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        this.UploadValue = percentage
+      }, error => { console.log(error.message) },
+      () => {
+        this.UploadValue = 100
+        // downloadURL
+        task.snapshot.ref.getDownloadURL().then((url) => {
+          this.newPicture = url
+          console.log(this.newPicture)
+        })
       })
-      var historial = '_historial'
-      var obras = '_mis_obras'
-      libraries.forEach(async element => {
-        if ((element === (this.nick.toLowerCase() + historial)) || (element === (this.nick.toLowerCase() + obras))) {
-          var libData
-          await librariesCollection.doc(element).get().then(doc => {
-            var data = doc.data()
-            data.nick = this.newNick
-            libData = data
-          })
-          librariesCollection.doc(element).delete()
-          if (element === this.nick.toLowerCase() + historial) {
-            librariesCollection.doc(this.newNick.toLowerCase() + historial).set(libData)
+    },
+    update: async function () {
+      if (this.correctPassword) {
+        if (this.validEmail) {
+          if (this.samePasswords) {
+            userCollection.doc(this.userKey).update({
+              name: this.newName,
+              email: this.newEmail,
+              password: this.newPassword,
+              profile_picture: this.newPicture
+            })
+            this.$emit('new-name', this.newName)
+            this.$emit('new-email', this.newEmail)
+            this.$emit('new-password', this.newPassword)
+            this.$emit('new-picture', this.newPicture)
+            this.$emit('flip-edit')
           } else {
-            librariesCollection.doc(this.newNick.toLowerCase() + obras).set(libData)
+            window.alert('Contraseñas diferentes')
           }
         } else {
-          librariesCollection.doc(element).update({
-            nick: this.newNick
-          })
+          window.alert('Necesitas introducir un email valido')
         }
-      })
+      } else {
+        window.alert('Longitud de contraseña inválida')
+      }
     }
-    // updateBooks: async function () {
-    // }
+  },
+  computed: {
+    samePasswords () {
+      return this.newPassword === this.newPassword2
+    },
+    // Cumple el minimo requisito de password?
+    minPassword () {
+      return this.newPassword.length < 6 && this.newPassword.length > 0
+    },
+    // Se pasa del limite?
+    maxPassword () {
+      return this.newPassword.length > 12
+    },
+    validEmail () {
+      return this.newEmail.includes('@') && this.newEmail.includes('.')
+    },
+    correctPassword () {
+      return this.newPassword.length >= 6 && this.newPassword.length <= 12
+    }
   }
 }
 </script>
 
 <style>
-.btn {
-    margin: 10px;
+.red_box{
+  border-style: solid;
+  border-width: 1px;
+  border-color: crimson;
 }
-.red{
-  border-color: crimson
+.red_letter{
+  color: crimson;
 }
 </style>
