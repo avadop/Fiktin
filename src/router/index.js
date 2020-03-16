@@ -6,6 +6,7 @@ import Home from '../views/Home.vue'
 import Books from '../views/Books.vue'
 import Libraries from '../views/Libraries.vue'
 import ViewLibrary from '../views/ViewLibrary.vue'
+import EditBook from '../views/editBooks/editBook.vue'
 // import { userInfo } from 'os'
 
 // bootstrap
@@ -44,6 +45,12 @@ const routes = [
     path: '/viewLibrary',
     name: 'viewLibrary',
     component: ViewLibrary,
+    props: true
+  },
+  {
+    path: '/editBooks/editBook',
+    name: 'editBook',
+    component: EditBook,
     props: true
   }
 ]

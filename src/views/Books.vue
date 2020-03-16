@@ -15,8 +15,9 @@
             img-alt="Image"
             img-top
             tag="article"
-            style="max-width: 20rem;"
+            style="max-width: 20rem; cursor: pointer;"
             class="mb-2"
+            @click="openBook(book)"
           >
             <h6 v-if="book.author == 'Nombre'">{{ name }} </h6>
             <h6 v-else>{{ nick }}</h6>
@@ -146,6 +147,9 @@ export default {
         })
       }
       this.addToLibraryButton(-1)
+    },
+    openBook (book) {
+      this.$router.push({ name: 'editBook', params: { book: book } })
     }
   }
 }
