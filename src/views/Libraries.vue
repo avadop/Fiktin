@@ -8,7 +8,7 @@
     <h3 v-else-if="this.numberOfLibraries === -1 && this.internetConnection === 0">Cargando</h3>
     <h3 v-else-if="this.internetConnection === -1">vaya, parece que no tienes conexión y no podemos mostrar tus bibliotecas<br>Revisa tu conexión y actualiza la página para solucionar el problema</h3>
     <span v-else> <!-- Aunque no haya conexión, si se han cargado las librerías se siguen mostrando -->
-      <div class="librariesList" v-for="(library, index) in librariesList" :key="library.name" @click="viewLibrary(library.id, library.name, library.numberOfBooks)">
+      <div class="librariesList" v-for="(library, index) in librariesList" :key="library.name" @click="viewLibrary(library.id, library.name, library.numberOfBooks, index)">
         <span class="text">Nombre: {{ library.name }}</span>
         <br>
         <span v-if="library.description!==''">Descripción: {{ library.description }}</span>
@@ -213,8 +213,8 @@ export default {
      * @param {String} nBooks: Cantidad de libros de la biblioteca a eliminar.
      * Llama a la vista "ViewLibrary" para mostrar el contenido de la biblioteca seleccionada
      */
-    viewLibrary (id, name, nBooks) {
-      if (this.modifying === -1 && !this.opened) this.$router.push({ name: 'viewLibrary', params: { libID: id, name: name, numberOfBooks: nBooks } })
+    viewLibrary (id, name, nBooks, index) {
+      if (this.modifying === -1 && !this.opened) this.$router.push({ name: 'viewLibrary', params: { libID: id, name: name, numberOfBooks: nBooks, idx: index } })
     }
   }
 }

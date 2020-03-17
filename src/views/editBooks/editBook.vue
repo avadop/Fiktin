@@ -14,7 +14,7 @@ export default {
   },
   methods: {
     goBack () {
-      this.$router.go(-1)
+      this.$router.replace({ name: 'readBook', params: { book: this.book } })
     }
   }
 }

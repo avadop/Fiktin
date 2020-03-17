@@ -17,7 +17,7 @@
             tag="article"
             style="max-width: 20rem; cursor: pointer;"
             class="mb-2"
-            @click="openBook(book)"
+            @click="openBook(book, idx)"
           >
             <h6 v-if="book.author == 'Nombre'">{{ name }} </h6>
             <h6 v-else>{{ nick }}</h6>
@@ -36,12 +36,12 @@
 
             <!-- Botones -->
             <div class="d-flex justify-content-end">
-              <b-button variant="danger" class="mr-auto" v-if="modifyID !== book.ID" @click="deleteBook(book.ID)">Eliminar</b-button>
-              <b-button variant="primary" id="modifyButton" @click="modifyBook(book)" v-show="modifyID !== book.ID">Modificar</b-button>
+              <b-button variant="danger" class="mr-auto" v-if="modifyID !== book.ID" @click.stop="deleteBook(book.ID)">Eliminar</b-button>
+              <b-button variant="primary" id="modifyButton" @click.stop="modifyBook(book)" v-show="modifyID !== book.ID">Modificar</b-button>
             </div>
 
             <!-- Añadir libro a bibliotecas -->
-            <b-button variant="success" @click="addToLibraryButton(idx)">Añadir a bibliotecas</b-button>
+            <b-button variant="success" @click.stop="addToLibraryButton(idx)">Añadir a bibliotecas</b-button>
             <AddToLibraryModal v-if="showModal===idx" :bookId="primaryKeys[idx]" @add="addToLibrary" @cancel="addToLibraryButton"/>
           </b-card>
         </div>
@@ -148,8 +148,8 @@ export default {
       }
       this.addToLibraryButton(-1)
     },
-    openBook (book) {
-      this.$router.push({ name: 'editBook', params: { book: book } })
+    openBook (book, idx) {
+      this.$router.push({ name: 'readBook', params: { book: book, bookID: this.primaryKeys[idx] } })
     }
   }
 }

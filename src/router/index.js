@@ -7,6 +7,7 @@ import Books from '../views/Books.vue'
 import Libraries from '../views/Libraries.vue'
 import ViewLibrary from '../views/ViewLibrary.vue'
 import EditBook from '../views/editBooks/editBook.vue'
+import ReadBook from '../views/editBooks/readBook.vue'
 // import { userInfo } from 'os'
 
 // bootstrap
@@ -45,6 +46,12 @@ const routes = [
     path: '/viewLibrary',
     name: 'viewLibrary',
     component: ViewLibrary,
+    props: true
+  },
+  {
+    path: '/editBooks/readBook',
+    name: 'readBook',
+    component: ReadBook,
     props: true
   },
   {

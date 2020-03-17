@@ -11,7 +11,7 @@
         tag="article"
         style="max-width: 20rem; cursor: pointer;"
         class="mb-2"
-        @click="openBook(book)"
+        @click="openBook(book, idx)"
       >
         <h6 v-if="book.author == 'Nombre'">{{ book.name }} </h6>
         <h6 v-else>{{ book.nick }}</h6>
@@ -21,7 +21,7 @@
 
         <b-badge v-for="(tag, idt) in book.tags" :key="idt" variant="secondary">{{ tag }}</b-badge>
         <br>
-        <b-button variant="success" @click="addToLibraryButton(idx)">Añadir a bibliotecas</b-button>
+        <b-button variant="success" @click.stop="addToLibraryButton(idx)">Añadir a bibliotecas</b-button>
         <AddToLibraryModal v-if="showModal===idx" :bookId="primaryKeys[idx]" @add="addToLibrary" @cancel="addToLibraryButton"/>
       </b-card>
     </div>
@@ -62,7 +62,7 @@ export default {
                 description: doc1.data().description,
                 cover: doc1.data().cover,
                 tags: doc1.data().tags,
-                ID: doc1.data().user_id,
+                userID: doc1.data().user_id,
                 nick: doc2.data().nick,
                 name: doc2.data().name
               })
@@ -89,8 +89,8 @@ export default {
       }
       this.addToLibraryButton(-1)
     },
-    openBook (book) {
-      this.$router.push({ name: 'editBook', params: { book: book } })
+    openBook (book, idx) {
+      this.$router.push({ name: 'readBook', params: { book: book, bookID: this.primaryKeys[idx] } })
     }
   }
 }

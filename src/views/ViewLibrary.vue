@@ -14,8 +14,8 @@
     <h3 v-else-if="this.internetConnection === -1">vaya, parece que no tienes conexión y no podemos mostrar los libros de esta biblioteca<br>Revisa tu conexión y actualiza la página para solucionar el problema</h3>
     <span v-else>
       <!-- Lista de libros -->
-      <div v-for="(book, index) in booksList" :key="book.id">
-        <div class="booksListSuccess" v-if="book.found==1"> <!--En caso de libro encontrado y publicado-->
+      <div v-for="(book, index) in booksList" :key="index">
+        <div class="booksListSuccess" @click="openBook(book, index)" v-if="book.found==1"> <!--En caso de libro encontrado y publicado-->
           <span class="text">Nombre: {{ book.title }}</span>
           <br>
           <span>Autor: {{ book.author }}</span>
@@ -24,29 +24,35 @@
           <span v-else>Sin descripción</span>
           <br>
           <span>Fecha de publicación: Todavía no está implementada esta función </span>
-          <br><br>
-          <button class="buttonSuccess" @click="deleteButton(index)">Eliminar</button>
-          <button class="buttonSuccess" @click="upButton(index)" :disabled="index===0">Subir</button>
-          <button class="buttonSuccess" @click="downButton(index)" :disabled="index===booksList.length-1">Bajar</button>
+          <div v-if="idx !== 0">
+            <br>
+            <button class="buttonSuccess" @click.stop="deleteButton(index)">Eliminar</button>
+            <button class="buttonSuccess" @click.stop="upButton(index)" :disabled="index===0">Subir</button>
+            <button class="buttonSuccess" @click.stop="downButton(index)" :disabled="index===booksList.length-1">Bajar</button>
+          </div>
         </div>
         <div class="booksListError" v-else-if="book.found==2"> <!--En caso de libro encontrado pero no publicado-->
           <span class="textError">Libro no publicado :(</span>
           <br>
           <span>El autor de este libro ha decidido no publicarlo. Se podrá leer cuando se publique.</span>
-          <br><br>
-          <button class="buttonError" @click="deleteButton(index)">Eliminar</button>
-          <button class="buttonError" @click="upButton(index)" :disabled="index===0">Subir</button>
-          <button class="buttonError" @click="downButton(index)" :disabled="index===booksList.length-1">Bajar</button>
+          <div v-if="idx !== 0">
+            <br>
+            <button class="buttonError" @click="deleteButton(index)">Eliminar</button>
+            <button class="buttonError" @click="upButton(index)" :disabled="index===0">Subir</button>
+            <button class="buttonError" @click="downButton(index)" :disabled="index===booksList.length-1">Bajar</button>
+          </div>
           <span class="textInfo">(Código del libro: {{ book.id }})</span>
         </div>
         <div class="booksListError" v-else> <!--En caso de libro no encontrado o error-->
           <span class="textError">Libro no encontrado :(</span>
           <br>
           <span>No se encuentra este libro, quizá haya sido eliminado.</span>
-          <br><br>
-          <button class="buttonError" @click="deleteButton(index)">Eliminar</button>
-          <button class="buttonError" @click="upButton(index)" :disabled="index===0">Subir</button>
-          <button class="buttonError" @click="downButton(index)" :disabled="index===booksList.length-1">Bajar</button>
+          <div v-if="idx !== 0">
+            <br>
+            <button class="buttonError" @click="deleteButton(index)">Eliminar</button>
+            <button class="buttonError" @click="upButton(index)" :disabled="index===0">Subir</button>
+            <button class="buttonError" @click="downButton(index)" :disabled="index===booksList.length-1">Bajar</button>
+          </div>
           <span class="textInfo">(Código del libro: {{ book.id }})</span>
         </div>
       </div>
@@ -56,12 +62,14 @@
 
 <script>
 import { librariesCollection, booksCollection, connectedRef } from '../firebase.js'
+import { store } from '../store/index.js'
 
 export default {
   name: 'viewLibrary',
   props: {
     libID: String,
-    name: String
+    name: String,
+    idx: Number
   },
   /**
    * booksList: Array con los datos de los libros. Contiene, además de los datos del propio libro, el campo found para indicar si el libro existe y está publicado. Adquiere los valores:
@@ -130,7 +138,7 @@ export default {
         this.referencesList.push(booksKeys[i])
         // ...cogemos sus datos
         await booksCollection.doc(a).get().then(doc => {
-          if (doc.exists && doc.data().published) { // Comprobamos que el documento exista y sea público
+          if (doc.exists && (doc.data().published || doc.data().user_id === store.state.userID)) { // Comprobamos que el documento exista y sea público
             this.booksList.push({
               found: 1,
               id: a,
@@ -216,6 +224,16 @@ export default {
       this.referencesList[index] = aux
       this.updateReferencesList()
       this.refresh()
+    },
+
+    /**
+     * @param {Object} book: Libro con todos sus datos
+     * @param {int} idx: Índice en la lista de libros del libro "book"
+     * Cada vez que se pulsa sobre un libro, si este existe, se debe acceder a él.
+     * Este método se encarga de abrir la vista de leer libros si existe.
+     */
+    openBook (book, idx) {
+      this.$router.push({ name: 'readBook', params: { book: book, bookID: this.referencesList[idx] } })
     }
   }
 }
@@ -241,6 +259,7 @@ export default {
   padding-left: 5px;
   padding-right: 5px;
   padding-bottom: 10px;
+  cursor: pointer;
 }
 
 .booksListError {
