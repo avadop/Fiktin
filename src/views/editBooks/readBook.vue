@@ -1,8 +1,10 @@
 <template>
-  <div class="viewLibrary">
+  <div class="readBook">
     <button class="buttonBack" @click="goBack()">Atrás</button>
-    <button class="buttonBack" v-if="isBookOfLoggedUser()" @click="goEdit()">Editar</button>
-    <h1>Patatillas con chorizo ricas ricas</h1>
+    <button class="buttonEdit" v-if="isBookOfLoggedUser()" @click="goEdit()">Editar</button>
+    <div v-for="(text, index) in data" :key="index">
+      <span v-html="text.htmlText"/>
+    </div>
     <h1>{{ book }}</h1>
   </div>
 </template>
@@ -19,7 +21,15 @@ export default {
   },
   data () {
     return {
-      searchNick: store.state.userNick.concat('_historial').toLowerCase()
+      searchNick: store.state.userNick.concat('_historial').toLowerCase(),
+      data: [{
+        plainText: 'heyo',
+        htmlText: '<b>hola</b>',
+        component: 'Bold' }, {
+        plainText: 'aaaa',
+        htmlText: '<i>bbbb</i>',
+        component: 'Italic'
+      }]
     }
   },
   mounted () {
@@ -41,6 +51,10 @@ export default {
     isBookOfLoggedUser () {
       return this.book.userID === store.state.userID
     },
+    saveHTML (plainText, htmlText, index) {
+      this.data[index].plainText = plainText
+      this.data[index].htmlText = htmlText
+    },
     goEdit () {
       this.$router.replace({ name: 'editBook', params: { book: this.book } })
     },
@@ -52,12 +66,19 @@ export default {
 </script>
 
 <style scoped>
-.viewLibrary {
+.readBook {
   text-align: justify;
   margin-left: 30px;
+  margin-top: 10px;
 }
 .buttonBack {
   cursor: pointer;
+  background-color: lightgreen;
+  border: 1px solid darkgreen;
+}
+.buttonEdit {
+  cursor: pointer;
+  margin-left: 5px;
   background-color: lightgreen;
   border: 1px solid darkgreen;
 }
