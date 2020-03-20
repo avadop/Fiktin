@@ -9,7 +9,21 @@
             <b-row class="my-1">
               <b-form-group>
                 <label>Título</label>
-                <b-form-input type="text" v-model="title" placeholder="Título del libro"></b-form-input>
+                <b-form-input
+                  type="text"
+                  v-model="title"
+                  :state="!repited && title.length >= 3"
+                  aria-describedby="input-live-help input-live-feedback"
+                  placeholder="Título del libro"
+                ></b-form-input>
+                <!-- This will only be shown if the preceding input has an invalid state -->
+                <b-form-invalid-feedback v-if='repited' id="input-live-feedback">
+                  Título repetido
+                </b-form-invalid-feedback>
+                <!-- This will only be shown if the preceding input has an invalid state -->
+                <b-form-invalid-feedback v-else id="input-live-feedback">
+                  Introduce al menos 3 letras
+                </b-form-invalid-feedback>
               </b-form-group>
             </b-row>
           </b-container>
@@ -110,7 +124,7 @@
         </div>
 
         <b-button variant="secondary" @click="cancelButton">Cancelar</b-button>
-        <b-button variant="success" @click="createButton" :disabled="this.UploadValue != 0 && this.UploadValue != 100">Crear libro</b-button>
+        <b-button variant="success" @click="createButton" :disabled="(this.uploadValue != 0 && this.uploadValue != 100) || repited || title.length < 3">Crear libro</b-button>
       </div>
     </b-card>
   </div>
@@ -134,7 +148,22 @@ export default {
       userID: store.state.userID,
 
       selectedFile: null,
-      uploadValue: 0
+      uploadValue: 0,
+
+      repitedTitle: [],
+      repited: false
+    }
+  },
+  watch: {
+    title: {
+      inmediate: true,
+      handler (title) {
+        this.$bind('repitedTitle', booksCollection.where('title', '==', this.title).limit(1)).then(docs => {
+        })
+      }
+    },
+    repitedTitle: function () {
+      this.repited = !(this.repitedTitle.length === 0)
     }
   },
   methods: {
@@ -153,7 +182,7 @@ export default {
         this.uploadValue = percentage
       }, error => { console.log(error.message) },
       () => {
-        this.UploadValue = 100
+        this.uploadValue = 100
         // downloadURL
         task.snapshot.ref.getDownloadURL().then((url) => {
           this.cover = url
