@@ -180,10 +180,10 @@ export default {
       const task = storageRef.put(this.selectedFile)
       task.on('state_changed', snapshot => {
         let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-        this.UploadValue = percentage
+        this.uploadValue = percentage
       }, error => { console.log(error.message) },
       () => {
-        this.UploadValue = 100
+        this.uploadValue = 100
         // downloadURL
         task.snapshot.ref.getDownloadURL().then((url) => {
           this.cover = url
