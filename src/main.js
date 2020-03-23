@@ -2,7 +2,6 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import VModal from 'vue-js-modal'
 // import VueFire from 'vuefire'
 import { firestorePlugin } from 'vuefire'
 
@@ -14,9 +13,6 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 Vue.use(BootstrapVue)
 Vue.use(BootstrapVueIcons)
-
-//  Modal = ventanitas pop-up
-Vue.use(VModal, { dialog: true })
 
 Vue.use(firestorePlugin)
 
