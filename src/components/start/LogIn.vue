@@ -2,9 +2,9 @@
   <div class="log-in">
       <h4> Log In </h4>
       <label>Nickname</label> <br>
-      <input v-model="nick" type="text" placeholder="Maririta26"> <br>
+      <input v-model="nick" type="text" placeholder="Maririta26" @keyup.enter="logIn"> <br>
       <label>Contraseña</label> <br>
-      <input v-model="password" type="password" placeholder="123456"><br>
+      <input v-model="password" type="password" placeholder="123456" @keyup.enter="logIn"><br>
     <b-button variant="success" @click="logIn"> Sign In</b-button>
   </div>
 </template>

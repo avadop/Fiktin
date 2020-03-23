@@ -10,15 +10,6 @@ import EditBook from '../views/editBooks/editBook.vue'
 import ReadBook from '../views/editBooks/readBook.vue'
 // import { userInfo } from 'os'
 
-// bootstrap
-// import BootstrapVue from 'bootstrap-vue'
-import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
-
-Vue.use(BootstrapVue)
-Vue.use(BootstrapVueIcons)
-
 Vue.use(VueRouter)
 
 const routes = [
