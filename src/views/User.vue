@@ -22,7 +22,7 @@
           <span> Una vez realizado dicha operación no se podrá volver atrás </span>
         </div>
         <b-button class="mt-3" variant="outline-danger" block @click="deleteUser">ELIMINAR</b-button>
-        <b-button class="mt-2" variant="outline-primary" block @click="modal = false">Cancelar</b-button>
+        <b-button class="mt-2" variant="primary" block @click="modal = false">Cancelar</b-button>
       </b-modal>
 
     </div>
@@ -80,7 +80,7 @@ export default {
         })
       userCollection.doc(this.userKey).delete()
       store.commit('logOut')
-      this.$router.push('/#')
+      this.$router.push('/')
     },
     switchEdit: function () {
       this.edit = !this.edit

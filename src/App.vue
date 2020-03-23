@@ -28,7 +28,7 @@
           <p>¿Está seguro que desea cerrar sesión?</p>
         </div>
         <b-button class="mt-3" variant="outline-danger" block @click="logOut">Si</b-button>
-        <b-button class="mt-2" variant="outline-primary" block @click="modal = false">Cancelar</b-button>
+        <b-button class="mt-2" variant="primary" block @click="modal = false">Cancelar</b-button>
     </b-modal>
 
     <div v-if="!loggedIn">
@@ -60,7 +60,7 @@ export default {
       store.commit('logOut')
       this.loggedIn = false
       this.modal = false
-      this.$router.push('/#')
+      this.$router.push('/')
     },
     confirmLogOut: function () {
       if (!this.loggedIn) {
