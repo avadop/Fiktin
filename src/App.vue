@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div>
+    <!-- <div>
       <b-navbar toggleable="lg" type="dark" variant="info">
         <b-navbar-brand href="/home">Fiktin</b-navbar-brand>
 
@@ -11,10 +11,10 @@
             <b-nav-item href="/books">Mis libros</b-nav-item>
             <b-nav-item href="/libraries">Bibliotecas</b-nav-item>
             <label class="my-2">Bonito, pero no funciona (por eso de que se cierra la sesión al recargar la página)</label>
-          </b-navbar-nav>
+          </b-navbar-nav> -->
 
           <!-- Right aligned nav items -->
-          <b-navbar-nav class="ml-auto">
+          <!-- <b-navbar-nav class="ml-auto">
             <b-nav-form>
               <b-form-input size="sm" class="mr-sm-2" placeholder="Search"></b-form-input>
               <b-button size="sm" class="my-2 my-sm-0" type="submit">Search</b-button>
@@ -27,19 +27,19 @@
               <b-dropdown-item href="#">FA</b-dropdown-item>
             </b-nav-item-dropdown>
 
-            <b-nav-item-dropdown right>
+            <b-nav-item-dropdown right> -->
               <!-- Using 'button-content' slot -->
-              <template v-slot:button-content>
+              <!-- <template v-slot:button-content>
                 <em>User</em>
               </template>
               <b-dropdown-item href="/user">Usuario</b-dropdown-item>
-              <b-dropdown-item href="/" @click.native="confirmLogOut">Cerrar Sesión</b-dropdown-item>
+              <b-dropdown-item href="/" @click.native="confirmLogOut">Cerrar Sesión</b-dropdown-item> -->
               <!-- <b-dropdown-item v-else="loggedIn" href="/home" @click.native="confirmLogOut">Iniciar Sesión</b-dropdown-item> -->
-            </b-nav-item-dropdown>
+            <!-- </b-nav-item-dropdown>
           </b-navbar-nav>
         </b-collapse>
       </b-navbar>
-    </div>
+    </div> -->
     <div id="nav" v-if="loggedIn">
       <router-link to="/home">Home</router-link> |
       <router-link to="/books">Mis libros </router-link> |
