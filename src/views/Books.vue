@@ -1,6 +1,6 @@
 <template>
   <div class="books">
-    <h3>En esta página podemos acceder a las distintas interacciones con los libros.</h3>
+    <b-card>
     <b-button variant="primary" v-show = "!create" @click="createButton">Crear libro</b-button>
     <!-- <p v-if="books.length === 0">Todavia no tienes ningun libro creado. Pulsa <router-link to="/crearLibro">aquí</router-link> para crear uno.</p> -->
     <p>Tienes {{ books.length }} libros creados.</p>
@@ -52,6 +52,7 @@
         </div>
       </div>
     </div>
+    </b-card>
   </div>
 </template>
 
