@@ -7,7 +7,7 @@
             <p>email: {{ email }}</p>
             <b-img :src="this.picture" fluid width="250%" alt="No tienes imagen de perfil"></b-img>
             <b-button variant="primary" @click="switchEdit"> Modificar</b-button>
-            <b-button variant="danger" class="mr-auto" @click="deleteUser"> Eliminar</b-button>
+            <b-button variant="danger" class="mr-auto" @click="confirmDelete"> Eliminar</b-button>
         </div>
         <div v-else>
             <ModifyUser :email="email" :name="name" :userKey="userKey" :password="password" :picture="picture"
@@ -54,6 +54,21 @@ export default {
     })
   },
   methods: {
+    confirmDelete: function () {
+      this.$modal.show('dialog', {
+        text: '¿Está seguro que desea eliminar el usuario?',
+        buttons: [
+          {
+            title: 'SI',
+            default: true,
+            handler: () => { this.deleteUser() }
+          },
+          {
+            title: 'Cancelar'
+          }
+        ]
+      })
+    },
     deleteUser: async function () {
       await librariesCollection.where('user_id', '==', this.userKey).get().then(snapshot => {
         snapshot.forEach(doc => {
