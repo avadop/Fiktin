@@ -7,13 +7,24 @@
             <p>email: {{ email }}</p>
             <b-img :src="this.picture" fluid width="250%" alt="No tienes imagen de perfil"></b-img>
             <b-button variant="primary" @click="switchEdit"> Modificar</b-button>
-            <b-button variant="danger" class="mr-auto" @click="confirmDelete"> Eliminar</b-button>
+            <b-button variant="danger" class="mr-auto" @click="modal = true"> Eliminar</b-button>
         </div>
         <div v-else>
             <ModifyUser :email="email" :name="name" :userKey="userKey" :password="password" :picture="picture"
             @new-name="newName" @new-email="newEmail" @new-password="newPassword" @new-picture="newPicture" @flip-edit="switchEdit"/>
             <b-button variant="primary" class="mr-auto" @click="switchEdit"> Cancelar</b-button>
         </div>
+
+      <b-modal v-model="modal" hide-footer hide-header>
+        <div class="d-block text-center">
+          <h3>Eliminar usuario</h3>
+          <p>¿Está seguro que desea eliminar usuario?</p>
+          <span> Una vez realizado dicha operación no se podrá volver atrás </span>
+        </div>
+        <b-button class="mt-3" variant="outline-danger" block @click="deleteUser">ELIMINAR</b-button>
+        <b-button class="mt-2" variant="outline-primary" block @click="modal = false">Cancelar</b-button>
+      </b-modal>
+
     </div>
     <div v-else>
         <p>No tienes la sesion iniciada</p>
@@ -39,7 +50,8 @@ export default {
       password: '',
       edit: false,
       userKey: '',
-      picture: ''
+      picture: '',
+      modal: false
     }
   },
   mounted () {
@@ -54,21 +66,6 @@ export default {
     })
   },
   methods: {
-    confirmDelete: function () {
-      this.$modal.show('dialog', {
-        text: '¿Está seguro que desea eliminar el usuario?',
-        buttons: [
-          {
-            title: 'SI',
-            default: true,
-            handler: () => { this.deleteUser() }
-          },
-          {
-            title: 'Cancelar'
-          }
-        ]
-      })
-    },
     deleteUser: async function () {
       await librariesCollection.where('user_id', '==', this.userKey).get().then(snapshot => {
         snapshot.forEach(doc => {
@@ -83,7 +80,7 @@ export default {
         })
       userCollection.doc(this.userKey).delete()
       store.commit('logOut')
-      this.$router.push('/')
+      this.$router.push('/#')
     },
     switchEdit: function () {
       this.edit = !this.edit
