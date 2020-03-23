@@ -1,6 +1,7 @@
 <template>
 <div class="home">
-  <h1>HOME</h1>
+  <b-card>
+  <h1>Lista de libros publicados</h1>
   <div class="row">
     <div v-for="(book, idx) in books" :key="idx">
       <b-card
@@ -26,6 +27,7 @@
       </b-card>
     </div>
   </div>
+  </b-card>
 </div>
 </template>
 
