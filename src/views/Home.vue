@@ -1,6 +1,6 @@
 <template>
 <div class="home">
-  <b-card>
+  <b-card class="background-card">
   <h1>Lista de libros publicados</h1>
   <div class="row">
     <div v-for="(book, idx) in books" :key="idx">
@@ -17,12 +17,14 @@
         <h6 v-if="book.author == 'Nombre'">{{ book.name }} </h6>
         <h6 v-else>{{ book.nick }}</h6>
         <b-card-text v-if="book.description !== ''">
-          {{ book.description}}
+          {{ description(book.description) }}
         </b-card-text>
 
         <b-badge v-for="(tag, idt) in book.tags" :key="idt" variant="secondary">{{ tag }}</b-badge>
         <br>
-        <b-button variant="success" @click.stop="addToLibraryButton(idx)">Añadir a bibliotecas</b-button>
+        <div class="row">
+          <b-button variant="success" class="add-lib-button" @click.stop="addToLibraryButton(idx)">Añadir a bibliotecas</b-button>
+        </div>
         <AddToLibraryModal v-if="showModal===idx" :bookId="primaryKeys[idx]" @add="addToLibrary" @cancel="addToLibraryButton"/>
       </b-card>
     </div>
@@ -93,6 +95,12 @@ export default {
     },
     openBook (book, idx) {
       this.$router.push({ name: 'readBook', params: { book: book, bookID: this.primaryKeys[idx] } })
+    },
+    description (desc) {
+      if (desc.length > 50) {
+        desc = desc.substr(0, 46) + '...'
+      }
+      return desc
     }
   }
 }
@@ -121,5 +129,28 @@ export default {
   text-align: justify;
   margin-top: 5px;
   margin-left: 30px;
+}
+.card.mb-2 {
+    width: 250px;
+    height: 400px;
+    margin-left: 10px;
+}
+.card-img-top {
+    height: 140px;
+}
+.badge {
+  margin-top: 0px;
+}
+.add-lib-button {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  width: 165.65px; /* Need a specific value to work */
+}
+.background-card {
+  background-color: #e2e7ec;
 }
 </style>

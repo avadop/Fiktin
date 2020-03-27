@@ -12,17 +12,18 @@
                 <b-form-input
                   type="text"
                   v-model="title"
-                  :state="!repited && title.length >= 3"
+                  :state="!repited && title.length >= 3 && title.length <= 50"
                   aria-describedby="input-live-help input-live-feedback"
                   placeholder="Título del libro"
                 ></b-form-input>
-                <!-- This will only be shown if the preceding input has an invalid state -->
                 <b-form-invalid-feedback v-if='repited' id="input-live-feedback">
                   Título repetido
                 </b-form-invalid-feedback>
-                <!-- This will only be shown if the preceding input has an invalid state -->
-                <b-form-invalid-feedback v-else id="input-live-feedback">
+                <b-form-invalid-feedback v-if='title.length < 3' id="input-live-feedback">
                   Introduce al menos 3 letras
+                </b-form-invalid-feedback>
+                <b-form-invalid-feedback v-else id="input-live-feedback">
+                  Superada longitud máxima de 50 caracteres
                 </b-form-invalid-feedback>
               </b-form-group>
             </b-row>
@@ -68,7 +69,7 @@
       <b-container class="row">
         <!-- etiquetas -->
         <b-container fluid class="col">
-          <b-row class="my-1">
+<!--           <b-row class="my-1">
             <b-form-group>
               <label>Etiquetas</label>
             <div class="custom-control custom-checkbox">
@@ -97,6 +98,11 @@
             </div>
             </b-form-group>
           </b-row>
+-->
+          <div>
+            <label for="tags-basic">Type a new tag and press enter</label>
+            <b-form-tags input-id="tags-basic" v-model="tags" class="mb-2" placeholder="Añade una etiqueta..."></b-form-tags>
+          </div>
         </b-container>
 
         <!-- descripcion -->
@@ -106,10 +112,15 @@
               <label>Descripción</label>
               <b-form-textarea
                 v-model="description"
+                :state="description.length <= 250"
+                aria-describedby="input-live-help input-live-feedback"
                 placeholder="Descripción"
                 rows="3"
                 max-rows="6"
               ></b-form-textarea>
+              <b-form-invalid-feedback v-if="description.length >= 250" id="input-live-feedback">
+                Superada longitud máxima de 250 caracteres
+              </b-form-invalid-feedback>
             </b-container>
           </b-row>
         </b-container>
@@ -124,7 +135,7 @@
         </div>
 
         <b-button variant="secondary" @click="cancelButton">Cancelar</b-button>
-        <b-button variant="success" @click="createButton" :disabled="(this.uploadValue != 0 && this.uploadValue != 100) || repited || title.length < 3">Crear libro</b-button>
+        <b-button variant="success" @click="createButton" :disabled="(this.uploadValue != 0 && this.uploadValue != 100) || repited || title.length < 3 || title.length > 50 || description.length > 250">Crear libro</b-button>
       </div>
     </b-card>
   </div>
