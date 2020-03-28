@@ -49,7 +49,7 @@
                   <b-dropdown-item id="modifyButton" @click.stop="modifyBook(book)" v-show="modifyID !== book.ID">Modificar</b-dropdown-item>
                   <b-dropdown-item @click.stop="addToLibraryButton(idx)">Añadir a bibliotecas</b-dropdown-item>
                   <b-dropdown-divider></b-dropdown-divider>
-                  <b-dropdown-item variant="danger" v-if="modifyID !== book.ID" @click.stop="deleteBook(book.ID)">Eliminar</b-dropdown-item>
+                  <b-dropdown-item variant="danger" v-if="modifyID !== book.ID" @click.stop="deleteBook(book.ID)"><b-icon icon="trash-fill"></b-icon> Eliminar</b-dropdown-item>
                 </b-dropdown>
               </div>
               <AddToLibraryModal v-if="showModal===idx" :bookId="primaryKeys[idx]" @add="addToLibrary" @cancel="addToLibraryButton"/>
