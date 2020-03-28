@@ -5,9 +5,6 @@
   <div class="row">
     <div v-for="(book, idx) in books" :key="idx">
       <b-card
-        :img-src="book.cover"
-        img-alt="Image"
-        img-top
         tag="article"
         style="max-width: 20rem; cursor: pointer;"
         class="mb-2"
@@ -21,13 +18,17 @@
             <b-icon variant="danger" icon="heart-fill"></b-icon>
           </b-button>
         </b-button-group>
+        <div class="card-img-box">
+          <img class="card-img-top" :src="book.cover" alt="Imagen">
+        </div>
+        <br>
         <div class="d-flex justify-content-start">
-          <h5 class="card-title">
+          <h6 class="card-title">
             {{upperCase(book.title)}}
-          </h5>
+          </h6>
         </div>
         <div class="d-flex justify-content-start">
-          <h6 class="autor-name" v-if="book.author == 'Nombre'">{{ book.name }} </h6>
+          <h7 class="autor-name" v-if="book.author == 'Nombre'">{{ book.name }} </h7>
           <h6 class="autor-name" v-else>{{ book.nick }}</h6>
         </div>
         <div class="d-flex justify-content-start">
@@ -38,9 +39,6 @@
         <br>
         <div class="text-small"><a href="" v-for="(tag, idt) in book.tags.slice(0, 5)" :key="idt">#{{ tag }} </a><a v-if="book.tags.length>5">...</a></div>
         <br>
-        <!-- <div class="row">
-          <b-button variant="success" class="add-lib-button" @click.stop="addToLibraryButton(idx)">Añadir a bibliotecas</b-button>
-        </div> -->
         <AddToLibraryModal v-if="showModal===idx" :bookId="primaryKeys[idx]" @add="addToLibrary" @cancel="addToLibraryButton"/>
       </b-card>
     </div>
@@ -126,38 +124,17 @@ export default {
 </script>
 
 <style scoped>
-  span {
-   font: bold 14px/30px Arial;
-    margin: 10px 0;
-    width: 20%;
-    margin-top:40px;
-    font-size: 13px;
-    text-decoration: inderline;
-  }
-.booksBox {
-  text-align: justify;
-  background-color: #cafbf1;
-  border: 2px solid #748983;
-  margin-top: 5px;
-  margin-left: 30px;
-  padding-left: 5px;
-  padding-right: 5px;
-  padding-bottom: 10px;
-}
-.etiqueta {
-  text-align: justify;
-  margin-top: 5px;
-  margin-left: 30px;
-}
 .card.mb-2 {
   width: 250px;
   height: 400px;
   margin-left: 10px;
 }
+.card-img-box {
+  text-align: left;
+}
 .card-img-top {
-  max-height:140px;
-  width: auto;
-  height: 100%;
+  max-width: 100%;
+  max-height: 140px;
 }
 .card-text {
   font-size: 0.9rem;
@@ -166,25 +143,19 @@ export default {
 .card-title {
   text-align: left;
 }
-.badge {
-  margin-top: 0px;
-}
-.add-lib-button {
+.add-lib-button, .text-small {
   position: absolute;
-  top: 10px;
   left: 0;
   right: 0;
   margin-left: auto;
   margin-right: auto;
+}
+.add-lib-button {
+  top: 10px;
   width: 106px; /* Need a specific value to work */
 }
 .text-small {
-  position: absolute;
   bottom: 20px;
-  left: 0;
-  right: 0;
-  margin-left: auto;
-  margin-right: auto;
   width: 200px; /* Need a specific value to work */
 }
 .background-card {
@@ -192,5 +163,8 @@ export default {
 }
 .autor-name {
   color: #7b8793;
+}
+.btn-light {
+  border-color: #868686;;
 }
 </style>
