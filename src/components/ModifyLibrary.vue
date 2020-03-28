@@ -75,8 +75,8 @@
 
     <!-- botones -->
     <div class="d-flex justify-content-end">
-      <b-button variant="secondary" @click="cancelButton()">Descartar cambios</b-button>
-      <b-button variant="success" @click="modifyButton()" :disabled="this.name.length <= 0 || checkNames() || !checkDescription()">Guardar</b-button>
+      <b-button variant="outline-secondary" @click="cancelButton()">Descartar cambios</b-button>
+      <b-button variant="dark" @click="modifyButton()" :disabled="this.name.length <= 0 || checkNames() || !checkDescription()">Guardar</b-button>
     </div>
   </div>
 </template>
@@ -182,4 +182,9 @@ export default {
 </script>
 
 <style scoped>
+.btn-secondary {
+    color: #fff;
+    background-color: #838c95;
+    border-color: #838c95;
+}
 </style>
