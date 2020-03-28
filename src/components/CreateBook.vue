@@ -59,36 +59,6 @@
       <b-container class="row">
         <!-- etiquetas -->
         <b-container fluid class="col">
-<!--           <b-row class="my-1">
-            <b-form-group>
-              <label>Etiquetas</label>
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input" id="accion_aventura_id" value="AccionAventura" v-model="tags">
-              <label class="custom-control-label" for="accion_aventura_id"> Acción y aventura</label>
-            </div>
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input" id="ciencia_ficcion_id" value="CienciaFiccion" v-model="tags">
-              <label class="custom-control-label" for="ciencia_ficcion_id"> Ciencia ficción</label>
-            </div>
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input" id="comedia_id" value="Comedia" v-model="tags">
-              <label class="custom-control-label" for="comedia_id"> Comedia</label>
-            </div>
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input" id="crimen_id" value="Crimen" v-model="tags">
-              <label class="custom-control-label" for="crimen_id"> Crimen</label>
-            </div>
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input" id="drama_id" value="Drama" v-model="tags">
-              <label class="custom-control-label" for="drama_id"> Drama</label>
-            </div>
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input" id="fantasia_id" value="Fantasia" v-model="tags">
-              <label class="custom-control-label" for="fantasia_id"> Fantasia</label>
-            </div>
-            </b-form-group>
-          </b-row>
--->
           <div>
             <label for="tags-basic">Etiquetas</label>
             <b-form-tags input-id="tags-basic" v-model="tags" class="mb-2" placeholder="Añade una etiqueta..." @keydown.space.prevent></b-form-tags>
@@ -120,8 +90,8 @@
           <label class="custom-control-label" for="published_id"> Publicar</label>
         </div>
 
-        <b-button variant="secondary" @click="cancelButton">Cancelar</b-button>
-        <b-button variant="success" @click="createButton" :disabled="(this.uploadValue != 0 && this.uploadValue != 100) || repited || title.length < 3 || title.length > 50 || description.length > 250">Crear libro</b-button>
+        <b-button variant="outline-secondary" @click="cancelButton">Cancelar</b-button>
+        <b-button variant="dark" @click="createButton" :disabled="(this.uploadValue != 0 && this.uploadValue != 100) || repited || title.length < 3 || title.length > 50 || description.length > 250">Crear libro</b-button>
       </div>
     </b-card>
   </div>
@@ -219,29 +189,9 @@ export default {
 </script>
 
 <style scoped>
-  span {
-   font: bold 14px/30px Arial;
-    margin: 10px 0;
-    width: 20%;
-    margin-top:40px;
-    font-size: 13px;
-    text-decoration: inderline;
-  }
-.button {
-  background-color: #96e9f2;
-  border: 1px solid #000000;
-  margin-top: 5px;
-  margin-left: 30px;
-}
-.button-accept {
-  background-color: #acf296;
-  border: 1px solid #000000;
-  margin-top: 5px;
-  margin-left: 30px;
-}
-.etiqueta {
-  text-align: justify;
-  margin-top: 5px;
-  margin-left: 30px;
+.btn-secondary {
+    color: #fff;
+    background-color: #838c95;
+    border-color: #838c95;
 }
 </style>

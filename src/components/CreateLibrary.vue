@@ -74,8 +74,8 @@
         </b-container>
       </b-container>
       <div class="d-flex justify-content-end">
-        <b-button variant="secondary" @click="cancelButton()">Cancelar</b-button>
-        <b-button variant="success" @click="createButton()" :disabled="this.name.length <= 0 || checkNames() || !checkDescription()">Crear</b-button>
+        <b-button variant="outline-secondary" @click="cancelButton()">Cancelar</b-button>
+        <b-button variant="dark" @click="createButton()" :disabled="this.name.length <= 0 || checkNames() || !checkDescription()">Crear</b-button>
       </div>
     </b-card>
   </div>
@@ -174,4 +174,9 @@ export default {
 </script>
 
 <style scoped>
+.btn-secondary {
+    color: #fff;
+    background-color: #838c95;
+    border-color: #838c95;
+}
 </style>
