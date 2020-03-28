@@ -1,67 +1,57 @@
 <template>
   <div class="create" >
     <b-card>
-      <h4>Crear libro</h4>
+      <div class="d-flex justify-content-start">
+        <h4>Crear libro</h4>
+      </div>
       <b-container class="row">
         <b-container class="col">
           <!-- titulo -->
           <b-container fluid class="row">
-            <b-row class="my-1">
-              <b-form-group>
-                <label>Título</label>
-                <b-form-input
-                  type="text"
-                  v-model="title"
-                  :state="!repited && title.length >= 3 && title.length <= 50"
-                  aria-describedby="input-live-help input-live-feedback"
-                  placeholder="Título del libro"
-                ></b-form-input>
-                <b-form-invalid-feedback v-if='repited' id="input-live-feedback">
-                  Título repetido
-                </b-form-invalid-feedback>
-                <b-form-invalid-feedback v-if='title.length < 3' id="input-live-feedback">
-                  Introduce al menos 3 letras
-                </b-form-invalid-feedback>
-                <b-form-invalid-feedback v-else id="input-live-feedback">
-                  Superada longitud máxima de 50 caracteres
-                </b-form-invalid-feedback>
-              </b-form-group>
-            </b-row>
+            <label>Título</label>
+            <b-form-input
+              type="text"
+              v-model="title"
+              :state="!repited && title.length >= 3 && title.length <= 50"
+              aria-describedby="input-live-help input-live-feedback"
+              placeholder="Título del libro"
+            ></b-form-input>
+            <b-form-invalid-feedback v-if='repited' id="input-live-feedback">
+              Título repetido
+            </b-form-invalid-feedback>
+            <b-form-invalid-feedback v-if='title.length < 3' id="input-live-feedback">
+              Introduce al menos 3 caracteres
+            </b-form-invalid-feedback>
+            <b-form-invalid-feedback v-else id="input-live-feedback">
+              Superada longitud máxima de 50 caracteres
+            </b-form-invalid-feedback>
           </b-container>
-
+          <br>
           <!-- autor -->
           <b-container fluid class="row">
-            <b-row class="my-1">
+            <b-form-group>
+              <label>Autor</label>
               <b-form-group>
-                <label>Autor</label>
-                <b-form-group>
-                  <b-form-radio v-model="author" value="Nombre"> Nombre de usuario</b-form-radio>
-                  <b-form-radio v-model="author" value="Nick"> Nickname</b-form-radio>
-                </b-form-group>
+                <b-form-radio v-model="author" value="Nombre"> Nombre de usuario</b-form-radio>
+                <b-form-radio v-model="author" value="Nick"> Nickname</b-form-radio>
               </b-form-group>
-            </b-row>
+            </b-form-group>
           </b-container>
         </b-container>
 
         <!-- portada -->
         <b-container fluid class="col">
+          <label>Portada</label>
+          <b-form-file
+            @change="onFileSelected"
+            class="my-2"
+            placeholder="Selecciona una imagen o arrastrala aquí..."
+            drop-placeholder="Arrastra aquí la imagen..."
+            accept="image/*"
+          ></b-form-file>
           <b-row class="my-1">
-            <b-container sm="3">
-              <label>Portada</label>
-              <b-form-file
-                @change="onFileSelected"
-                class="my-2"
-                placeholder="Selecciona una imagen o arrastrala aquí..."
-                drop-placeholder="Arrastra aquí la imagen..."
-                accept="image/*"
-              ></b-form-file>
-            </b-container>
-          </b-row>
-          <b-row class="my-1">
-            <b-col sm="9">
               <b-img :src="this.cover" fluid width="250%" alt="No has subido ninguna imagen"></b-img>
               <b-button v-if="this.cover != null" class="my-2" variant="danger" @click="removeImg">Eliminar</b-button>
-            </b-col>
           </b-row>
         </b-container>
       </b-container>
@@ -100,29 +90,25 @@
           </b-row>
 -->
           <div>
-            <label for="tags-basic">Type a new tag and press enter</label>
-            <b-form-tags input-id="tags-basic" v-model="tags" class="mb-2" placeholder="Añade una etiqueta..."></b-form-tags>
+            <label for="tags-basic">Etiquetas</label>
+            <b-form-tags input-id="tags-basic" v-model="tags" class="mb-2" placeholder="Añade una etiqueta..." @keydown.space.prevent></b-form-tags>
           </div>
         </b-container>
 
         <!-- descripcion -->
         <b-container fluid class="col">
-          <b-row class="my-1">
-            <b-container sm="3">
-              <label>Descripción</label>
-              <b-form-textarea
-                v-model="description"
-                :state="description.length <= 250"
-                aria-describedby="input-live-help input-live-feedback"
-                placeholder="Descripción"
-                rows="3"
-                max-rows="6"
-              ></b-form-textarea>
-              <b-form-invalid-feedback v-if="description.length >= 250" id="input-live-feedback">
-                Superada longitud máxima de 250 caracteres
-              </b-form-invalid-feedback>
-            </b-container>
-          </b-row>
+          <label>Descripción</label>
+          <b-form-textarea
+            v-model="description"
+            :state="description.length <= 250"
+            aria-describedby="input-live-help input-live-feedback"
+            placeholder="Descripción"
+            rows="3"
+            max-rows="6"
+          ></b-form-textarea>
+          <b-form-invalid-feedback v-if="description.length >= 250" id="input-live-feedback">
+            Superada longitud máxima de 250 caracteres
+          </b-form-invalid-feedback>
         </b-container>
       </b-container>
 
