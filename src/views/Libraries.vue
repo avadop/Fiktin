@@ -1,32 +1,48 @@
 <template>
   <div class="CreateLibrary">
-    <!-- Botón de creación de librería según la conexión. Si no hay, no aparece el botón -->
-    <button v-if="!opened && this.internetConnection === 0" class="buttonCreate" :disabled="modifying != -1" @click="btnCreateNewLib()">Crear nueva biblioteca</button>
-    <CreateLibrary v-else-if="opened && this.internetConnection === 0" class="create" @cancel="btnCreateNewLib" @create="createLibrary"/>
-    <!-- Mensaje o librerías según la conexión y el número de libros -->
-    <h3 v-if="this.numberOfLibraries === 0 && this.internetConnection === 0">No hay bibliotecas creadas</h3>
-    <h3 v-else-if="this.numberOfLibraries === -1 && this.internetConnection === 0">Cargando</h3>
-    <h3 v-else-if="this.internetConnection === -1">vaya, parece que no tienes conexión y no podemos mostrar tus bibliotecas<br>Revisa tu conexión y actualiza la página para solucionar el problema</h3>
-    <span v-else> <!-- Aunque no haya conexión, si se han cargado las librerías se siguen mostrando -->
-      <div class="librariesList" v-for="(library, index) in librariesList" :key="library.name" @click="viewLibrary(library.id, library.name, library.numberOfBooks, index)">
-        <span class="text">Nombre: {{ library.name }}</span>
-        <br>
-        <span v-if="library.description!==''">Descripción: {{ library.description }}</span>
-        <span v-else>Sin descripción</span>
-        <br>
-        <span>Privacidad: </span>
-        <span v-if="library.privacy==='public'">pública</span>
-        <span v-else>privada</span>
-        <br>
-        <span v-if="library.numberOfBooks === 0">Sin libros </span>
-        <span v-else-if="library.numberOfBooks === 1">{{ library.numberOfBooks }} libro </span>
-        <span v-else>{{ library.numberOfBooks }} libros </span>
-        <br>
-        <button v-if="(modifying===-1 || modifying !==index) && library.id !== searchHistory" class="buttonModify" :disabled="opened || modifying != -1" @click.stop="btnModifyLib(index)">Modificar</button>
-        <ModifyLibrary v-else-if="modifying===index || library.id !== searchHistory" class="modify" :disabled="opened || modifying != -1" :index="index" :nameAux="librariesList[index].name" :descriptionAux="librariesList[index].description" :privacyAux="librariesList[index].privacy" :id="librariesList[index].id" @cancel="btnModifyLib" @modify="modifyLibrary"/>
-        <button v-if="modifying!==index && library.id !== searchHistory" class="buttonModify" :disabled="opened || modifying != -1" @click.stop="btnDeleteHandler(library.id)">Eliminar</button>
+    <b-card class="background-card">
+      <div v-if="this.internetConnection === 0" class="d-flex justify-content-end">
+        <h4 class="mr-auto">Sección de tus bibliotecas</h4>
+        <b-button v-if="!opened" variant="info" size="sm" class="m-md-2" :disabled="modifying != -1" @click="btnCreateNewLib()">
+          <b-icon icon="plus"></b-icon> Crear biblioteca
+        </b-button>
       </div>
-    </span>
+      <CreateLibrary v-if="opened && this.internetConnection === 0" class="create" @cancel="btnCreateNewLib" @create="createLibrary"/>
+      <!-- Mensaje o librerías según la conexión y el número de libros -->
+      <h3 v-if="this.numberOfLibraries === 0 && this.internetConnection === 0">No hay bibliotecas creadas</h3>
+      <h3 v-else-if="this.numberOfLibraries === -1 && this.internetConnection === 0">Cargando</h3>
+      <h3 v-else-if="this.internetConnection === -1">vaya, parece que no tienes conexión y no podemos mostrar tus bibliotecas<br>Revisa tu conexión y actualiza la página para solucionar el problema</h3>
+      <span v-else> <!-- Aunque no haya conexión, si se han cargado las librerías se siguen mostrando -->
+        <b-list-group v-for="(library, index) in librariesList" :key="library.name" @click="viewLibrary(library.id, library.name, library.numberOfBooks, index)">
+          <b-list-group-item>
+            <div v-if="modifying!==index || library.id === searchHistory">
+              <div class="row d-flex justify-content-end">
+                <h4 class="mr-auto">
+                  {{ library.name }} <a class="h4 mb-2" v-if="library.privacy==='public'"><b-icon icon="eye"></b-icon></a>
+                  <a class="h4 mb-2" v-else><b-icon icon="eye-slash"></b-icon></a>
+                </h4>
+                <div class="m-md-2">
+                  <span v-if="library.numberOfBooks === 0">Sin libros </span>
+                  <span v-else-if="library.numberOfBooks === 1">{{ library.numberOfBooks }} libro </span>
+                  <span v-else>{{ library.numberOfBooks }} libros </span>
+                </div>
+              </div>
+              <div class="row d-flex justify-content-end">
+                <div class="mr-auto">
+                  <span v-if="library.description!==''">{{ library.description }}</span>
+                  <span v-else>Sin descripción</span>
+                </div>
+                <div class="m-md-2">
+                  <b-button v-if="(modifying===-1 || modifying !==index) && library.id !== searchHistory" variant="primary" :disabled="opened || modifying != -1" @click.stop="btnModifyLib(index)">Modificar</b-button>
+                  <b-button v-if="modifying!==index && library.id !== searchHistory" variant="danger" :disabled="opened || modifying != -1" @click.stop="btnDeleteHandler(library.id)">Eliminar</b-button>
+                </div>
+              </div>
+            </div>
+            <ModifyLibrary v-else :disabled="opened || modifying != -1" :index="index" :nameAux="librariesList[index].name" :descriptionAux="librariesList[index].description" :privacyAux="librariesList[index].privacy" :id="librariesList[index].id" @cancel="btnModifyLib" @modify="modifyLibrary"/>
+          </b-list-group-item>
+        </b-list-group>
+      </span>
+    </b-card>
   </div>
 </template>
 
@@ -221,46 +237,7 @@ export default {
 </script>
 
 <style scoped>
-.buttonCreate {
-  cursor: pointer;
-  background-color: lightgreen;
-  border: 1px solid darkgreen;
-  margin-right: 5px;
-}
-
-.buttonModify {
-  cursor: pointer;
-  background-color: lightgreen;
-  border: 1px solid darkgreen;
-  margin-right: 5px;
-  margin-top: 10px;
-}
-
-.create {
-  background-color: #E9FFE2;
-  border: 1px solid #DBECD5;
-}
-
-.modify {
-  cursor: default;
-  background-color: #E9FFE2;
-  border: 1px solid #E9FFE2;
-  border-top: 1px solid #DBECD5;
-}
-
-.librariesList {
-  text-align: justify;
-  cursor: pointer;
-  background-color: #E9FFE2;
-  border: 1px solid #DBECD5;
-  margin-top: 5px;
-  margin-left: 30px;
-  padding-left: 5px;
-  padding-right: 5px;
-  padding-bottom: 10px;
-}
-
-.text {
-  font: bold 14px/30px Arial;
+.background-card {
+  background-color: #e2e7ec;
 }
 </style>

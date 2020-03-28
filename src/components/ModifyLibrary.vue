@@ -1,23 +1,83 @@
 <template>
   <div class="create" @click.stop >
-    <textarea v-if="name.length===0" class="modelName" :class="{red: name.length===0}" v-model="name" placeholder="Nombre" @keydown.space.prevent @keydown.enter.prevent @input="characterLimitName" @paste="characterLimitName"/>
-    <textarea v-else v-model="name" class="modelName" :class="{red: checkNames()}" placeholder="Nombre" @keydown.enter.prevent @input="characterLimitName" @paste="characterLimitName"/>
-    <span> {{getNameTam}} / 50 </span>
-    <br><br>
-    <textarea v-if="description.length===0" class="modelDesc" v-model="description" placeholder="Descripción" @keydown.space.prevent @keydown.enter.prevent @input="characterLimitDescription" @paste="characterLimitDescription"/>
-    <textarea v-else v-model="description" class="modelDesc" :class="{red: !checkDescription()}" placeholder="Descripción" @keydown.enter.prevent @input="characterLimitDescription" @paste="characterLimitDescription"/>
-    <span> {{getDescriptionTam}} / 300</span>
-    <br><br>
-    <span>¿Cómo deseas la privacidad de tu biblioteca?</span>
-    <br>
-    <input type="radio" id="public" value="public" v-model="privacy" >
-    <label for="uno">Pública: La podrá ver todo el mundo</label>
-    <br>
-    <input type="radio" id="private" value="private" v-model="privacy">
-    <label for="Dos">Privada: Solo la podrás ver tú</label>
-    <br><br>
-    <button class="button" @click="modifyButton()" :disabled="this.name.length <= 0 || checkNames() || !checkDescription()">Guardar</button>
-    <button class="button" @click="cancelButton()">Descartar cambios</button>
+    <div class="d-flex justify-content-start">
+      <h4>Modificar biblioteca</h4>
+    </div>
+    <b-container class="row">
+      <b-container class="col">
+        <!-- nombre -->
+        <b-container fluid class="row">
+          <label>Nombre ({{getNameTam}} / 50)</label>
+          <b-form-input
+            v-if="name.length===0"
+            type="text"
+            v-model="name"
+            :state="this.name.length > 0 && this.name.length <= 50"
+            aria-describedby="input-live-help input-live-feedback"
+            placeholder="Nombre"
+            @keydown.space.prevent @keydown.enter.prevent @input="characterLimitName" @paste="characterLimitName"
+          ></b-form-input>
+          <b-form-input
+            v-else
+            type="text"
+            v-model="name"
+            :state="this.name.length > 0 && this.name.length <= 50"
+            aria-describedby="input-live-help input-live-feedback"
+            placeholder="Nombre"
+            @keydown.enter.prevent @input="characterLimitName" @paste="characterLimitName"
+          ></b-form-input>
+          <b-form-invalid-feedback v-if='this.name.length <= 0' id="input-live-feedback">
+            Introduce al menos 1 caracter
+          </b-form-invalid-feedback>
+          <b-form-invalid-feedback v-else id="input-live-feedback">
+            Superada longitud máxima de 50 caracteres
+          </b-form-invalid-feedback>
+        </b-container>
+        <br>
+        <!-- privacidad -->
+        <b-container fluid class="row">
+          <label>¿Cómo deseas la privacidad de tu biblioteca?</label>
+          <b-form-group>
+            <b-form-radio value="public" v-model="privacy"> Pública: La podrá ver todo el mundo</b-form-radio>
+            <b-form-radio value="private" v-model="privacy"> Privada: Solo la podrás ver tú</b-form-radio>
+          </b-form-group>
+        </b-container>
+      </b-container>
+      <!-- descripcion -->
+      <b-container class="col">
+        <b-row class="my-1">
+          <b-container sm="3">
+            <label>Descripción {{getDescriptionTam}} / 300</label>
+            <b-form-textarea
+              v-if="description.length===0"
+              v-model="description"
+              placeholder="Descripción"
+              rows="3"
+              max-rows="6"
+              @keydown.space.prevent @keydown.enter.prevent @input="characterLimitDescription" @paste="characterLimitDescription"
+            ></b-form-textarea>
+            <b-form-textarea
+              v-else
+              v-model="description"
+              :state="description.length <= 300"
+              aria-describedby="input-live-help input-live-feedback"
+              rows="3"
+              max-rows="6"
+              @keydown.enter.prevent @input="characterLimitDescription" @paste="characterLimitDescription"
+            ></b-form-textarea>
+            <b-form-invalid-feedback v-if="description.length >= 300" id="input-live-feedback">
+              Superada longitud máxima de 300 caracteres
+            </b-form-invalid-feedback>
+          </b-container>
+        </b-row>
+      </b-container>
+    </b-container>
+
+    <!-- botones -->
+    <div class="d-flex justify-content-end">
+      <b-button variant="secondary" @click="cancelButton()">Descartar cambios</b-button>
+      <b-button variant="success" @click="modifyButton()" :disabled="this.name.length <= 0 || checkNames() || !checkDescription()">Guardar</b-button>
+    </div>
   </div>
 </template>
 
@@ -122,33 +182,4 @@ export default {
 </script>
 
 <style scoped>
-.create {
-  padding: 10px;
-  cursor: default;
-}
-
-.red {
-  border-style: solid;
-  border-width: 1px;
-  border-color: #DE8F8F;
-}
-
-.modelName {
-  width: 75%;
-  height: 30px;
-  resize: none;
-}
-
-.modelDesc {
-  width: 75%;
-  height: 75px;
-  resize: none;
-}
-
-.button {
-  cursor: pointer;
-  background-color: lightgreen;
-  border: 1px solid darkgreen;
-  margin-right: 5px;
-}
 </style>
