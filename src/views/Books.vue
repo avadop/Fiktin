@@ -16,23 +16,24 @@
         <div v-show="!create" v-for="(book, idx) in books" :key="idx">
           <div v-if="modifyID !== book.ID">
             <b-card
-              :img-src="book.cover"
-              img-alt="Image"
-              img-top
               tag="article"
               style="max-width: 20rem; cursor: pointer;"
               class="mb-2"
               @click="openBook(book, idx)"
             >
+              <div class="card-img-box">
+                <img class="card-img-top" :src="book.cover" alt="Portada">
+              </div>
+              <br>
               <div class="d-flex justify-content-start">
-                <h4 class="car-title">
-                  {{book.title}} <a class="h4 mb-2" v-if="book.published"><b-icon icon="eye"></b-icon></a>
-                  <a class="h4 mb-2" v-else><b-icon icon="eye-slash"></b-icon></a>
-                </h4>
+                <h6 class="car-title">
+                  {{book.title}} <a class="h5 mb-2" v-if="book.published"><b-icon icon="eye"></b-icon></a>
+                  <a class="h5 mb-2" v-else><b-icon icon="eye-slash"></b-icon></a>
+                </h6>
               </div>
               <div class="d-flex justify-content-start">
-                <h6 class="autor-name" v-if="book.author == 'Nombre'">{{ name }}</h6>
-                <h6 class="autor-name" v-else>{{ nick }}</h6>
+                <h7 class="autor-name" v-if="book.author == 'Nombre'">{{ name }}</h7>
+                <h7 class="autor-name" v-else>{{ nick }}</h7>
               </div>
               <div class="d-flex justify-content-start">
                 <b-card-text>
@@ -40,11 +41,11 @@
                 </b-card-text>
               </div>
               <br>
-              <b-badge v-for="(tag, idt) in book.tags" :key="idt" variant="secondary">{{ tag }}</b-badge>
+              <div class="text-small"><a href="" v-for="(tag, idt) in book.tags.slice(0, 5)" :key="idt">#{{ tag }} </a><a v-if="book.tags.length>5">...</a></div>
 
               <!-- Botones -->
               <div>
-                <b-dropdown id="dropdown-1" variant="outline-info" text="Opciones" class="opt-button">
+                <b-dropdown id="dropdown-1" variant="light" text="Opciones" class="mr-3 opt-button">
                   <b-dropdown-item id="modifyButton" @click.stop="modifyBook(book)" v-show="modifyID !== book.ID">Modificar</b-dropdown-item>
                   <b-dropdown-item @click.stop="addToLibraryButton(idx)">Añadir a bibliotecas</b-dropdown-item>
                   <b-dropdown-divider></b-dropdown-divider>
@@ -172,61 +173,47 @@ export default {
 </script>
 
 <style scoped>
-  span {
-   font: bold 14px/30px Arial;
-    margin: 10px 0;
-    width: 20%;
-    margin-top:40px;
-    font-size: 13px;
-    text-decoration: inderline;
-  }
-.booksBox {
-  text-align: justify;
-  background-color: #cafbf1;
-  border: 2px solid #748983;
-  margin-top: 5px;
-  margin-left: 30px;
-  padding-left: 5px;
-  padding-right: 5px;
-  padding-bottom: 10px;
-}
-.etiqueta {
-  text-align: justify;
-  margin-top: 5px;
-  margin-left: 30px;
-}
 .card.mb-2 {
   width: 250px;
-  height: 430px;
+  height: 400px;
   margin-left: 10px;
+}
+.card-img-box {
+  text-align: left;
 }
 .card-img-top {
   display: block;
-  max-width:250px;
-  max-height:140px;
+  max-height: 140px;
+  min-height: 140px;
+  max-width: 100%;
   width: auto;
-  height: 100%;
 }
 .card-text {
   font-size: 0.9rem;
   text-align: justify;
 }
-.badge {
-  margin-top: 0px;
-}
-.opt-button {
+.opt-button, .text-small {
   position: absolute;
-  bottom: 10px;
   left: 0;
   right: 0;
   margin-left: auto;
   margin-right: auto;
-  width: 105.83px; /* Need a specific value to work */
+}
+.opt-button {
+  top: 10px;
+  width: 106px;
+}
+.text-small {
+  bottom: 20px;
+  width: 200px;
 }
 .background-card {
   background-color: #e2e7ec;
 }
 .autor-name {
   color: #7b8793;
+}
+.btn-light {
+  border-color: #ccc;
 }
 </style>

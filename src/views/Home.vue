@@ -19,7 +19,7 @@
           </b-button>
         </b-button-group>
         <div class="card-img-box">
-          <img class="card-img-top" :src="book.cover" alt="Imagen">
+          <img class="card-img-top" :src="book.cover" alt="Portada">
         </div>
         <br>
         <div class="d-flex justify-content-start">
@@ -133,15 +133,15 @@ export default {
   text-align: left;
 }
 .card-img-top {
-  max-width: 100%;
+  display: block;
   max-height: 140px;
+  min-height: 140px;
+  max-width: 100%;
+  width: auto;
 }
 .card-text {
   font-size: 0.9rem;
   text-align: justify;
-}
-.card-title {
-  text-align: left;
 }
 .add-lib-button, .text-small {
   position: absolute;
@@ -152,11 +152,11 @@ export default {
 }
 .add-lib-button {
   top: 10px;
-  width: 106px; /* Need a specific value to work */
+  width: 106px;
 }
 .text-small {
   bottom: 20px;
-  width: 200px; /* Need a specific value to work */
+  width: 200px;
 }
 .background-card {
   background-color: #e2e7ec;
@@ -165,6 +165,6 @@ export default {
   color: #7b8793;
 }
 .btn-light {
-  border-color: #868686;;
+  border-color: #ccc;
 }
 </style>
