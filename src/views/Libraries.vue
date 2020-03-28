@@ -33,7 +33,7 @@
                   <span v-else>Sin descripción</span>
                 </div>
                 <div class="m-md-2">
-                  <b-button v-if="(modifying===-1 || modifying !==index) && library.id !== searchHistory" variant="primary" :disabled="opened || modifying != -1" @click.stop="btnModifyLib(index)">Modificar</b-button>
+                  <b-button v-if="(modifying===-1 || modifying !==index) && library.id !== searchHistory" variant="outline-dark" :disabled="opened || modifying != -1" @click.stop="btnModifyLib(index)">Modificar</b-button>
                   <b-button v-if="modifying!==index && library.id !== searchHistory" variant="danger" :disabled="opened || modifying != -1" @click.stop="btnDeleteHandler(library.id)">Eliminar</b-button>
                 </div>
               </div>

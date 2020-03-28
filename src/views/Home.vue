@@ -5,7 +5,6 @@
   <div class="row">
     <div v-for="(book, idx) in books" :key="idx">
       <b-card
-        :title="book.title"
         :img-src="book.cover"
         img-alt="Image"
         img-top
@@ -14,17 +13,34 @@
         class="mb-2"
         @click="openBook(book, idx)"
       >
-        <h6 v-if="book.author == 'Nombre'">{{ book.name }} </h6>
-        <h6 v-else>{{ book.nick }}</h6>
-        <b-card-text v-if="book.description !== ''">
-          {{ description(book.description) }}
-        </b-card-text>
-
-        <b-badge v-for="(tag, idt) in book.tags" :key="idt" variant="secondary">{{ tag }}</b-badge>
-        <br>
-        <div class="row">
-          <b-button variant="success" class="add-lib-button" @click.stop="addToLibraryButton(idx)">Añadir a bibliotecas</b-button>
+        <b-button-group class="mr-1 add-lib-button">
+          <b-button variant="light" @click.stop="addToLibraryButton(idx)">
+            <b-icon variant="warning" icon="bookmark-fill"></b-icon>
+          </b-button>
+          <b-button variant="light">
+            <b-icon variant="danger" icon="heart-fill"></b-icon>
+          </b-button>
+        </b-button-group>
+        <div class="d-flex justify-content-start">
+          <h5 class="card-title">
+            {{upperCase(book.title)}}
+          </h5>
         </div>
+        <div class="d-flex justify-content-start">
+          <h6 class="autor-name" v-if="book.author == 'Nombre'">{{ book.name }} </h6>
+          <h6 class="autor-name" v-else>{{ book.nick }}</h6>
+        </div>
+        <div class="d-flex justify-content-start">
+          <b-card-text>
+            {{ description(book.description) }}
+          </b-card-text>
+        </div>
+        <br>
+        <div class="text-small"><a href="" v-for="(tag, idt) in book.tags.slice(0, 5)" :key="idt">#{{ tag }} </a><a v-if="book.tags.length>5">...</a></div>
+        <br>
+        <!-- <div class="row">
+          <b-button variant="success" class="add-lib-button" @click.stop="addToLibraryButton(idx)">Añadir a bibliotecas</b-button>
+        </div> -->
         <AddToLibraryModal v-if="showModal===idx" :bookId="primaryKeys[idx]" @add="addToLibrary" @cancel="addToLibraryButton"/>
       </b-card>
     </div>
@@ -97,10 +113,13 @@ export default {
       this.$router.push({ name: 'readBook', params: { book: book, bookID: this.primaryKeys[idx] } })
     },
     description (desc) {
-      if (desc.length > 50) {
-        desc = desc.substr(0, 46) + '...'
+      if (desc.length > 100) {
+        desc = desc.substr(0, 99) + '...'
       }
       return desc
+    },
+    upperCase (title) {
+      return title.toUpperCase()
     }
   }
 }
@@ -131,26 +150,47 @@ export default {
   margin-left: 30px;
 }
 .card.mb-2 {
-    width: 250px;
-    height: 400px;
-    margin-left: 10px;
+  width: 250px;
+  height: 400px;
+  margin-left: 10px;
 }
 .card-img-top {
-    height: 140px;
+  max-height:140px;
+  width: auto;
+  height: 100%;
+}
+.card-text {
+  font-size: 0.9rem;
+  text-align: justify;
+}
+.card-title {
+  text-align: left;
 }
 .badge {
   margin-top: 0px;
 }
 .add-lib-button {
   position: absolute;
-  bottom: 10px;
+  top: 10px;
   left: 0;
   right: 0;
   margin-left: auto;
   margin-right: auto;
-  width: 165.65px; /* Need a specific value to work */
+  width: 106px; /* Need a specific value to work */
+}
+.text-small {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  width: 200px; /* Need a specific value to work */
 }
 .background-card {
   background-color: #e2e7ec;
+}
+.autor-name {
+  color: #7b8793;
 }
 </style>

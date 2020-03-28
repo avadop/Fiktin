@@ -10,7 +10,6 @@
       <div class="d-flex justify-content-end">
         <p v-show = "!create" class="mr-auto">Tienes {{ books.length }} libro(s).</p>
       </div>
-      <!-- <p v-if="books.length === 0">Todavia no tienes ningun libro creado. Pulsa <router-link to="/crearLibro">aquí</router-link> para crear uno.</p> -->
       <CreateBook v-show="create" id="createBook" @cancel="discardChangesBook" @create="saveChangesBook()"/>
       <!-- lista de libros -->
       <div class="row">
@@ -25,21 +24,30 @@
               class="mb-2"
               @click="openBook(book, idx)"
             >
-              <h4 class="car-title">{{book.title}} <a class="h4 mb-2" v-if="book.published"><b-icon icon="eye"></b-icon></a>
-                <a class="h4 mb-2" v-else><b-icon icon="eye-slash"></b-icon></a></h4>
-              <h6 v-if="book.author == 'Nombre'">{{ name }}</h6>
-              <h6 v-else>{{ nick }}</h6>
-              <b-card-text>
-                {{ description(book.description) }}
-              </b-card-text>
-
+              <div class="d-flex justify-content-start">
+                <h4 class="car-title">
+                  {{book.title}} <a class="h4 mb-2" v-if="book.published"><b-icon icon="eye"></b-icon></a>
+                  <a class="h4 mb-2" v-else><b-icon icon="eye-slash"></b-icon></a>
+                </h4>
+              </div>
+              <div class="d-flex justify-content-start">
+                <h6 class="autor-name" v-if="book.author == 'Nombre'">{{ name }}</h6>
+                <h6 class="autor-name" v-else>{{ nick }}</h6>
+              </div>
+              <div class="d-flex justify-content-start">
+                <b-card-text>
+                  {{ description(book.description) }}
+                </b-card-text>
+              </div>
+              <br>
               <b-badge v-for="(tag, idt) in book.tags" :key="idt" variant="secondary">{{ tag }}</b-badge>
 
               <!-- Botones -->
               <div>
-                <b-dropdown id="dropdown-1" variant="info" text="Opciones" class="opt-button">
-                  <b-dropdown-item variant="primary" id="modifyButton" @click.stop="modifyBook(book)" v-show="modifyID !== book.ID">Modificar</b-dropdown-item>
-                  <b-dropdown-item variant="success" @click.stop="addToLibraryButton(idx)">Añadir a bibliotecas</b-dropdown-item>
+                <b-dropdown id="dropdown-1" variant="outline-info" text="Opciones" class="opt-button">
+                  <b-dropdown-item id="modifyButton" @click.stop="modifyBook(book)" v-show="modifyID !== book.ID">Modificar</b-dropdown-item>
+                  <b-dropdown-item @click.stop="addToLibraryButton(idx)">Añadir a bibliotecas</b-dropdown-item>
+                  <b-dropdown-divider></b-dropdown-divider>
                   <b-dropdown-item variant="danger" v-if="modifyID !== book.ID" @click.stop="deleteBook(book.ID)">Eliminar</b-dropdown-item>
                 </b-dropdown>
               </div>
@@ -154,8 +162,8 @@ export default {
       this.$router.push({ name: 'readBook', params: { book: book, bookID: this.primaryKeys[idx] } })
     },
     description (desc) {
-      if (desc.length > 50) {
-        desc = desc.substr(0, 46) + '...'
+      if (desc.length > 100) {
+        desc = desc.substr(0, 99) + '...'
       }
       return desc
     }
@@ -193,7 +201,15 @@ export default {
   margin-left: 10px;
 }
 .card-img-top {
-  height: 140px;
+  display: block;
+  max-width:250px;
+  max-height:140px;
+  width: auto;
+  height: 100%;
+}
+.card-text {
+  font-size: 0.9rem;
+  text-align: justify;
 }
 .badge {
   margin-top: 0px;
@@ -209,5 +225,8 @@ export default {
 }
 .background-card {
   background-color: #e2e7ec;
+}
+.autor-name {
+  color: #7b8793;
 }
 </style>
