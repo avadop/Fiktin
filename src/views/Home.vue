@@ -28,7 +28,7 @@
           </h6>
         </div>
         <div class="d-flex justify-content-start">
-          <h7 class="autor-name" v-if="book.author == 'Nombre'">{{ book.name }} </h7>
+          <h6 class="autor-name" v-if="book.author == 'Nombre'">{{ book.name }} </h6>
           <h6 class="autor-name" v-else>{{ book.nick }}</h6>
         </div>
         <div class="d-flex justify-content-start">

@@ -27,13 +27,13 @@
               <br>
               <div class="d-flex justify-content-start">
                 <h6 class="car-title">
-                  {{book.title}} <a class="h5 mb-2" v-if="book.published"><b-icon icon="eye"></b-icon></a>
+                  {{upperCase(book.title)}} <a class="h5 mb-2" v-if="book.published"><b-icon icon="eye"></b-icon></a>
                   <a class="h5 mb-2" v-else><b-icon icon="eye-slash"></b-icon></a>
                 </h6>
               </div>
               <div class="d-flex justify-content-start">
-                <h7 class="autor-name" v-if="book.author == 'Nombre'">{{ name }}</h7>
-                <h7 class="autor-name" v-else>{{ nick }}</h7>
+                <h6 class="autor-name" v-if="book.author == 'Nombre'">{{ name }}</h6>
+                <h6 class="autor-name" v-else>{{ nick }}</h6>
               </div>
               <div class="d-flex justify-content-start">
                 <b-card-text>
@@ -167,12 +167,18 @@ export default {
         desc = desc.substr(0, 99) + '...'
       }
       return desc
+    },
+    upperCase (title) {
+      return title.toUpperCase()
     }
   }
 }
 </script>
 
 <style scoped>
+.background-card {
+  background-color: #e2e7ec;
+}
 .card.mb-2 {
   width: 250px;
   height: 400px;
@@ -206,9 +212,6 @@ export default {
 .text-small {
   bottom: 20px;
   width: 200px;
-}
-.background-card {
-  background-color: #e2e7ec;
 }
 .autor-name {
   color: #7b8793;

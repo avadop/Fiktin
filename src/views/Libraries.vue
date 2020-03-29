@@ -240,4 +240,8 @@ export default {
 .background-card {
   background-color: #e2e7ec;
 }
+.list-group {
+  padding-left: 60px;
+  padding-right: 60px;
+}
 </style>
