@@ -1,7 +1,9 @@
 <template>
   <div class="readBook">
     <button class="buttonBack" @click="goBack()">Atrás</button>
-    <button class="buttonEdit" v-if="isBookOfLoggedUser()" @click="goEdit()">Editar</button>
+    <button class="buttonEdit" v-if="isBookOfLoggedUser() && book.published===false" @click="goEdit()">Editar</button>
+    <button class="buttonEditDisabled" v-else-if="isBookOfLoggedUser()" :disabled="book.published===true">Editar</button>
+    <span style="color: red; padding-left: 10px;" v-if="isBookOfLoggedUser() && book.published===true">No se puede editar un libro si este se encuentra publicado</span>
     <div v-for="(text, index) in data" :key="index">
       <span v-html="text.htmlText"/>
     </div>
@@ -78,6 +80,11 @@ export default {
 }
 .buttonEdit {
   cursor: pointer;
+  margin-left: 5px;
+  background-color: lightgreen;
+  border: 1px solid darkgreen;
+}
+.buttonEditDisabled {
   margin-left: 5px;
   background-color: lightgreen;
   border: 1px solid darkgreen;

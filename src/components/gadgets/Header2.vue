@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 :id="'header' + index" class="editme" contenteditable v-html="this.plainTextAux" @blur="saveSelection($event)"/>
+    <h2 :id="'header' + index" class="editme" contenteditable v-html="this.plainTextAux" @blur="saveSelection($event)"/>
   </div>
 </template>
 
@@ -16,7 +16,7 @@ export default {
     saveSelection (evt) {
       var src = evt.target.innerHTML
       var plainText = src
-      var htmlText = ('<h1>' + src + '</h1>')
+      var htmlText = ('<h2>' + src + '</h2>')
       this.$emit('html', plainText, htmlText, this.index)
     }
   }
@@ -28,6 +28,6 @@ export default {
   outline: 0px solid transparent;
   cursor: text;
   display: block;
-  min-height: 48px;
+  min-height: 32px;
 }
 </style>

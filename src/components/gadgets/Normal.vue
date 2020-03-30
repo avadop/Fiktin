@@ -73,5 +73,6 @@ export default {
   outline: 0px solid transparent;
   cursor: text;
   display: block;
+  min-height: 24px;
 }
 </style>
