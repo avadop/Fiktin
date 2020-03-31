@@ -1,62 +1,100 @@
 <template>
   <div class="viewLibrary">
-    <!-- Cabecera -->
-    <button class="buttonBack" @click="goBack()">Atrás</button>
-    <br><br>
-    <span class="title">{{ name }} </span>
-    <span class="nBooks" v-if="numberOfBooks===-1"></span> <!--No mostramos nada-->
-    <span class="nBooks" v-else-if="numberOfBooks===1"> {{ numberOfBooks }} libro</span>
-    <span class="nBooks" v-else-if="numberOfBooks>1"> {{ numberOfBooks }} libros</span>
-    <br><br>
-    <!-- Comprobamos conexión -->
-    <h3 v-if="this.numberOfBooks === 0 && this.internetConnection === 0">No hay libros en esta biblioteca</h3>
-    <h3 v-else-if="this.numberOfBooks === -1 && this.internetConnection === 0">Cargando</h3>
-    <h3 v-else-if="this.internetConnection === -1">vaya, parece que no tienes conexión y no podemos mostrar los libros de esta biblioteca<br>Revisa tu conexión y actualiza la página para solucionar el problema</h3>
-    <span v-else>
-      <!-- Lista de libros -->
-      <div v-for="(book, index) in booksList" :key="index">
-        <div class="booksListSuccess" @click="openBook(book, index)" v-if="book.found==1"> <!--En caso de libro encontrado y publicado-->
-          <span class="text">Nombre: {{ book.title }}</span>
-          <br>
-          <span>Autor: {{ book.author }}</span>
-          <br>
-          <span v-if="book.description!==''">Descripción: {{ book.description }}</span>
-          <span v-else>Sin descripción</span>
-          <br>
-          <span>Fecha de publicación: Todavía no está implementada esta función </span>
-          <div v-if="idx !== 0">
-            <br>
-            <button class="buttonSuccess" @click.stop="deleteButton(index)">Eliminar</button>
-            <button class="buttonSuccess" @click.stop="upButton(index)" :disabled="index===0">Subir</button>
-            <button class="buttonSuccess" @click.stop="downButton(index)" :disabled="index===booksList.length-1">Bajar</button>
-          </div>
-        </div>
-        <div class="booksListError" v-else-if="book.found==2"> <!--En caso de libro encontrado pero no publicado-->
-          <span class="textError">Libro no publicado :(</span>
-          <br>
-          <span>El autor de este libro ha decidido no publicarlo. Se podrá leer cuando se publique.</span>
-          <div v-if="idx !== 0">
-            <br>
-            <button class="buttonError" @click="deleteButton(index)">Eliminar</button>
-            <button class="buttonError" @click="upButton(index)" :disabled="index===0">Subir</button>
-            <button class="buttonError" @click="downButton(index)" :disabled="index===booksList.length-1">Bajar</button>
-          </div>
-          <span class="textInfo">(Código del libro: {{ book.id }})</span>
-        </div>
-        <div class="booksListError" v-else> <!--En caso de libro no encontrado o error-->
-          <span class="textError">Libro no encontrado :(</span>
-          <br>
-          <span>No se encuentra este libro, quizá haya sido eliminado.</span>
-          <div v-if="idx !== 0">
-            <br>
-            <button class="buttonError" @click="deleteButton(index)">Eliminar</button>
-            <button class="buttonError" @click="upButton(index)" :disabled="index===0">Subir</button>
-            <button class="buttonError" @click="downButton(index)" :disabled="index===booksList.length-1">Bajar</button>
-          </div>
-          <span class="textInfo">(Código del libro: {{ book.id }})</span>
+    <b-card class="background-card">
+      <!-- Cabecera -->
+      <div class="d-flex justify-content-start">
+        <b-button variant="light" @click="goBack()"><b-icon icon="chevron-left"></b-icon></b-button>
+        <div>
+          <h4>{{ name }} </h4>
+          <h6 class="nBooks" v-if="numberOfBooks===1"> {{ numberOfBooks }} libro</h6>
+          <h6 class="nBooks" v-else-if="numberOfBooks>1"> {{ numberOfBooks }} libros</h6>
         </div>
       </div>
-    </span>
+      <br><br>
+      <!-- Comprobamos conexión -->
+      <h3 v-if="this.numberOfBooks === 0 && this.internetConnection === 0">No hay libros en esta biblioteca</h3>
+      <h3 v-else-if="this.numberOfBooks === -1 && this.internetConnection === 0">Cargando</h3>
+      <h3 v-else-if="this.internetConnection === -1">vaya, parece que no tienes conexión y no podemos mostrar los libros de esta biblioteca<br>Revisa tu conexión y actualiza la página para solucionar el problema</h3>
+      <span v-else>
+        <!-- Lista de libros -->
+        <b-list-group v-for="(book, index) in booksList" :key="index">
+          <!--En caso de libro encontrado y publicado-->
+          <b-list-group-item @click="openBook(book, index)" v-if="book.found==1">
+              <div class="d-flex justify-content-start">
+                <!-- portada -->
+                <div class="card-img-box">
+                  <img class="card-img-top" :src="book.cover" alt="Portada">
+                </div>
+                <div>
+                  <!-- botones subir bajar -->
+                  <b-button-group v-if="idx !== 0" class="mr-1 move-button">
+                    <b-button variant="light" @click.stop="upButton(index)" :disabled="index===0">
+                      <b-icon icon="chevron-up"></b-icon>
+                    </b-button>
+                    <b-button variant="light" @click.stop="downButton(index)" :disabled="index===booksList.length-1">
+                      <b-icon icon="chevron-down"></b-icon>
+                    </b-button>
+                  </b-button-group>
+                  <!-- titulo y fecha -->
+                  <div class="d-flex justify-content-start">
+                    <h6 class="car-title">{{upperCase(book.title)}}</h6>
+                    <h6 class="ml-2 nBooks">(dd-mm-aaaa)</h6>
+                  </div>
+                  <!-- autor -->
+                  <div class="d-flex justify-content-start">
+                    <h6 class="autor-name">{{ book.author }}</h6>
+                  </div>
+                  <!-- descripcion -->
+                  <div class="d-flex justify-content-start">
+                    <b-card-text v-if="book.description!==''">
+                      {{ book.description }}
+                    </b-card-text>
+                    <b-card-text v-else>
+                      Sin descripción
+                    </b-card-text>
+                  </div>
+                  <!-- boton de eliminar -->
+                  <div v-if="idx !== 0" class="mr-1 del-button">
+                    <b-button variant="danger" class="m-md-2" @click.stop="deleteButton(index)">Eliminar</b-button>
+                  </div>
+                </div>
+              </div>
+          </b-list-group-item>
+          <!--En caso de libro encontrado pero no publicado-->
+          <!--En caso de libro no encontrado o error-->
+          <b-list-group-item variant="danger" v-else>
+            <!-- botones subir bajar -->
+            <b-button-group v-if="idx !== 0" class="mr-1 move-button">
+              <b-button variant="light" @click.stop="upButton(index)" :disabled="index===0">
+                <b-icon icon="chevron-up"></b-icon>
+              </b-button>
+              <b-button variant="light" @click.stop="downButton(index)" :disabled="index===booksList.length-1">
+                <b-icon icon="chevron-down"></b-icon>
+              </b-button>
+            </b-button-group>
+            <!-- error y codigo -->
+            <div class="d-flex justify-content-start">
+              <h5 class="car-title" v-if="book.found==2"><b-icon variant="danger" icon="exclamation-octagon-fill"></b-icon> Libro no publicado</h5>
+              <h5 class="car-title" v-else><b-icon variant="danger" icon="exclamation-octagon-fill"></b-icon> Libro no encontrado</h5>
+              <h6 class="ml-2 nBooks">({{ book.id }})</h6>
+            </div>
+            <!-- descripcion -->
+            <div class="d-flex justify-content-start">
+              <b-card-text v-if="book.found==2">
+                El autor de este libro ha decidido no publicarlo. Se podrá leer cuando se publique.
+              </b-card-text>
+              <b-card-text v-else>
+                No se encuentra este libro, quizá haya sido eliminado.
+              </b-card-text>
+            </div>
+            <!-- boton de eliminar -->
+            <div v-if="idx !== 0" class="mr-1 del-button">
+              <b-button variant="danger" class="m-md-2" @click.stop="deleteButton(index)">Eliminar</b-button>
+            </div>
+          </b-list-group-item>
+        </b-list-group>
+      </span>
+    </b-card>
   </div>
 </template>
 
@@ -144,7 +182,8 @@ export default {
               id: a,
               title: doc.data().title,
               author: doc.data().author,
-              description: doc.data().description
+              description: doc.data().description,
+              cover: doc.data().cover
             })
           } else if (doc.exists) {
             this.booksList.push({
@@ -234,80 +273,60 @@ export default {
      */
     openBook (book, idx) {
       this.$router.push({ name: 'readBook', params: { book: book, bookID: this.referencesList[idx] } })
+    },
+
+    upperCase (title) {
+      return title.toUpperCase()
     }
   }
 }
 </script>
 
 <style scoped>
-.viewLibrary {
-  text-align: justify;
-  margin-left: 30px;
+.list-group-item:last-child {
+  min-height: 120px;
 }
-
-.buttonBack {
-  cursor: pointer;
-  background-color: lightgreen;
-  border: 1px solid darkgreen;
+.background-card {
+  background-color: #e2e7ec;
 }
-
-.booksListSuccess {
-  text-align: justify;
-  background-color: #E9FFE2;
-  border: 1px solid #DBECD5;
-  margin-top: 5px;
-  padding-left: 5px;
-  padding-right: 5px;
-  padding-bottom: 10px;
-  cursor: pointer;
-}
-
-.booksListError {
-  text-align: justify;
-  background-color: #ffeaea;
-  border: 1px solid #ebdbdb;
-  margin-top: 5px;
-  padding-left: 5px;
-  padding-right: 5px;
-  padding-bottom: 10px;
-}
-
-.buttonSuccess {
-  cursor: pointer;
-  background-color: lightgreen;
-  border: 1px solid darkgreen;
-  margin-right: 5px;
+.card-img-box {
   text-align: center;
+  min-width: 260px;
 }
-
-.buttonError {
-  cursor: pointer;
-  background-color: #ee9090;
-  border: 1px solid #640000;
-  margin-right: 5px;
-  text-align: center;
+.card-img-top {
+  display: block;
+  max-height: 140px;
+  min-height: 140px;
+  width: auto;
 }
-
-.title {
-  font: bold 30px Arial;
-  color: #272927;
+.card-text {
+  font-size: 0.9rem;
+  text-align: justify;
 }
-
+.autor-name {
+  color: #7b8793;
+}
+.list-group {
+  padding-left: 60px;
+  padding-right: 60px;
+}
+.move-button, .del-button {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+}
+.move-button {
+  top: 10px;
+  width: 106px;
+}
+.del-button {
+  bottom: 10px;
+  width: 106px;
+}
 .nBooks {
-    font: bold 14px Arial;
+    /*font: bold 14px Arial;*/
     color: #798079;
-}
-
-.text {
-  font: bold 14px/30px Arial;
-}
-
-.textInfo {
-  font: 12px/12px Arial;
-}
-
-.textError {
-  font: bold 14px/30px Arial;
-  color: #C24D4D;
 }
 </style>

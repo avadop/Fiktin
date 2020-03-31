@@ -22,11 +22,9 @@
           <img class="card-img-top" :src="book.cover" alt="Portada">
         </div>
         <br>
-        <div class="d-flex justify-content-start">
-          <h6 class="card-title">
-            {{upperCase(book.title)}}
-          </h6>
-        </div>
+        <h6 class="card-title">
+          {{upperCase(book.title)}}
+        </h6>
         <div class="d-flex justify-content-start">
           <h6 class="autor-name" v-if="book.author == 'Nombre'">{{ book.name }} </h6>
           <h6 class="autor-name" v-else>{{ book.nick }}</h6>
@@ -37,7 +35,7 @@
           </b-card-text>
         </div>
         <br>
-        <div class="text-small"><a href="" v-for="(tag, idt) in book.tags.slice(0, 5)" :key="idt">#{{ tag }} </a><a v-if="book.tags.length>5">...</a></div>
+        <div class="text-small"><a href="" v-for="(tag, idt) in book.tags.slice(0, 3)" :key="idt">#{{ tag }} </a><a v-if="book.tags.length>3">...</a></div>
         <br>
         <AddToLibraryModal v-if="showModal===idx" :bookId="primaryKeys[idx]" @add="addToLibrary" @cancel="addToLibraryButton"/>
       </b-card>
@@ -160,6 +158,9 @@ export default {
 }
 .background-card {
   background-color: #e2e7ec;
+}
+.card-title {
+  text-align: left;
 }
 .autor-name {
   color: #7b8793;

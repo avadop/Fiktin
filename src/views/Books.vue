@@ -25,12 +25,10 @@
                 <img class="card-img-top" :src="book.cover" alt="Portada">
               </div>
               <br>
-              <div class="d-flex justify-content-start">
-                <h6 class="car-title">
-                  {{upperCase(book.title)}} <a class="h5 mb-2" v-if="book.published"><b-icon icon="eye"></b-icon></a>
-                  <a class="h5 mb-2" v-else><b-icon icon="eye-slash"></b-icon></a>
-                </h6>
-              </div>
+              <h6 class="card-title">
+                {{upperCase(book.title)}} <a class="h5 mb-2" v-if="book.published"><b-icon icon="eye"></b-icon></a>
+                <a class="h5 mb-2" v-else><b-icon icon="eye-slash"></b-icon></a>
+              </h6>
               <div class="d-flex justify-content-start">
                 <h6 class="autor-name" v-if="book.author == 'Nombre'">{{ name }}</h6>
                 <h6 class="autor-name" v-else>{{ nick }}</h6>
@@ -41,7 +39,7 @@
                 </b-card-text>
               </div>
               <br>
-              <div class="text-small"><a href="" v-for="(tag, idt) in book.tags.slice(0, 5)" :key="idt">#{{ tag }} </a><a v-if="book.tags.length>5">...</a></div>
+              <div class="text-small"><a href="" v-for="(tag, idt) in book.tags.slice(0, 3)" :key="idt">#{{ tag }} </a><a v-if="book.tags.length>3">...</a></div>
 
               <!-- Botones -->
               <div>
@@ -212,6 +210,9 @@ export default {
 .text-small {
   bottom: 20px;
   width: 200px;
+}
+.card-title {
+  text-align: left;
 }
 .autor-name {
   color: #7b8793;
