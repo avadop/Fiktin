@@ -3,6 +3,7 @@
     <b-card class="background-card">
       <div v-if="this.internetConnection === 0" class="d-flex justify-content-end">
         <h4 class="mr-auto">Sección de tus bibliotecas</h4>
+        <!-- Botón de creación de librería según la conexión. Si no hay, no aparece el botón -->
         <b-button v-if="!opened" variant="info" size="sm" class="m-md-2" :disabled="modifying != -1" @click="btnCreateNewLib()">
           <b-icon icon="plus"></b-icon> Crear biblioteca
         </b-button>
@@ -34,7 +35,8 @@
                 </div>
                 <div class="m-md-2">
                   <b-button v-if="(modifying===-1 || modifying !==index) && library.id !== searchHistory" variant="outline-dark" :disabled="opened || modifying != -1" @click.stop="btnModifyLib(index)">Modificar</b-button>
-                  <b-button v-if="modifying!==index && library.id !== searchHistory" variant="danger" :disabled="opened || modifying != -1" @click.stop="btnDeleteHandler(library.id)">Eliminar</b-button>
+                  <b-button v-if="modifying!==index && library.id !== searchHistory" variant="danger" :disabled="opened || modifying != -1" @click.stop="btnDeleteHandler(index)">Eliminar</b-button>
+                  <DeleteLibraryModal v-if="showModal===index" :name="librariesList[index].name" :id="librariesList[index].id" @cancel="btnDeleteHandler" @delete="deleteLib"/>
                 </div>
               </div>
             </div>
@@ -50,6 +52,7 @@
 // import router from '../router/index.js'
 import CreateLibrary from '@/components/CreateLibrary.vue'
 import ModifyLibrary from '@/components/ModifyLibrary.vue'
+import DeleteLibraryModal from '@/components/modals/DeleteLibraryModal.vue'
 import { librariesCollection, connectedRef } from '../firebase.js'
 import { store } from '@/store/index.js'
 
@@ -57,12 +60,14 @@ export default {
   name: 'libraries',
   components: {
     CreateLibrary,
-    ModifyLibrary
+    ModifyLibrary,
+    DeleteLibraryModal
   },
   /**
    * librariesList: Array con los datos de las librerías del usuario con la sesión iniciada.
    * searchNick: Nombre en minúsculas de la biblioteca "mis obras" del usuario con la sesión iniciada.
    * searchHistory: Nombre en minúsculas de la biblioteca "historial" del usuario con la sesión iniciada.
+   * showModal: Índice del libro que se desea eliminar. Si su valor es -1, significa que no se ha pulsado sobre ninguno.
    * opened: Booleano que indica si el botón de crear biblioteca ha sido presionado o no. false para no, true para sí.
    * opened: Entero que indica si el botón de modificar biblioteca ha sido presionado o no. Tiene varios valores:
    *  -1: No se ha presionado.
@@ -81,6 +86,7 @@ export default {
       librariesList: [],
       searchNick: store.state.userNick.concat('_mis_obras').toLowerCase(),
       searchHistory: store.state.userNick.concat('_historial').toLowerCase(),
+      showModal: -1,
       opened: false,
       modifying: -1,
       numberOfLibraries: -3,
@@ -160,45 +166,27 @@ export default {
     },
 
     /**
-     * @param {String} idAux: ID en la bbdd de la biblioteca a eliminar. No se usa en este método más que para pasárselo al de borrar.
+     * @param {Number} index: Índice de la biblioteca que se desea eliminar.
      * Cada vez que se presiona el botón de eliminar, se llama a este método.
-     * Se encarga de mostrar en una pequeña ventana emergente una confirmación del borrado de una biblioteca.
-     * Se ofrecen dos opciones para pulsar:
-     *  "Sí", en cuyo caso se cierra la ventana emergente y se borra la biblioteca.
-     *  "No", en cuyo caso se cierra la ventana emergente.
-     * Si se pulsa fuera de la ventana emergente, esta se cierra.
-     * Si se pulsa la tecla "Intro", la ventana emergente se cierra.
+     * Se encarga de modificar la variable "showModal" para que se pueda mostrar o no el modal de borrar la biblioteca.
      */
-    btnDeleteHandler (idAux) {
+    btnDeleteHandler (index) {
       // Usamos un modal dinámico
-      this.$modal.show('dialog', {
-        text: '¿Estás seguro de que deseas borrar esta biblioteca?',
-        buttons: [
-          {
-            title: 'Sí',
-            handler: () => {
-              this.$modal.hide('dialog') // Escondemos el modal
-              this.deleteLib(idAux)
-            }
-          },
-          {
-            title: 'No',
-            default: true // Si se pulsa la tecla intro, se activa esta opción
-          }
-        ]
-      })
+      this.showModal = index
     },
 
     /**
      * @param {String} idAux: ID en la bbdd de la biblioteca a eliminar.
-     * Cada vez que se presiona el botón de confirmación de eliminar biblioteca (en la ventana emergente) se llama a este método.
+     * Cada vez que se presiona el botón de confirmación de eliminar biblioteca (en el modal emergente) se llama a este método.
      * Su procedimiento es:
      *  Actualiza la bbdd eliminando la biblioteca.
      *  Refresca la página.
+     *  Actualiza la variable "showModal" para que el modal no se siga mostrando.
      */
     async deleteLib (idAux) {
       await librariesCollection.doc(idAux).delete()
       this.refresh()
+      this.showModal = -1
     },
 
     /**
