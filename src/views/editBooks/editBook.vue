@@ -7,24 +7,26 @@
     <div class="editBook">
       <div class="sidebar">
         <h4>Gadgets</h4>
-        <span style="color: red;" v-if="data.length==0">No hay gadgets creados. Para editar el documento, agrega uno primero</span>
-        <div v-for="(text, index) in data" :key="index">
-          <div class="sidebarBlock" v-if="lastPress!==index">
-            <span class="marginLeft">Tipo: {{ text.componentName }}</span>
-            <div class="h5 lg, verticalLine">
-              <b-icon icon="chevron-up" class="marginLeftButton" @mouseup="itemUp(index)">Subir gadget</b-icon>
-              <b-icon icon="chevron-down" class="marginLeftButton" @mouseup="itemDown(index)">Bajar gadget</b-icon>
-              <b-icon icon="layers" class="marginLeftButton" @mouseup="itemClone(index)">Duplicar gadget</b-icon>
-              <b-icon icon="trash-fill" class="marginLeftButton" @mouseup="itemDelete(index)">Eliminar gaget</b-icon>
+        <div class="sidebarHeight">
+          <span style="color: red;" v-if="data.length==0">No hay gadgets creados. Para editar el documento, agrega uno primero</span>
+          <div v-for="(text, index) in data" :key="index">
+            <div class="sidebarBlock" v-if="lastPress!==index" @click="lastElementPressed(index)">
+              <span class="marginLeft">Tipo: {{ text.componentName }}</span>
+              <div class="h5 lg, verticalLine">
+                <b-icon icon="chevron-up" class="marginLeftButton" @click.stop @mouseup="itemUp(index)">Subir gadget</b-icon>
+                <b-icon icon="chevron-down" class="marginLeftButton" @click.stop @mouseup="itemDown(index)">Bajar gadget</b-icon>
+                <b-icon icon="layers" class="marginLeftButton" @click.stop @mouseup="itemClone(index)">Duplicar gadget</b-icon>
+                <b-icon icon="trash-fill" class="marginLeftButton" @click.stop @mouseup="itemDelete(index)">Eliminar gaget</b-icon>
+              </div>
             </div>
-          </div>
-          <div class="sidebarBlockSelected" v-else>
-            <span class="marginLeft">Tipo: {{ text.componentName }}</span>
-            <div class="h5 lg, verticalLine">
-              <b-icon icon="chevron-up" class="marginLeftButton" @mouseup="itemUp(index)">Subir gadget</b-icon>
-              <b-icon icon="chevron-down" class="marginLeftButton" @mouseup="itemDown(index)">Bajar gadget</b-icon>
-              <b-icon icon="layers" class="marginLeftButton" @mouseup="itemClone(index)">Duplicar gadget</b-icon>
-              <b-icon icon="trash-fill" class="marginLeftButton" @mouseup="itemDelete(index)">Eliminar gaget</b-icon>
+            <div class="sidebarBlockSelected" v-else @click="lastElementPressed(index)">
+              <span class="marginLeft">Tipo: {{ text.componentName }}</span>
+              <div class="h5 lg, verticalLine">
+                <b-icon icon="chevron-up" class="marginLeftButtonSelected" @click.stop @mouseup="itemUp(index)">Subir gadget</b-icon>
+                <b-icon icon="chevron-down" class="marginLeftButtonSelected" @click.stop @mouseup="itemDown(index)">Bajar gadget</b-icon>
+                <b-icon icon="layers" class="marginLeftButtonSelected" @click.stop @mouseup="itemClone(index)">Duplicar gadget</b-icon>
+                <b-icon icon="trash-fill" class="marginLeftButtonSelected" @click.stop @mouseup="itemDelete(index)">Eliminar gaget</b-icon>
+              </div>
             </div>
           </div>
         </div>
@@ -48,14 +50,19 @@
           <span style="font-size: 20px;">Título</span>
           <b-icon icon="plus" class="addGadgetButton" @click="addTitle()">Añadir</b-icon>
           <div class="headerPanelOptions">
-            <b-icon icon="plus" class="addGadgetButton" @mousedown="addTitle()">Añadir título</b-icon>
+            <b-icon icon="type-h1" class="buttonNormal" v-if="header1Active!=1" @mousedown="onLiveEditComponent($event, 'Header1')">Añadir título 1</b-icon>
+            <b-icon icon="type-h1" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Header1')">Añadir título 1</b-icon>
+            <b-icon icon="type-h2" class="buttonNormal" v-if="header2Active!=1" @mousedown="onLiveEditComponent($event, 'Header2')">Añadir título 2</b-icon>
+            <b-icon icon="type-h2" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Header2')">Añadir título 2</b-icon>
+            <b-icon icon="type-h3" class="buttonNormalRightBorder" v-if="header3Active!=1" @mousedown="onLiveEditComponent($event, 'Header3')">Añadir título 3</b-icon>
+            <b-icon icon="type-h3" class="buttonPressedRightBorder" v-else @mousedown="onLiveEditComponent($event, 'Header3')">Añadir título 3</b-icon>
           </div>
         </div>
         <b-icon icon="cloud-upload" class="buttonNormalRightBorder" @mousedown="save()">Save</b-icon>
       </div>
       <!--Poniendo el contenteditable, keyup y click aquí, podemos controlar las flechas de una forma muy sencilla-->
-      <div @keyup="checkStyles" @click="checkStyles()" @keydown.tab.prevent class="document">
-        <div class="editable" v-for="(text, index) in data" :key="index" @click="lastElementPressed(index)">
+      <div class="document" @keyup="checkStyles" @keydown.tab.prevent>
+        <div class="editable" v-for="(text, index) in data" :key="index" @click="lastElementPressed(index), checkStyles()">
           <Normal v-if="text.component=='Normal'"
             :htmlTextAux="text.htmlText"
             :index="index"
@@ -71,6 +78,16 @@
             :plainTextAux="text.plainText"
             :index="index"
             @html="savePlaneAndHTML"/>
+          <Header2 v-if="text.component=='Header2'"
+            :htmlTextAux="text.htmlText"
+            :plainTextAux="text.plainText"
+            :index="index"
+            @html="savePlaneAndHTML"/>
+          <Header3 v-if="text.component=='Header3'"
+            :htmlTextAux="text.htmlText"
+            :plainTextAux="text.plainText"
+            :index="index"
+            @html="savePlaneAndHTML"/>
         </div>
       </div>
     </div>
@@ -80,12 +97,16 @@
 <script>
 import Normal from '@/components/gadgets/Normal.vue'
 import Header1 from '@/components/gadgets/Header1.vue'
+import Header2 from '@/components/gadgets/Header2.vue'
+import Header3 from '@/components/gadgets/Header3.vue'
 
 export default {
   name: 'editBook',
   components: {
     Normal,
-    Header1
+    Header1,
+    Header2,
+    Header3
   },
   props: {
     book: Object
@@ -100,6 +121,9 @@ export default {
       underlineUse: false,
       strikeThroughActive: 0,
       strikeThroughUse: false,
+      header1Active: 0,
+      header2Active: 0,
+      header3Active: 0,
       lastPress: -1,
       data: [{
         htmlText: '<b>Bold </b><i>Italiccc </i><u>underline </u>plaintext',
@@ -132,6 +156,7 @@ export default {
     },
     itemDelete (index) {
       this.data.splice(index, 1)
+      if (this.data.length === 0) this.lastPress = -1
     },
     itemClone (index) {
       // Debido a problemas de clonaciones, es necesario poner los textos manualmente
@@ -145,14 +170,30 @@ export default {
       this.data.splice(this.lastPress + 1, 0, { plainText: '', htmlText: '<h1></h1>', component: 'Header1', componentName: 'Título' })
     },
     checkStyles () {
-      if (document.queryCommandState('Bold')) this.changeButtons('Bold', 1)
-      else this.changeButtons('Bold', -1)
-      if (document.queryCommandState('Italic')) this.changeButtons('Italic', 1)
-      else this.changeButtons('Italic', -1)
-      if (document.queryCommandState('Underline')) this.changeButtons('Underline', 1)
-      else this.changeButtons('Underline', -1)
-      if (document.queryCommandState('StrikeThrough')) this.changeButtons('StrikeThrough', 1)
-      else this.changeButtons('StrikeThrough', -1)
+      // Normal
+      if (this.data[this.lastPress].component === 'Normal') {
+        // Negrita
+        if (document.queryCommandState('Bold')) this.changeButtons('Bold', 1)
+        else this.changeButtons('Bold', -1)
+        // Cursiva
+        if (document.queryCommandState('Italic')) this.changeButtons('Italic', 1)
+        else this.changeButtons('Italic', -1)
+        // Subrayado
+        if (document.queryCommandState('Underline')) this.changeButtons('Underline', 1)
+        else this.changeButtons('Underline', -1)
+        // Tachado
+        if (document.queryCommandState('StrikeThrough')) this.changeButtons('StrikeThrough', 1)
+        else this.changeButtons('StrikeThrough', -1)
+      }
+      // Título 1
+      if (this.data[this.lastPress].component === 'Header1') this.changeButtons('Header1', 1)
+      else this.changeButtons('Header1', 0)
+      // Título 2
+      if (this.data[this.lastPress].component === 'Header2') this.changeButtons('Header2', 1)
+      else this.changeButtons('Header2', 0)
+      // Título 3
+      if (this.data[this.lastPress].component === 'Header3') this.changeButtons('Header3', 1)
+      else this.changeButtons('Header3', 0)
     },
     checkDelete (index) {
       this.data.splice(index, 1)
@@ -162,40 +203,61 @@ export default {
     },
     onLiveEditComponent (evt, component) {
       evt.preventDefault() // Prevenimos perder el foco del cursor SOLO para estos botones (save no está entre ellos para que funcione todo correctamente)
-      if (component === 'Bold') {
-        if (this.boldActive <= 0) {
-          this.boldActive = 1
-          this.boldUse = true
-        } else {
-          this.boldActive = 0
-          this.boldUse = false
+      var a = this.data[this.lastPress].component
+      if (a === 'Normal') {
+        if (component === 'Bold') {
+          if (this.boldActive <= 0) {
+            this.boldActive = 1
+            this.boldUse = true
+          } else {
+            this.boldActive = 0
+            this.boldUse = false
+          }
         }
-      }
-      if (component === 'Italic') {
-        if (this.italicActive <= 0) {
-          this.italicActive = 1
-          this.italicUse = true
-        } else {
-          this.italicActive = 0
-          this.italicUse = false
+        if (component === 'Italic') {
+          if (this.italicActive <= 0) {
+            this.italicActive = 1
+            this.italicUse = true
+          } else {
+            this.italicActive = 0
+            this.italicUse = false
+          }
         }
-      }
-      if (component === 'Underline') {
-        if (this.underlineActive <= 0) {
-          this.underlineActive = 1
-          this.underlineUse = true
-        } else {
-          this.underlineActive = 0
-          this.underlineUse = false
+        if (component === 'Underline') {
+          if (this.underlineActive <= 0) {
+            this.underlineActive = 1
+            this.underlineUse = true
+          } else {
+            this.underlineActive = 0
+            this.underlineUse = false
+          }
         }
-      }
-      if (component === 'StrikeThrough') {
-        if (this.strikeThroughActive <= 0) {
-          this.strikeThroughActive = 1
-          this.strikeThroughUse = true
-        } else {
-          this.strikeThroughActive = 0
-          this.strikeThroughUse = false
+        if (component === 'StrikeThrough') {
+          if (this.strikeThroughActive <= 0) {
+            this.strikeThroughActive = 1
+            this.strikeThroughUse = true
+          } else {
+            this.strikeThroughActive = 0
+            this.strikeThroughUse = false
+          }
+        }
+      } else if (a === 'Header1' || a === 'Header2' || a === 'Header3') {
+        // Al pulsar sobre un cambio de título se pierde el foco del cursor debido a que cambiamos el renderizado, por modificar el tipo de componente
+        if (component === 'Header1') {
+          this.data[this.lastPress].component = 'Header1'
+          this.header1Active = 1
+          this.header2Active = 0
+          this.header3Active = 0
+        } else if (component === 'Header2') {
+          this.data[this.lastPress].component = 'Header2'
+          this.header1Active = 0
+          this.header2Active = 1
+          this.header3Active = 0
+        } else if (component === 'Header3') {
+          this.data[this.lastPress].component = 'Header3'
+          this.header1Active = 0
+          this.header2Active = 0
+          this.header3Active = 1
         }
       }
     },
@@ -236,6 +298,9 @@ export default {
           this.strikeThroughActive = val
         }
       }
+      if (btn === 'Header1') this.header1Active = val
+      if (btn === 'Header2') this.header2Active = val
+      if (btn === 'Header3') this.header3Active = val
     },
     save () {
       alert('Hay que implementar save')
@@ -287,19 +352,26 @@ export default {
   padding-left: 10px;
   padding-right: 10px;
   width: 250px;
+  height: 61%;
   background-color: rgb(227, 229, 241);
   border: 1px solid rgb(129, 129, 129);
   position: fixed;
-  overflow: auto;
+}
+.sidebarHeight {
+  height: 90%;
+  padding-top: 5px;
+  overflow-y: auto;
 }
 .sidebarBlock {
   border: 1px solid rgb(129, 129, 129);
   margin-bottom: 5px;
+  cursor: pointer;
 }
 .sidebarBlockSelected {
   border: 1px solid rgb(87, 87, 87);
   background-color: lightgray;
   margin-bottom: 5px;
+  cursor: pointer;
 }
 .verticalLine {
   border-top: 1px solid gray;
@@ -315,6 +387,13 @@ export default {
 }
 .marginLeftButton:hover {
   background-color: rgb(205, 207, 218);
+}
+.marginLeftButtonSelected {
+  margin-left: 5px;
+  padding: 1px;
+}
+.marginLeftButtonSelected:hover {
+  background-color: rgb(184, 187, 197);
 }
 /* Componentes editables del editor */
 .editable {
@@ -396,12 +475,13 @@ export default {
 /* Documento de texto */
 .document {
   width: 210mm;
-  min-height: 297mm;
+  height: 297mm;
   padding: 20mm;
   margin-left: 280px;
   margin-top: 10px;
   margin-bottom: 10px;
   border: 1px rgb(168, 168, 168) solid;
   background: white;
+  overflow-y: auto;
 }
 </style>

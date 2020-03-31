@@ -6,6 +6,10 @@ Una vez descargado el master, te metes en la carpeta que lo hayas descargado des
 npm install
 ```
 
+
+## Restricciones
+La aplciación no tiene todas sus funcionalidades disponibles en el navegador **Firefox**
+
 ### Compiles and hot-reloads for development
 ```
 npm run serve
