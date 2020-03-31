@@ -5,12 +5,12 @@
     <h3>Es necesario registrarse e iniciar sesion antes de acceder a la aplicacion</h3>
     <div id="options-menu">
       <div v-if="!create">
-        <LogIn @loggedIn="logIn"/>
-        <b-button variant="primary" @click="switchCreate"> Crear Usuario</b-button>
-      </div>
-      <div v-else>
         <NewUser @switch-create="switchCreate"/>
         <b-button variant="primary" @click="switchCreate"> Log In</b-button>
+      </div>
+      <div v-else>
+        <LogIn @loggedIn="logIn"/>
+        <b-button variant="primary" @click="switchCreate"> Crear Usuario</b-button>
       </div>
     </div>
   <!-- </modal> -->
