@@ -1,46 +1,101 @@
 <template>
   <div class="user">
-    <form >
-      <br>
-      <p> Cambia los datos que desees modificar </p>
-      <label>Nombre</label>
-      <br>
-      <input v-model="newName" type="text" placeholder="Maria Martinez"> <br>
-      <label>Email</label>
-      <br>
-      <input v-model="newEmail" type="text" placeholder="email@fiktin.com"> <br>
-      <label>Contraseña</label>
-      <br>
-      <input v-model="newPassword" type="password" placeholder="123456"><br>
-      <span v-if="minPassword" class="red_letter">Minimo 6 caracteres</span><br v-if="minPassword">
-      <span v-if="maxPassword" class="red_letter">Contraseña muy larga</span><br v-if="maxPassword">
-      <label>Confirmar contraseña</label>
-      <br>
-      <input v-model="newPassword2" type="password" :class="{red_box: !samePasswords}" placeholder="123456"><br>
-      <span v-if="!samePasswords" class="red_letter">Las contraseñas deben coincidir</span><br>
+    <b-card>
+      <form >
+        <br>
+        <p> Cambia los datos que desees modificar </p>
+        <div class="row">
+          <div class="col form-div">
+            <!-- Imagen de perfil -->
+            <b-container fluid class="col">
+              <b-container sm="3">
+                <label>Imagen de perfil:</label>
+                <b-form-file v-show="this.uploadValue==0 && this.newPicture == null" @change="onFileSelected"
+                  class="my-2"
+                  placeholder="Selecciona una imagen o arrastrala aquí..."
+                  drop-placeholder="Arrastra aquí la imagen..."
+                  accept="image/*"></b-form-file>
+              </b-container>
+              <div class="card-img-box">
+                <b-button v-if="this.newPicture != null" class="my-2 del-button" variant="danger-dark" @click="removeImg"><b-icon variant="danger" icon="x"></b-icon></b-button>
+                <img class="card-img-top" :src="this.newPicture" alt="No has subido ninguna imagen">
+              </div>
+            </b-container>
+          </div>
+          <div class="center-col">
+            <div class="col">
+              <!-- Nombre -->
+              <b-form-input
+                type="text"
+                v-model="newName"
+                class="input-form"
+                aria-describedby="input-live-help input-live-feedback"
+                placeholder="Nombre"
+              ></b-form-input>
+              <br>
+              <!-- Email -->
+              <b-form-input
+                type="text"
+                v-model="newEmail"
+                class="input-form"
+                aria-describedby="input-live-help input-live-feedback"
+                placeholder="Email"
+              ></b-form-input>
+              <br>
+              <!-- Contraseña -->
+              <b-form-input
+                v-if="newPassword.length == 0"
+                type="password"
+                v-model="newPassword"
+                class="input-form"
+                aria-describedby="input-live-help input-live-feedback"
+                placeholder="Contraseña"
+              ></b-form-input>
+              <b-form-input
+                v-else
+                type="password"
+                v-model="newPassword"
+                class="input-form"
+                :state="newPassword.length >= 6 && newPassword.length <= 12"
+                aria-describedby="input-live-help input-live-feedback"
+                placeholder="Contraseña"
+              ></b-form-input>
+              <b-form-invalid-feedback v-if='newPassword.length > 0 && newPassword.length < 6' id="input-live-feedback">
+                Mínimo 6 caracteres
+              </b-form-invalid-feedback>
+              <b-form-invalid-feedback v-else-if="newPassword.length > 0 && newPassword.length > 12" id="input-live-feedback">
+                Máximo 12 caracteres
+              </b-form-invalid-feedback>
+              <br>
+              <!-- Confirmar contraseña -->
+              <b-form-input
+                v-if="newPassword2.length == 0"
+                type="password"
+                v-model="newPassword2"
+                class="input-form"
+                aria-describedby="input-live-help input-live-feedback"
+                placeholder="Confirmar contraseña"
+              ></b-form-input>
+              <b-form-input
+                v-else
+                type="password"
+                v-model="newPassword2"
+                class="input-form"
+                :state="newPassword2 === newPassword"
+                aria-describedby="input-live-help input-live-feedback"
+                placeholder="Confirmar contraseña"
+              ></b-form-input>
+              <b-form-invalid-feedback v-if='newPassword2.length > 0 && newPassword2 !== newPassword' id="input-live-feedback">
+                Las contraseñas deben coincidir
+              </b-form-invalid-feedback>
+            </div>
+          </div>
+        </div>
 
-      <!-- Imagen de perfil -->
-      <b-container fluid class="col">
-        <b-row class="my-1">
-          <b-container sm="3">
-            <label>Portada</label>
-            <b-form-file @change="onFileSelected"
-              class="my-2"
-              placeholder="Selecciona una imagen o arrastrala aquí..."
-              drop-placeholder="Arrastra aquí la imagen..."
-              accept="image/*"></b-form-file>
-          </b-container>
-        </b-row>
-        <b-row class="my-1">
-          <b-col sm="9">
-            <b-img :src="this.newPicture" fluid width="250%" alt="No has subido ninguna imagen"></b-img>
-            <b-button v-if="this.newPicture != null" class="my-2" variant="danger" @click="removeImg">Eliminar imagen</b-button>
-          </b-col>
-        </b-row>
-      </b-container>
-
-      <b-button variant="success" type="submit" @click="update"> Confirmar</b-button>
-    </form>
+        <b-button variant="outline-secondary" class="mr-auto" @click="switchEdit"> Cancelar</b-button>
+        <b-button variant="dark" type="submit" @click="update"> Confirmar</b-button>
+      </form>
+    </b-card>
   </div>
 </template>
 
@@ -56,7 +111,8 @@ export default {
       newEmail: '',
       newPassword: '',
       newPassword2: '',
-      newPicture: ''
+      newPicture: '',
+      uploadValue: 0
     }
   },
   props: {
@@ -76,6 +132,8 @@ export default {
   methods: {
     removeImg () {
       this.newPicture = null
+      this.uploadValue = 0
+      this.selectedFile = ''
     },
     onFileSelected (event) {
       this.selectedFile = event.target.files[0]
@@ -86,10 +144,10 @@ export default {
       const task = storageRef.put(this.selectedFile)
       task.on('state_changed', snapshot => {
         let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-        this.UploadValue = percentage
+        this.uploadValue = percentage
       }, error => { console.log(error.message) },
       () => {
-        this.UploadValue = 100
+        this.uploadValue = 100
         // downloadURL
         task.snapshot.ref.getDownloadURL().then((url) => {
           this.newPicture = url
@@ -121,6 +179,9 @@ export default {
       } else {
         window.alert('Longitud de contraseña inválida')
       }
+    },
+    switchEdit () {
+      this.$emit('switchEdit')
     }
   },
   computed: {
@@ -146,12 +207,28 @@ export default {
 </script>
 
 <style>
-.red_box{
-  border-style: solid;
-  border-width: 1px;
-  border-color: crimson;
+.center-col {
+  text-align: center;
+  width: 50%;
 }
-.red_letter{
-  color: crimson;
+.form-div {
+  display: inline-block;
+}
+.card-img-box {
+  text-align: center;
+}
+.card-img-top {
+  display: inline-block;
+  max-height: 200px;
+  width: auto!important;
+}
+.del-button {
+  position: absolute;
+  left: 0;
+  right: 150px;
+  margin-left: auto;
+  margin-right: 5px;
+  top: 30px;
+  width: 60px;
 }
 </style>

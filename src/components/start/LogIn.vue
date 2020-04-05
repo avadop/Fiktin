@@ -71,11 +71,11 @@ export default {
 .input-form {
   max-width:200px;
 }
-.form-div {
-  display: inline-block;
-}
 .log-in {
   text-align: center;
+}
+.form-div {
+  display: inline-block;
 }
 .btn-secondary {
     color: #fff;

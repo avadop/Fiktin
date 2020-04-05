@@ -32,8 +32,7 @@
         </b-list-group-item>
         <div v-else>
             <ModifyUser :email="email" :name="name" :userKey="userKey" :password="password" :picture="picture"
-            @new-name="newName" @new-email="newEmail" @new-password="newPassword" @new-picture="newPicture" @flip-edit="switchEdit"/>
-            <b-button variant="primary" class="mr-auto" @click="switchEdit"> Cancelar</b-button>
+            @new-name="newName" @new-email="newEmail" @new-password="newPassword" @new-picture="newPicture" @flip-edit="switchEdit" @switchEdit="switchEdit"/>
         </div>
 
         <b-modal v-model="modal" hide-footer hide-header>
@@ -139,7 +138,6 @@ export default {
 .card-img-top {
   display: block;
   max-height: 140px;
-  min-height: 140px;
   width: auto;
 }
 .user-name {
@@ -153,5 +151,9 @@ export default {
   margin-right: auto;
   bottom: 10px;
   width: 106px;
+}
+.card-body {
+  padding-left: 60px;
+  padding-right: 60px;
 }
 </style>
