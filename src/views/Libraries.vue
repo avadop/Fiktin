@@ -236,4 +236,7 @@ export default {
   padding-left: 60px;
   padding-right: 60px;
 }
+.list-group-item {
+  cursor: pointer;
+}
 </style>
