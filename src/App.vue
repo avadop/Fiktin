@@ -1,12 +1,12 @@
 <template>
   <div id="app">
     <div>
-      <b-navbar toggleable="lg" type="dark" variant="info">
-        <b-navbar-brand><router-link to="/home" class="main-nav-ref">Fiktin</router-link></b-navbar-brand>
+      <b-navbar toggleable="lg"  variant="faded" type="light">
+        <b-navbar-brand><router-link to="/home" class="main-nav-ref"><img width="150px" src="@/assets/fiktin_logo.jpg"/></router-link></b-navbar-brand>
 
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
-        <b-collapse id="nav-collapse" is-nav>
+        <b-collapse v-if="loggedIn" id="nav-collapse" is-nav>
           <b-navbar-nav>
             <b-nav-item><router-link to="/books" class="nav-ref">Mis libros</router-link></b-nav-item>
             <b-nav-item><router-link to="/libraries" class="nav-ref">Bibliotecas </router-link></b-nav-item>
@@ -92,17 +92,10 @@ export default {
 }
 
 .nav-ref {
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(0, 0, 0, 0.5);
 }
 .nav-ref:hover {
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.nav-exp {
-  color: #000;
-}
-.nav-exp:hover {
-  color: #fff;
+  color: rgba(0, 0, 0, 0.85);
 }
 
 #nav a {
@@ -111,6 +104,6 @@ export default {
 }
 
 .nav-ref.router-link-exact-active {
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(0, 0, 0, 0.85);
 }
 </style>
