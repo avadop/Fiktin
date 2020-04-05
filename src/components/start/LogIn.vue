@@ -1,11 +1,29 @@
 <template>
   <div class="log-in">
-      <h4> Log In </h4>
-      <label>Nickname</label> <br>
-      <input v-model="nick" type="text" placeholder="Maririta26" @keyup.enter="logIn"> <br>
-      <label>Contraseña</label> <br>
-      <input v-model="password" type="password" placeholder="123456" @keyup.enter="logIn"><br>
-    <b-button variant="success" @click="logIn"> Sign In</b-button>
+    <h4> Iniciar sesión </h4>
+    <div class="form-div">
+      <b-form-input
+        type="text"
+        v-model="nick"
+        class="input-form"
+        @keyup.enter="logIn"
+        aria-describedby="input-live-help input-live-feedback"
+        placeholder="Usuario"
+      ></b-form-input>
+      <br>
+      <b-form-input
+        type="password"
+        v-model="password"
+        class="input-form"
+        @keyup.enter="logIn"
+        aria-describedby="input-live-help input-live-feedback"
+        placeholder="Contraseña"
+      ></b-form-input>
+    </div>
+    <br>
+    <br>
+    <b-button variant="light" @click="switchCreate">Crear Usuario</b-button>
+    <b-button variant="dark" @click="logIn">Entrar</b-button>
   </div>
 </template>
 
@@ -41,14 +59,27 @@ export default {
           window.alert('Contraseña incorrecta')
         }
       }
+    },
+    switchCreate () {
+      this.$emit('switchCreate')
     }
   }
 }
 </script>
 
 <style>
-.btn {
-    margin: 5px;
-    font-size: 20px;
+.input-form {
+  max-width:200px;
+}
+.form-div {
+  display: inline-block;
+}
+.log-in {
+  text-align: center;
+}
+.btn-secondary {
+    color: #fff;
+    background-color: #838c95;
+    border-color: #838c95;
 }
 </style>

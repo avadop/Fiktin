@@ -1,29 +1,101 @@
 <template>
   <div class="new-user">
     <form >
-      <h4> Introduce tus datos para crear un usuario </h4>
-      <label>Nickname</label>
-      <br>
-      <input v-model="newNick" type="text" :class="{red_box: exists}" placeholder="Maririta26"><br>
-      <span v-if="exists" class="red_letter">Nick ya existe</span><br v-if="exists">
-      <span v-if="minNick && !exists" class="red_letter">Minimo 4 caracteres</span><br v-if="minNick && !exists">
-      <span v-if="maxNick && !exists" class="red_letter">Nick muy largo (max. 10 caracteres)</span><br v-if="maxNick && !exists">
-      <label>Nombre</label>
-      <br>
-      <input v-model="newName" type="text" placeholder="Maria Martinez"> <br>
-      <label>Email</label>
-      <br>
-      <input v-model="newEmail" type="text" placeholder="email@fiktin.com"> <br>
-      <label>Contraseña</label>
-      <br>
-      <input v-model="newPassword" type="password" placeholder="123456"><br>
-      <span v-if="minPassword" class="red_letter">Minimo 6 caracteres</span><br v-if="minPassword">
-      <span v-if="maxPassword" class="red_letter">Contraseña muy larga</span><br v-if="maxPassword">
-      <label>Confirmar contraseña</label>
-      <br>
-      <input v-model="newPassword2" type="password" :class="{red_box: !samePasswords}" placeholder="123456"><br>
-      <span v-if="!samePasswords" class="red_letter">Las contraseñas deben coincidir</span><br>
-
+      <h4>Registro</h4>
+      <div class="form-div">
+        <!-- Usuario -->
+        <b-form-input
+          v-if="newNick.length == 0"
+          type="text"
+          v-model="newNick"
+          class="input-form"
+          aria-describedby="input-live-help input-live-feedback"
+          placeholder="Usuario"
+        ></b-form-input>
+        <b-form-input
+          v-else
+          type="text"
+          v-model="newNick"
+          class="input-form"
+          :state="!exists && newNick.length >= 4 && newNick.length <= 10"
+          aria-describedby="input-live-help input-live-feedback"
+          placeholder="Usuario"
+        ></b-form-input>
+        <b-form-invalid-feedback v-if='exists' id="input-live-feedback">
+          Nombre se usuario ya existente
+        </b-form-invalid-feedback>
+        <b-form-invalid-feedback v-else-if='newNick.length < 4' id="input-live-feedback">
+          Mínimo 4 caracteres
+        </b-form-invalid-feedback>
+        <b-form-invalid-feedback v-else-if="newNick.length > 10" id="input-live-feedback">
+          Máximo 10 caracteres
+        </b-form-invalid-feedback>
+        <br>
+        <!-- Nombre -->
+        <b-form-input
+          type="text"
+          v-model="newName"
+          class="input-form"
+          aria-describedby="input-live-help input-live-feedback"
+          placeholder="Nombre"
+        ></b-form-input>
+        <br>
+        <!-- Email -->
+        <b-form-input
+          type="text"
+          v-model="newEmail"
+          class="input-form"
+          aria-describedby="input-live-help input-live-feedback"
+          placeholder="Email"
+        ></b-form-input>
+        <br>
+        <!-- Contraseña -->
+        <b-form-input
+          v-if="newPassword.length == 0"
+          type="password"
+          v-model="newPassword"
+          class="input-form"
+          aria-describedby="input-live-help input-live-feedback"
+          placeholder="Contraseña"
+        ></b-form-input>
+        <b-form-input
+          v-else
+          type="password"
+          v-model="newPassword"
+          class="input-form"
+          :state="newPassword.length >= 6 && newPassword.length <= 12"
+          aria-describedby="input-live-help input-live-feedback"
+          placeholder="Contraseña"
+        ></b-form-input>
+        <b-form-invalid-feedback v-if='newPassword.length > 0 && newPassword.length < 6' id="input-live-feedback">
+          Mínimo 6 caracteres
+        </b-form-invalid-feedback>
+        <b-form-invalid-feedback v-else-if="newPassword.length > 0 && newPassword.length > 12" id="input-live-feedback">
+          Máximo 12 caracteres
+        </b-form-invalid-feedback>
+        <br>
+        <!-- Confirmar contraseña -->
+        <b-form-input
+          v-if="newPassword2.length == 0"
+          type="password"
+          v-model="newPassword2"
+          class="input-form"
+          aria-describedby="input-live-help input-live-feedback"
+          placeholder="Confirmar contraseña"
+        ></b-form-input>
+        <b-form-input
+          v-else
+          type="password"
+          v-model="newPassword2"
+          class="input-form"
+          :state="newPassword2 === newPassword"
+          aria-describedby="input-live-help input-live-feedback"
+          placeholder="Confirmar contraseña"
+        ></b-form-input>
+        <b-form-invalid-feedback v-if='newPassword2.length > 0 && newPassword2 !== newPassword' id="input-live-feedback">
+          Las contraseñas deben coincidir
+        </b-form-invalid-feedback>
+      </div>
       <!-- Imagen de perfil -->
       <b-container fluid class="col">
         <b-row class="my-1">
@@ -44,7 +116,8 @@
         </b-row>
       </b-container>
 
-      <b-button variant="success" type="submit" @click="addUser"> Crear</b-button>
+      <b-button variant="light" @click="switchCreate">Iniciar sesión</b-button>
+      <b-button variant="dark" type="submit" @click="addUser">Crear</b-button>
     </form>
   </div>
 </template>
@@ -163,6 +236,9 @@ export default {
       } else {
         window.alert('Longitud de nick inválida')
       }
+    },
+    switchCreate () {
+      this.$emit('switchCreate')
     }
   },
   computed: {
@@ -204,5 +280,10 @@ export default {
 }
 .red_letter{
   color: crimson;
+}
+.btn-secondary {
+    color: #fff;
+    background-color: #838c95;
+    border-color: #838c95;
 }
 </style>
