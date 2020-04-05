@@ -10,6 +10,7 @@
             <b-container fluid class="col">
               <b-container sm="3">
                 <label>Imagen de perfil:</label>
+                <b-button v-if="this.newPicture != null" class="my-2" variant="danger-dark" @click="removeImg"><b-icon variant="danger" icon="x"></b-icon></b-button>
                 <b-form-file v-show="this.uploadValue==0 && this.newPicture == null" @change="onFileSelected"
                   class="my-2"
                   placeholder="Selecciona una imagen o arrastrala aquí..."
@@ -17,77 +18,89 @@
                   accept="image/*"></b-form-file>
               </b-container>
               <div class="card-img-box">
-                <b-button v-if="this.newPicture != null" class="my-2 del-button" variant="danger-dark" @click="removeImg"><b-icon variant="danger" icon="x"></b-icon></b-button>
                 <img class="card-img-top" :src="this.newPicture" alt="No has subido ninguna imagen">
               </div>
             </b-container>
           </div>
+
           <div class="center-col">
             <div class="col">
               <!-- Nombre -->
-              <b-form-input
-                type="text"
-                v-model="newName"
-                class="input-form"
-                aria-describedby="input-live-help input-live-feedback"
-                placeholder="Nombre"
-              ></b-form-input>
+              <div class="d-flex">
+                <b-icon class="h4" icon="person-lines-fill"></b-icon>
+                <b-form-input
+                  type="text"
+                  v-model="newName"
+                  class="ml-2 input-form"
+                  aria-describedby="input-live-help input-live-feedback"
+                  placeholder="Nombre"
+                ></b-form-input>
+              </div>
               <br>
               <!-- Email -->
-              <b-form-input
-                type="text"
-                v-model="newEmail"
-                class="input-form"
-                aria-describedby="input-live-help input-live-feedback"
-                placeholder="Email"
-              ></b-form-input>
+              <div class="d-flex">
+                <b-icon class="h4" icon="envelope"></b-icon>
+                <b-form-input
+                  type="text"
+                  v-model="newEmail"
+                  class="ml-2 input-form"
+                  aria-describedby="input-live-help input-live-feedback"
+                  placeholder="Email"
+                ></b-form-input>
+              </div>
               <br>
               <!-- Contraseña -->
-              <b-form-input
-                v-if="newPassword.length == 0"
-                type="password"
-                v-model="newPassword"
-                class="input-form"
-                aria-describedby="input-live-help input-live-feedback"
-                placeholder="Contraseña"
-              ></b-form-input>
-              <b-form-input
-                v-else
-                type="password"
-                v-model="newPassword"
-                class="input-form"
-                :state="newPassword.length >= 6 && newPassword.length <= 12"
-                aria-describedby="input-live-help input-live-feedback"
-                placeholder="Contraseña"
-              ></b-form-input>
-              <b-form-invalid-feedback v-if='newPassword.length > 0 && newPassword.length < 6' id="input-live-feedback">
-                Mínimo 6 caracteres
-              </b-form-invalid-feedback>
-              <b-form-invalid-feedback v-else-if="newPassword.length > 0 && newPassword.length > 12" id="input-live-feedback">
-                Máximo 12 caracteres
-              </b-form-invalid-feedback>
+              <div class="d-flex">
+                <b-icon class="h4" icon="shield-lock"></b-icon>
+                <b-form-input
+                  v-if="newPassword.length == 0"
+                  type="password"
+                  v-model="newPassword"
+                  class="ml-2 input-form"
+                  aria-describedby="input-live-help input-live-feedback"
+                  placeholder="Contraseña"
+                ></b-form-input>
+                <b-form-input
+                  v-else
+                  type="password"
+                  v-model="newPassword"
+                  class="ml-2 input-form"
+                  :state="newPassword.length >= 6 && newPassword.length <= 12"
+                  aria-describedby="input-live-help input-live-feedback"
+                  placeholder="Contraseña"
+                ></b-form-input>
+                <b-form-invalid-feedback v-if='newPassword.length > 0 && newPassword.length < 6' id="input-live-feedback">
+                  Mínimo 6 caracteres
+                </b-form-invalid-feedback>
+                <b-form-invalid-feedback v-else-if="newPassword.length > 0 && newPassword.length > 12" id="input-live-feedback">
+                  Máximo 12 caracteres
+                </b-form-invalid-feedback>
+              </div>
               <br>
               <!-- Confirmar contraseña -->
-              <b-form-input
-                v-if="newPassword2.length == 0"
-                type="password"
-                v-model="newPassword2"
-                class="input-form"
-                aria-describedby="input-live-help input-live-feedback"
-                placeholder="Confirmar contraseña"
-              ></b-form-input>
-              <b-form-input
-                v-else
-                type="password"
-                v-model="newPassword2"
-                class="input-form"
-                :state="newPassword2 === newPassword"
-                aria-describedby="input-live-help input-live-feedback"
-                placeholder="Confirmar contraseña"
-              ></b-form-input>
-              <b-form-invalid-feedback v-if='newPassword2.length > 0 && newPassword2 !== newPassword' id="input-live-feedback">
-                Las contraseñas deben coincidir
-              </b-form-invalid-feedback>
+              <div class="d-flex">
+                <b-icon class="h4" icon="shield-lock-fill"></b-icon>
+                <b-form-input
+                  v-if="newPassword2.length == 0"
+                  type="password"
+                  v-model="newPassword2"
+                  class="ml-2 input-form"
+                  aria-describedby="input-live-help input-live-feedback"
+                  placeholder="Confirmar contraseña"
+                ></b-form-input>
+                <b-form-input
+                  v-else
+                  type="password"
+                  v-model="newPassword2"
+                  class="ml-2 input-form"
+                  :state="newPassword2 === newPassword"
+                  aria-describedby="input-live-help input-live-feedback"
+                  placeholder="Confirmar contraseña"
+                ></b-form-input>
+                <b-form-invalid-feedback v-if='newPassword2.length > 0 && newPassword2 !== newPassword' id="input-live-feedback">
+                  Las contraseñas deben coincidir
+                </b-form-invalid-feedback>
+              </div>
             </div>
           </div>
         </div>
@@ -221,14 +234,5 @@ export default {
   display: inline-block;
   max-height: 200px;
   width: auto!important;
-}
-.del-button {
-  position: absolute;
-  left: 0;
-  right: 150px;
-  margin-left: auto;
-  margin-right: 5px;
-  top: 30px;
-  width: 60px;
 }
 </style>

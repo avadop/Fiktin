@@ -4,116 +4,129 @@
       <h4>Registro</h4>
       <div class="form-div">
         <!-- Usuario -->
-        <b-form-input
-          v-if="newNick.length == 0"
-          type="text"
-          v-model="newNick"
-          class="input-form"
-          aria-describedby="input-live-help input-live-feedback"
-          placeholder="Usuario"
-        ></b-form-input>
-        <b-form-input
-          v-else
-          type="text"
-          v-model="newNick"
-          class="input-form"
-          :state="!exists && newNick.length >= 4 && newNick.length <= 10"
-          aria-describedby="input-live-help input-live-feedback"
-          placeholder="Usuario"
-        ></b-form-input>
-        <b-form-invalid-feedback v-if='exists' id="input-live-feedback">
-          Nombre se usuario ya existente
-        </b-form-invalid-feedback>
-        <b-form-invalid-feedback v-else-if='newNick.length < 4' id="input-live-feedback">
-          Mínimo 4 caracteres
-        </b-form-invalid-feedback>
-        <b-form-invalid-feedback v-else-if="newNick.length > 10" id="input-live-feedback">
-          Máximo 10 caracteres
-        </b-form-invalid-feedback>
+        <div class="d-flex">
+          <b-icon class="h4" icon="person"></b-icon>
+          <b-form-input
+            v-if="newNick.length == 0"
+            type="text"
+            v-model="newNick"
+            class="ml-2 input-form"
+            aria-describedby="input-live-help input-live-feedback"
+            placeholder="Usuario"
+          ></b-form-input>
+          <b-form-input
+            v-else
+            type="text"
+            v-model="newNick"
+            class="input-form"
+            :state="!exists && newNick.length >= 4 && newNick.length <= 10"
+            aria-describedby="input-live-help input-live-feedback"
+            placeholder="Usuario"
+          ></b-form-input>
+          <b-form-invalid-feedback v-if='exists' id="input-live-feedback">
+            Nombre se usuario ya existente
+          </b-form-invalid-feedback>
+          <b-form-invalid-feedback v-else-if='newNick.length < 4' id="input-live-feedback">
+            Mínimo 4 caracteres
+          </b-form-invalid-feedback>
+          <b-form-invalid-feedback v-else-if="newNick.length > 10" id="input-live-feedback">
+            Máximo 10 caracteres
+          </b-form-invalid-feedback>
+        </div>
         <br>
         <!-- Nombre -->
-        <b-form-input
-          type="text"
-          v-model="newName"
-          class="input-form"
-          aria-describedby="input-live-help input-live-feedback"
-          placeholder="Nombre"
-        ></b-form-input>
+        <div class="d-flex">
+          <b-icon class="h4" icon="person-lines-fill"></b-icon>
+          <b-form-input
+            type="text"
+            v-model="newName"
+            class="ml-2 input-form"
+            aria-describedby="input-live-help input-live-feedback"
+            placeholder="Nombre"
+          ></b-form-input>
+        </div>
         <br>
         <!-- Email -->
-        <b-form-input
-          type="text"
-          v-model="newEmail"
-          class="input-form"
-          aria-describedby="input-live-help input-live-feedback"
-          placeholder="Email"
-        ></b-form-input>
+        <div class="d-flex">
+          <b-icon class="h4" icon="envelope"></b-icon>
+          <b-form-input
+            type="text"
+            v-model="newEmail"
+            class="ml-2 input-form"
+            aria-describedby="input-live-help input-live-feedback"
+            placeholder="Email"
+          ></b-form-input>
+        </div>
         <br>
         <!-- Contraseña -->
-        <b-form-input
-          v-if="newPassword.length == 0"
-          type="password"
-          v-model="newPassword"
-          class="input-form"
-          aria-describedby="input-live-help input-live-feedback"
-          placeholder="Contraseña"
-        ></b-form-input>
-        <b-form-input
-          v-else
-          type="password"
-          v-model="newPassword"
-          class="input-form"
-          :state="newPassword.length >= 6 && newPassword.length <= 12"
-          aria-describedby="input-live-help input-live-feedback"
-          placeholder="Contraseña"
-        ></b-form-input>
-        <b-form-invalid-feedback v-if='newPassword.length > 0 && newPassword.length < 6' id="input-live-feedback">
-          Mínimo 6 caracteres
-        </b-form-invalid-feedback>
-        <b-form-invalid-feedback v-else-if="newPassword.length > 0 && newPassword.length > 12" id="input-live-feedback">
-          Máximo 12 caracteres
-        </b-form-invalid-feedback>
+        <div class="d-flex">
+          <b-icon class="h4" icon="shield-lock"></b-icon>
+            <b-form-input
+              v-if="newPassword.length == 0"
+              type="password"
+              v-model="newPassword"
+              class="ml-2 input-form"
+              aria-describedby="input-live-help input-live-feedback"
+              placeholder="Contraseña"
+            ></b-form-input>
+            <b-form-input
+              v-else
+              type="password"
+              v-model="newPassword"
+              class="ml-2 input-form"
+              :state="newPassword.length >= 6 && newPassword.length <= 12"
+              aria-describedby="input-live-help input-live-feedback"
+              placeholder="Contraseña"
+            ></b-form-input>
+            <b-form-invalid-feedback v-if='newPassword.length > 0 && newPassword.length < 6' id="input-live-feedback">
+              Mínimo 6 caracteres
+            </b-form-invalid-feedback>
+            <b-form-invalid-feedback v-else-if="newPassword.length > 0 && newPassword.length > 12" id="input-live-feedback">
+              Máximo 12 caracteres
+            </b-form-invalid-feedback>
+          </div>
         <br>
         <!-- Confirmar contraseña -->
-        <b-form-input
-          v-if="newPassword2.length == 0"
-          type="password"
-          v-model="newPassword2"
-          class="input-form"
-          aria-describedby="input-live-help input-live-feedback"
-          placeholder="Confirmar contraseña"
-        ></b-form-input>
-        <b-form-input
-          v-else
-          type="password"
-          v-model="newPassword2"
-          class="input-form"
-          :state="newPassword2 === newPassword"
-          aria-describedby="input-live-help input-live-feedback"
-          placeholder="Confirmar contraseña"
-        ></b-form-input>
-        <b-form-invalid-feedback v-if='newPassword2.length > 0 && newPassword2 !== newPassword' id="input-live-feedback">
-          Las contraseñas deben coincidir
-        </b-form-invalid-feedback>
+        <div class="d-flex">
+          <b-icon class="h4" icon="shield-lock-fill"></b-icon>
+          <b-form-input
+            v-if="newPassword2.length == 0"
+            type="password"
+            v-model="newPassword2"
+            class="ml-2 input-form"
+            aria-describedby="input-live-help input-live-feedback"
+            placeholder="Confirmar contraseña"
+          ></b-form-input>
+          <b-form-input
+            v-else
+            type="password"
+            v-model="newPassword2"
+            class="ml-2 input-form"
+            :state="newPassword2 === newPassword"
+            aria-describedby="input-live-help input-live-feedback"
+            placeholder="Confirmar contraseña"
+          ></b-form-input>
+          <b-form-invalid-feedback v-if='newPassword2.length > 0 && newPassword2 !== newPassword' id="input-live-feedback">
+            Las contraseñas deben coincidir
+          </b-form-invalid-feedback>
+        </div>
       </div>
+      <br>
+      <br>
       <!-- Imagen de perfil -->
       <b-container fluid class="col">
-        <b-row class="my-1">
-          <b-container sm="3">
-            <label>Portada</label>
-            <b-form-file @change="onFileSelected"
-              class="my-2"
-              placeholder="Selecciona una imagen o arrastrala aquí..."
-              drop-placeholder="Arrastra aquí la imagen..."
-              accept="image/*"></b-form-file>
-          </b-container>
-        </b-row>
-        <b-row class="my-1">
-          <b-col sm="9">
-            <b-img :src="this.picture" fluid width="250%" alt="No has subido ninguna imagen"></b-img>
-            <b-button v-if="this.picture != null" class="my-2" variant="danger" @click="removeImg">Eliminar imagen</b-button>
-          </b-col>
-        </b-row>
+        <b-container sm="3">
+          <label>Imagen de perfil:</label>
+          <b-button v-if="this.picture != null" class="my-2" variant="danger-dark" @click="removeImg"><b-icon variant="danger" icon="x"></b-icon></b-button>
+          <b-form-file v-show="this.uploadValue==0 && this.picture == null" @change="onFileSelected"
+            class="my-2"
+            placeholder="Selecciona una imagen o arrastrala aquí..."
+            drop-placeholder="Arrastra aquí la imagen..."
+            accept="image/*"></b-form-file>
+        </b-container>
+        <div class="card-img-box">
+          <img class="card-img-top" :src="this.picture" alt="No has subido ninguna imagen">
+        </div>
       </b-container>
 
       <b-button variant="light" @click="switchCreate">Iniciar sesión</b-button>
@@ -158,6 +171,7 @@ export default {
   methods: {
     removeImg () {
       this.picture = null
+      this.uploadValue = 0
     },
     onFileSelected (event) {
       this.selectedFile = event.target.files[0]
@@ -171,7 +185,7 @@ export default {
         this.uploadValue = percentage
       }, error => { console.log(error.message) },
       () => {
-        this.UploadValue = 100
+        this.uploadValue = 100
         // downloadURL
         task.snapshot.ref.getDownloadURL().then((url) => {
           this.picture = url
@@ -273,17 +287,17 @@ export default {
 </script>
 
 <style>
-.red_box{
-  border-style: solid;
-  border-width: 1px;
-  border-color: crimson;
-}
-.red_letter{
-  color: crimson;
-}
 .btn-secondary {
     color: #fff;
     background-color: #838c95;
     border-color: #838c95;
+}
+.card-img-box {
+  text-align: center;
+}
+.card-img-top {
+  display: inline-block;
+  max-height: 200px;
+  width: auto!important;
 }
 </style>

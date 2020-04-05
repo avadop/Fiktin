@@ -2,23 +2,29 @@
   <div class="log-in">
     <h4> Iniciar sesión </h4>
     <div class="form-div">
-      <b-form-input
-        type="text"
-        v-model="nick"
-        class="input-form"
-        @keyup.enter="logIn"
-        aria-describedby="input-live-help input-live-feedback"
-        placeholder="Usuario"
-      ></b-form-input>
+      <div class="d-flex">
+        <b-icon class="h4" icon="person"></b-icon>
+        <b-form-input
+          type="text"
+          v-model="nick"
+          class="ml-2 input-form"
+          @keyup.enter="logIn"
+          aria-describedby="input-live-help input-live-feedback"
+          placeholder="Usuario"
+        ></b-form-input>
+      </div>
       <br>
-      <b-form-input
-        type="password"
-        v-model="password"
-        class="input-form"
-        @keyup.enter="logIn"
-        aria-describedby="input-live-help input-live-feedback"
-        placeholder="Contraseña"
-      ></b-form-input>
+      <div class="d-flex">
+        <b-icon class="h4" icon="shield-lock"></b-icon>
+        <b-form-input
+          type="password"
+          v-model="password"
+          class="ml-2 input-form"
+          @keyup.enter="logIn"
+          aria-describedby="input-live-help input-live-feedback"
+          placeholder="Contraseña"
+        ></b-form-input>
+      </div>
     </div>
     <br>
     <br>
