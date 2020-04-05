@@ -19,10 +19,10 @@
             <b-form-invalid-feedback v-if='repited' id="input-live-feedback">
               Título repetido
             </b-form-invalid-feedback>
-            <b-form-invalid-feedback v-if='title.length < 3' id="input-live-feedback">
+            <b-form-invalid-feedback v-else-if='title.length < 3' id="input-live-feedback">
               Introduce al menos 3 caracteres
             </b-form-invalid-feedback>
-            <b-form-invalid-feedback v-else id="input-live-feedback">
+            <b-form-invalid-feedback v-else-if='title.length > 50' id="input-live-feedback">
               Superada longitud máxima de 50 caracteres
             </b-form-invalid-feedback>
           </b-container>

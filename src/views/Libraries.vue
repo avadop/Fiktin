@@ -18,10 +18,12 @@
           <b-list-group-item>
             <div v-if="modifying!==index || library.id === searchHistory">
               <div class="row d-flex justify-content-end">
+                <!-- Nombre -->
                 <h4 class="mr-auto">
                   {{ library.name }} <a class="h4 mb-2" v-if="library.privacy==='public'"><b-icon icon="eye"></b-icon></a>
                   <a class="h4 mb-2" v-else><b-icon icon="eye-slash"></b-icon></a>
                 </h4>
+                <!-- Número de libros -->
                 <div class="m-md-2">
                   <span v-if="library.numberOfBooks === 0">Sin libros </span>
                   <span v-else-if="library.numberOfBooks === 1">{{ library.numberOfBooks }} libro </span>
@@ -29,10 +31,12 @@
                 </div>
               </div>
               <div class="row d-flex justify-content-end">
+                <!-- Descripción -->
                 <div class="mr-auto">
                   <span v-if="library.description!==''">{{ library.description }}</span>
                   <span v-else>Sin descripción</span>
                 </div>
+                <!-- Botones -->
                 <div class="m-md-2">
                   <b-button v-if="(modifying===-1 || modifying !==index) && library.id !== searchHistory" variant="outline-dark" :disabled="opened || modifying != -1" @click.stop="btnModifyLib(index)">Modificar</b-button>
                   <b-button v-if="modifying!==index && library.id !== searchHistory" variant="danger" :disabled="opened || modifying != -1" @click.stop="btnDeleteHandler(index)">Eliminar</b-button>

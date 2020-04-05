@@ -42,7 +42,7 @@
                   </div>
                   <!-- autor -->
                   <div class="d-flex justify-content-start">
-                    <h6 class="autor-name">{{ book.author }}</h6>
+                    <h6 class="author-name">{{ book.author }}</h6>
                   </div>
                   <!-- descripcion -->
                   <div class="d-flex justify-content-start">
@@ -295,7 +295,6 @@ export default {
 }
 .card-img-top {
   display: block;
-  max-height: 140px;
   min-height: 140px;
   width: auto;
 }
@@ -303,7 +302,7 @@ export default {
   font-size: 0.9rem;
   text-align: justify;
 }
-.autor-name {
+.author-name {
   color: #7b8793;
 }
 .list-group {
