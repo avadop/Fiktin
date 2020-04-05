@@ -188,7 +188,6 @@ export default {
 .card-img-top {
   display: block;
   max-height: 140px;
-  min-height: 140px;
   max-width: 100%;
   width: auto;
 }
