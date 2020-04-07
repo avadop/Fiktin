@@ -1,7 +1,7 @@
 <template>
 <div class="home">
   <b-card class="background-card">
-  <h1>Lista de libros publicados</h1>
+  <h1>Libros publicados</h1>
   <div class="row">
     <div v-for="(book, idx) in books" :key="idx">
       <b-card
@@ -121,6 +121,11 @@ export default {
 </script>
 
 <style scoped>
+h1 {
+  padding-top: 5px;
+  padding-bottom: 15px;
+}
+
 .card.mb-2 {
   width: 250px;
   height: 400px;
