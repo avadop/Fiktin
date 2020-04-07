@@ -1,20 +1,20 @@
 <template>
 <div class = "start">
+  <!-- <b-card class="background-card"> -->
   <!-- <modal name="start"> -->
-    <h1>Bienvenidos a Fiktin</h1>
-    <h3>Es necesario registrarse e iniciar sesion antes de acceder a la aplicacion</h3>
+    <!-- <h6>Es necesario registrarse e iniciar sesion antes de acceder a la aplicacion</h6>
+    <br> -->
     <div id="options-menu">
       <div v-if="!create">
-        <NewUser @switch-create="switchCreate"/>
-        <b-button variant="primary" @click="switchCreate"> Log In</b-button>
+        <NewUser @switch-create="switchCreate" @switchCreate="switchCreate"/>
       </div>
       <div v-else>
-        <LogIn @loggedIn="logIn"/>
-        <b-button variant="primary" @click="switchCreate"> Crear Usuario</b-button>
+        <LogIn @loggedIn="logIn" @switchCreate="switchCreate"/>
       </div>
     </div>
   <!-- </modal> -->
-  </div>
+  <!-- </b-card> -->
+</div>
 </template>
 
 <script>
@@ -48,6 +48,9 @@ export default {
 </script>
 
 <style>
+.card.background-card {
+  background-color: #e2e7ec;
+}
 .start {
     padding:20px;
 }
