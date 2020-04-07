@@ -69,10 +69,10 @@
                   aria-describedby="input-live-help input-live-feedback"
                   placeholder="Contraseña"
                 ></b-form-input>
-                <b-form-invalid-feedback v-if='newPassword.length > 0 && newPassword.length < 6' id="input-live-feedback">
+                <b-form-invalid-feedback v-if='minPassword' id="input-live-feedback">
                   Mínimo 6 caracteres
                 </b-form-invalid-feedback>
-                <b-form-invalid-feedback v-else-if="newPassword.length > 0 && newPassword.length > 12" id="input-live-feedback">
+                <b-form-invalid-feedback v-else-if="maxPassword" id="input-live-feedback">
                   Máximo 12 caracteres
                 </b-form-invalid-feedback>
               </div>
@@ -93,11 +93,11 @@
                   type="password"
                   v-model="newPassword2"
                   class="ml-2 input-form"
-                  :state="newPassword2 === newPassword"
+                  :state="samePasswords"
                   aria-describedby="input-live-help input-live-feedback"
                   placeholder="Confirmar contraseña"
                 ></b-form-input>
-                <b-form-invalid-feedback v-if='newPassword2.length > 0 && newPassword2 !== newPassword' id="input-live-feedback">
+                <b-form-invalid-feedback v-if='!samePasswords' id="input-live-feedback">
                   Las contraseñas deben coincidir
                 </b-form-invalid-feedback>
               </div>
