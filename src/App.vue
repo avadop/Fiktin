@@ -2,7 +2,7 @@
   <div id="app">
     <div>
       <b-navbar toggleable="lg"  variant="faded" type="light">
-        <b-navbar-brand><router-link to="/home" class="main-nav-ref"><img width="150px" src="@/assets/fiktin_logo.jpg"/></router-link></b-navbar-brand>
+        <b-navbar-brand><router-link to="/home" class="main-nav-ref"><img width="150px" src="@/assets/fiktin_logo_verde.jpg"/></router-link></b-navbar-brand>
 
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
