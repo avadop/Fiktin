@@ -295,10 +295,7 @@ export default {
 }
 .card-img-top {
   display: block;
-<<<<<<< HEAD
-=======
   cursor: pointer;
->>>>>>> master
   min-height: 140px;
   max-height: 140px;
   width: auto;
@@ -310,15 +307,12 @@ export default {
   font-size: 0.9rem;
   text-align: justify;
 }
-<<<<<<< HEAD
-=======
 .card-title {
   cursor: pointer;
 }
 .card-title:hover {
   text-decoration: underline;
 }
->>>>>>> master
 .author-name {
   color: #7b8793;
 }
