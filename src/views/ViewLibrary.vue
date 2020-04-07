@@ -19,11 +19,11 @@
         <!-- Lista de libros -->
         <b-list-group v-for="(book, index) in booksList" :key="index">
           <!--En caso de libro encontrado y publicado-->
-          <b-list-group-item @click="openBook(book, index)" v-if="book.found==1">
+          <b-list-group-item v-if="book.found==1">
               <div class="d-flex justify-content-start">
                 <!-- portada -->
                 <div class="card-img-box">
-                  <img class="card-img-top" :src="book.cover" alt="Portada">
+                  <img class="card-img-top" :src="book.cover" alt="Portada" @click="openBook(book, index)">
                 </div>
                 <div>
                   <!-- botones subir bajar -->
@@ -37,7 +37,7 @@
                   </b-button-group>
                   <!-- titulo y fecha -->
                   <div class="d-flex justify-content-start">
-                    <h6 class="car-title">{{upperCase(book.title)}}</h6>
+                    <h6 class="card-title" @click="openBook(book, index)">{{upperCase(book.title)}}</h6>
                     <h6 class="ml-2 nBooks">(dd-mm-aaaa)</h6>
                   </div>
                   <!-- autor -->
@@ -74,8 +74,8 @@
             </b-button-group>
             <!-- error y codigo -->
             <div class="d-flex justify-content-start">
-              <h5 class="car-title" v-if="book.found==2"><b-icon variant="danger" icon="exclamation-octagon-fill"></b-icon> Libro no publicado</h5>
-              <h5 class="car-title" v-else><b-icon variant="danger" icon="exclamation-octagon-fill"></b-icon> Libro no encontrado</h5>
+              <h5 v-if="book.found==2"><b-icon variant="danger" icon="exclamation-octagon-fill"></b-icon> Libro no publicado</h5>
+              <h5 v-else><b-icon variant="danger" icon="exclamation-octagon-fill"></b-icon> Libro no encontrado</h5>
               <h6 class="ml-2 nBooks">({{ book.id }})</h6>
             </div>
             <!-- descripcion -->
@@ -295,13 +295,30 @@ export default {
 }
 .card-img-top {
   display: block;
+<<<<<<< HEAD
+=======
+  cursor: pointer;
+>>>>>>> master
   min-height: 140px;
+  max-height: 140px;
   width: auto;
+}
+.card-img-top:hover {
+  box-shadow: 1px 1px 4px #000000;
 }
 .card-text {
   font-size: 0.9rem;
   text-align: justify;
 }
+<<<<<<< HEAD
+=======
+.card-title {
+  cursor: pointer;
+}
+.card-title:hover {
+  text-decoration: underline;
+}
+>>>>>>> master
 .author-name {
   color: #7b8793;
 }

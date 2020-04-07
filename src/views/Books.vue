@@ -2,7 +2,7 @@
   <div class="books">
     <b-card class="background-card">
       <div v-show = "!create" class="d-flex justify-content-end">
-        <h4 class="mr-auto">Sección de tus libros</h4>
+        <h4 class="mr-auto">Mis libros</h4>
         <b-button variant="info" size="sm" class="m-md-2" @click="createButton">
           <b-icon icon="plus"></b-icon> Crear libro
         </b-button>
@@ -19,13 +19,12 @@
               tag="article"
               style="max-width: 20rem; cursor: pointer;"
               class="mb-2"
-              @click="openBook(book, idx)"
             >
               <div class="card-img-box">
-                <img class="card-img-top" :src="book.cover" alt="Portada">
+                <img class="card-img-top" :src="book.cover" alt="Portada" @click="openBook(book, idx)">
               </div>
               <br>
-              <h6 class="card-title">
+              <h6 class="card-title"  @click="openBook(book, idx)">
                 {{upperCase(book.title)}} <a class="h5 mb-2" v-if="book.published"><b-icon icon="eye"></b-icon></a>
                 <a class="h5 mb-2" v-else><b-icon icon="eye-slash"></b-icon></a>
               </h6>
@@ -187,13 +186,23 @@ export default {
 }
 .card-img-top {
   display: block;
+  cursor: pointer;
   max-height: 140px;
   max-width: 100%;
   width: auto;
 }
+.card-img-top:hover {
+  box-shadow: 1px 1px 4px #000000;
+}
 .card-text {
   font-size: 0.9rem;
   text-align: justify;
+}
+.card-title {
+  cursor: pointer;
+}
+.card-title:hover {
+  text-decoration: underline;
 }
 .opt-button, .text-small {
   position: absolute;
