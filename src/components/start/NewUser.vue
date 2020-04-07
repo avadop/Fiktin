@@ -1,7 +1,7 @@
 <template>
   <div class="new-user">
     <form >
-      <h4>Registro</h4>
+      <h3>Registro</h3>
       <div class="form-div">
         <!-- Usuario -->
         <div class="d-flex">
@@ -299,5 +299,8 @@ export default {
   display: inline-block;
   max-height: 200px;
   width: auto!important;
+}
+h3 {
+  padding-bottom: 10px;
 }
 </style>

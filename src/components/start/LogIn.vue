@@ -1,6 +1,6 @@
 <template>
   <div class="log-in">
-    <h4> Iniciar sesión </h4>
+    <h3> Iniciar sesión </h3>
     <div class="form-div">
       <div class="d-flex">
         <b-icon class="h4" icon="person"></b-icon>
@@ -82,6 +82,9 @@ export default {
 }
 .form-div {
   display: inline-block;
+}
+h3 {
+  padding-bottom: 10px;
 }
 .btn-secondary {
     color: #fff;
