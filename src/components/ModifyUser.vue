@@ -106,10 +106,18 @@
         </div>
 
         <b-button variant="outline-secondary" class="mr-auto" @click="switchEdit"> Cancelar</b-button>
-        <b-button variant="dark" type="submit" @click="update"> Confirmar</b-button>
+        <b-button variant="dark" type="submit" @click="modal = true"> Confirmar</b-button>
       </form>
+
+      <b-modal class="modal" v-model="modal" hide-footer hide-header>
+        <div class="d-block text-center">
+          <p>¿Está seguro que desea aplicar los cambios?</p>
+        </div>
+        <b-button class="mt-3" variant="primary" block @click="update">Confirmar</b-button>
+        <b-button class="mt-2" variant="outline-danger" block @click="switchEdit">Cancelar</b-button>
+      </b-modal>
     </b-card>
-  </div>
+    </div>
 </template>
 
 <script>
@@ -125,7 +133,8 @@ export default {
       newPassword: '',
       newPassword2: '',
       newPicture: '',
-      uploadValue: 0
+      uploadValue: 0,
+      modal: false
     }
   },
   props: {
@@ -194,6 +203,7 @@ export default {
       }
     },
     switchEdit () {
+      this.modal = false
       this.$emit('switchEdit')
     }
   },
