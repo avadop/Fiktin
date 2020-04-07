@@ -65,7 +65,7 @@
                   type="password"
                   v-model="newPassword"
                   class="ml-2 input-form"
-                  :state="newPassword.length >= 6 && newPassword.length <= 12"
+                  :state="correctPassword"
                   aria-describedby="input-live-help input-live-feedback"
                   placeholder="Contraseña"
                 ></b-form-input>
