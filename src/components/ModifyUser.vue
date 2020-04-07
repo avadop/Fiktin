@@ -109,7 +109,7 @@
         <b-button variant="dark" type="submit" @click="modal = true"> Confirmar</b-button>
       </form>
 
-      <b-modal class="modal" v-model="modal" hide-footer hide-header>
+      <b-modal id="modal-modify" v-model="modal" hide-footer hide-header>
         <div class="d-block text-center">
           <p>¿Está seguro que desea aplicar los cambios?</p>
         </div>
@@ -245,4 +245,10 @@ export default {
   max-height: 200px;
   width: auto!important;
 }
+
+#modal-modify {
+  margin-top: 180px;
+  font-size: 20px;
+}
+
 </style>
