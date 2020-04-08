@@ -76,8 +76,18 @@
     <!-- botones -->
     <div class="d-flex justify-content-end">
       <b-button variant="outline-secondary" @click="cancelButton()">Descartar cambios</b-button>
-      <b-button variant="dark" @click="modifyButton()" :disabled="this.name.length <= 0 || checkNames() || !checkDescription()">Guardar</b-button>
+      <b-button variant="dark" @click="modalModify = true" :disabled="this.name.length <= 0 || checkNames() || !checkDescription()">Guardar</b-button>
     </div>
+
+    <b-modal id="modal-modify" v-model="modalModify" hide-footer hide-header>
+      <div class="d-block text-center">
+        <p>¿Está seguro que desea aplicar las modificaciones?</p>
+      </div>
+      <div class="d-flex justify-content-center">
+        <b-button id="button-modal-return" class="mt-1" variant="outline-secondary" block @click="modalModify = false">Volver Atrás</b-button>
+        <b-button id="button-modal-accept" class="mt-1" variant="primary" block @click="modifyButton()">Confirmar</b-button>
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -100,7 +110,8 @@ export default {
       name: this.nameAux,
       description: this.descriptionAux,
       privacy: this.privacyAux,
-      librariesNamesList: []
+      librariesNamesList: [],
+      modalModify: false
     }
   },
   mounted () {
@@ -163,6 +174,7 @@ export default {
     },
     modifyButton () {
       var userNick = store.state.userNick
+      this.modalModify = false
       if (this.nameAux !== this.name || this.descriptionAux !== this.description || this.privacyAux !== this.privacy) {
         librariesCollection.doc(this.id).update({
           name: this.name,
@@ -175,6 +187,7 @@ export default {
       } else this.$emit('modify')
     },
     cancelButton () {
+      this.modalModify = false
       this.$emit('cancel', -1)
     }
   }
@@ -186,5 +199,20 @@ export default {
     color: #fff;
     background-color: #838c95;
     border-color: #838c95;
+}
+</style>
+
+<style>
+#modal-modify {
+  margin: 40%;
+  margin-top: 180px;
+  font-size: 20px;
+  max-width: 330px;
+}
+#button-modal-accept {
+  width: 100px;
+}
+#button-modal-return {
+  width: 200px;
 }
 </style>
