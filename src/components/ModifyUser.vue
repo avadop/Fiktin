@@ -106,10 +106,20 @@
         </div>
 
         <b-button variant="outline-secondary" class="mr-auto" @click="switchEdit"> Cancelar</b-button>
-        <b-button variant="dark" type="submit" @click="update"> Confirmar</b-button>
+        <b-button variant="dark" type="submit" @click="modal = true"> Confirmar</b-button>
       </form>
+
+      <b-modal id="modal-modify" v-model="modal" hide-footer hide-header>
+        <div class="d-block text-center">
+          <p>¿Está seguro que desea aplicar los cambios?</p>
+        </div>
+        <div class="d-flex justify-content-center">
+          <b-button id="modal-buttons" class="mt-2" variant="outline-secondary" block @click="switchEdit">Cancelar</b-button>
+          <b-button id="modal-buttons" class="mt-2" variant="primary" block @click="update">Confirmar</b-button>
+        </div>
+      </b-modal>
     </b-card>
-  </div>
+    </div>
 </template>
 
 <script>
@@ -125,7 +135,8 @@ export default {
       newPassword: '',
       newPassword2: '',
       newPicture: '',
-      uploadValue: 0
+      uploadValue: 0,
+      modal: false
     }
   },
   props: {
@@ -194,6 +205,7 @@ export default {
       }
     },
     switchEdit () {
+      this.modal = false
       this.$emit('switchEdit')
     }
   },
@@ -235,4 +247,13 @@ export default {
   max-height: 200px;
   width: auto!important;
 }
+
+#modal-modify {
+  margin-top: 180px;
+  font-size: 20px;
+}
+#modal-buttons {
+  width:150px;
+}
+
 </style>

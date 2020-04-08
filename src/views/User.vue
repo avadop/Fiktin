@@ -35,14 +35,16 @@
             @new-name="newName" @new-email="newEmail" @new-password="newPassword" @new-picture="newPicture" @flip-edit="switchEdit" @switchEdit="switchEdit"/>
         </div>
 
-        <b-modal v-model="modal" hide-footer hide-header>
+        <b-modal id="modal-delete" v-model="modal" hide-footer hide-header>
           <div class="d-block text-center">
             <h3>Eliminar usuario</h3>
             <p>¿Está seguro que desea eliminar usuario?</p>
             <span> Una vez realizado dicha operación no se podrá volver atrás </span>
           </div>
-          <b-button class="mt-3" variant="outline-danger" block @click="deleteUser">ELIMINAR</b-button>
-          <b-button class="mt-2" variant="primary" block @click="modal = false">Cancelar</b-button>
+          <div id="buttons-layout" class="d-flex justify-content-center">
+            <b-button id="modal-buttons" class="mt-2" variant="primary" block @click="modal = false">Cancelar</b-button>
+            <b-button id="modal-buttons" class="mt-2" variant="outline-danger" block @click="deleteUser">ELIMINAR</b-button>
+          </div>
         </b-modal>
       </div>
 
@@ -155,5 +157,19 @@ export default {
 .card-body {
   padding-left: 60px;
   padding-right: 60px;
+}
+
+</style>
+
+<style>
+#modal-delete {
+  margin-top: 180px;
+}
+#buttons-layout {
+  padding-top:12px;
+}
+
+#modal-buttons {
+  width:150px;
 }
 </style>
