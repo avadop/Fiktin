@@ -94,8 +94,18 @@
         </div>
 
         <b-button variant="outline-secondary" @click="cancelButton">Descartar</b-button>
-        <b-button variant="dark" @click="saveButton" :disabled="(this.uploadValue != 0 && this.uploadValue != 100) || repited || title.length < 3 || title.length > 50 || description.length > 250">Guardar</b-button>
+        <b-button variant="dark" @click="modalModify = true" :disabled="(this.uploadValue != 0 && this.uploadValue != 100) || repited || title.length < 3 || title.length > 50 || description.length > 250">Guardar</b-button>
       </div>
+
+      <b-modal id="modal-modify" v-model="modalModify" hide-footer hide-header>
+        <div class="d-block text-center">
+          <p>¿Está seguro que desea aplicar las modificaciones?</p>
+        </div>
+        <div class="d-flex justify-content-center">
+          <b-button id="button-modal-return" class="mt-1" variant="outline-secondary" block @click="modalModify = false">Volver Atrás</b-button>
+          <b-button id="button-modal-accept" class="mt-1" variant="primary" block @click="saveButton">Confirmar</b-button>
+        </div>
+      </b-modal>
     </b-card>
   </div>
 </template>
@@ -121,7 +131,8 @@ export default {
       uploadValue: 0,
 
       repitedTitle: [],
-      repited: false
+      repited: false,
+      modalModify: false
     }
   },
   watch: {
@@ -161,6 +172,7 @@ export default {
       })
     },
     async saveButton () {
+      this.modalModify = false
       await booksCollection.doc(this.bookAux.ID).update({
         title: this.title,
         author: this.author,
@@ -186,5 +198,20 @@ export default {
     color: #fff;
     background-color: #838c95;
     border-color: #838c95;
+}
+</style>
+
+<style>
+#modal-modify {
+  margin: 40%;
+  margin-top: 180px;
+  font-size: 20px;
+  max-width: 330px;
+}
+#button-modal-accept {
+  width: 100px;
+}
+#button-modal-return {
+  width: 200px;
 }
 </style>
