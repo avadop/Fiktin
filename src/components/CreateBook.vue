@@ -91,8 +91,18 @@
         </div>
 
         <b-button variant="outline-secondary" @click="cancelButton">Cancelar</b-button>
-        <b-button variant="dark" @click="createButton" :disabled="(this.uploadValue != 0 && this.uploadValue != 100) || repited || title.length < 3 || title.length > 50 || description.length > 250">Crear libro</b-button>
+        <b-button variant="dark" @click="modalCreate = true" :disabled="(this.uploadValue != 0 && this.uploadValue != 100) || repited || title.length < 3 || title.length > 50 || description.length > 250">Crear libro</b-button>
       </div>
+
+      <b-modal id="modal-create" v-model="modalCreate" hide-footer hide-header>
+        <div class="d-block text-center">
+          <p>¿Está seguro que desea crear el libro con esos datos?</p>
+        </div>
+        <div class="d-flex justify-content-center">
+          <b-button id="button-modal-return" class="mt-1" variant="outline-secondary" block @click="modalCreate = false">Volver Atrás</b-button>
+          <b-button id="button-modal-accept" class="mt-1" variant="primary" block @click="createButton">Confirmar</b-button>
+        </div>
+      </b-modal>
     </b-card>
   </div>
 </template>
@@ -118,7 +128,8 @@ export default {
       uploadValue: 0,
 
       repitedTitle: [],
-      repited: false
+      repited: false,
+      modalCreate: false
     }
   },
   watch: {
@@ -173,9 +184,11 @@ export default {
       this.description = ''
       this.cover = ''
       this.published = 'not_published'
+      this.modalCreate = false
       this.$emit('create')
     },
     cancelButton () {
+      this.modalCreate = false
       this.title = ''
       this.author = ''
       this.tags = []
@@ -193,5 +206,23 @@ export default {
     color: #fff;
     background-color: #838c95;
     border-color: #838c95;
+}
+</style>
+
+<style>
+#modal-create {
+  margin: 40%;
+  margin-top: 180px;
+  font-size: 20px;
+  max-width: 300px;
+}
+#button-modal-accept {
+  width: 100px;
+}
+#button-modal-return {
+  width: 200px;
+}
+#button-layout {
+
 }
 </style>
