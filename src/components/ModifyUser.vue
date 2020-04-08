@@ -113,8 +113,10 @@
         <div class="d-block text-center">
           <p>¿Está seguro que desea aplicar los cambios?</p>
         </div>
-        <b-button class="mt-3" variant="primary" block @click="update">Confirmar</b-button>
-        <b-button class="mt-2" variant="outline-danger" block @click="switchEdit">Cancelar</b-button>
+        <div class="d-flex justify-content-center">
+          <b-button id="modal-buttons" class="mt-2" variant="outline-secondary" block @click="switchEdit">Cancelar</b-button>
+          <b-button id="modal-buttons" class="mt-2" variant="primary" block @click="update">Confirmar</b-button>
+        </div>
       </b-modal>
     </b-card>
     </div>
@@ -249,6 +251,9 @@ export default {
 #modal-modify {
   margin-top: 180px;
   font-size: 20px;
+}
+#modal-buttons {
+  width:150px;
 }
 
 </style>

@@ -41,8 +41,10 @@
             <p>¿Está seguro que desea eliminar usuario?</p>
             <span> Una vez realizado dicha operación no se podrá volver atrás </span>
           </div>
-          <b-button class="mt-3" variant="outline-danger" block @click="deleteUser">ELIMINAR</b-button>
-          <b-button class="mt-2" variant="primary" block @click="modal = false">Cancelar</b-button>
+          <div id="buttons-layout" class="d-flex justify-content-center">
+            <b-button id="modal-buttons" class="mt-2" variant="primary" block @click="modal = false">Cancelar</b-button>
+            <b-button id="modal-buttons" class="mt-2" variant="outline-danger" block @click="deleteUser">ELIMINAR</b-button>
+          </div>
         </b-modal>
       </div>
 
@@ -157,7 +159,17 @@ export default {
   padding-right: 60px;
 }
 
+</style>
+
+<style>
 #modal-delete {
   margin-top: 180px;
+}
+#buttons-layout {
+  padding-top:12px;
+}
+
+#modal-buttons {
+  width:150px;
 }
 </style>
