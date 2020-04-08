@@ -222,7 +222,4 @@ export default {
 #button-modal-return {
   width: 200px;
 }
-#button-layout {
-
-}
 </style>
