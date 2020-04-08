@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <div>
-      <b-navbar toggleable="lg"  variant="faded" type="light">
-        <b-navbar-brand><router-link to="/home" class="main-nav-ref"><img width="150px" src="@/assets/fiktin_logo.jpg"/></router-link></b-navbar-brand>
+      <b-navbar toggleable="lg"  class="navbar-color">
+        <b-navbar-brand><router-link to="/home" class="main-nav-ref"><img width="150px" src="@/assets/fiktin_logo_blanco.png"/></router-link></b-navbar-brand>
 
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
@@ -84,6 +84,10 @@ export default {
   padding: 30px;
 }
 
+.navbar-color {
+  background-color: #35afba;
+}
+
 .main-nav-ref {
   color: #fff;
 }
@@ -92,10 +96,11 @@ export default {
 }
 
 .nav-ref {
-  color: rgba(0, 0, 0, 0.5);
+  font-size: 20px;
+  color: #abe5eb;
 }
 .nav-ref:hover {
-  color: rgba(0, 0, 0, 0.85);
+  color: #fff;
 }
 
 #nav a {
@@ -104,6 +109,6 @@ export default {
 }
 
 .nav-ref.router-link-exact-active {
-  color: rgba(0, 0, 0, 0.85);
+  color: rgba(255, 255, 255, 0.85);
 }
 </style>
