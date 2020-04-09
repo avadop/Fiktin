@@ -171,21 +171,23 @@ export default {
       })
     },
     onUpdate: async function (bookId) {
-      const storage = storageFirebase.ref(`/${store.state.userNick.toLowerCase()}/books/${bookId}/cover/${this.selectedFile.name}`)
-      const task = storage.put(this.selectedFile)
-      await task.on('state_changed', snapshot => {
-        let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-        this.uploadValue = percentage
-      }, error => { console.log(error.message) },
-      () => {
-        this.uploadValue = 100
-        // downloadURL
-        task.snapshot.ref.getDownloadURL().then((url) => {
-          booksCollection.doc(bookId).update({
-            cover: url
+      if (this.auxCover != null) {
+        const storage = storageFirebase.ref(`/${store.state.userNick.toLowerCase()}/books/${bookId}/cover/${this.selectedFile.name}`)
+        const task = storage.put(this.selectedFile)
+        await task.on('state_changed', snapshot => {
+          let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          this.uploadValue = percentage
+        }, error => { console.log(error.message) },
+        () => {
+          this.uploadValue = 100
+          // downloadURL
+          task.snapshot.ref.getDownloadURL().then(async function (url) {
+            await booksCollection.doc(bookId).update({
+              cover: url
+            })
           })
         })
-      })
+      }
     },
     createButton: async function () {
       var bookID = ''
@@ -200,7 +202,7 @@ export default {
       }).then(docRef => {
         bookID = docRef.id
       })
-      await this.onUpdate(bookID)
+      this.onUpdate(bookID)
       this.title = ''
       this.author = ''
       this.tags = []
