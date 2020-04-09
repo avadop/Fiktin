@@ -129,7 +129,10 @@ export default {
 
       repitedTitle: [],
       repited: false,
-      modalCreate: false
+      modalCreate: false,
+
+      auxStorage: '',
+      auxUrl: ''
     }
   },
   watch: {
@@ -153,8 +156,8 @@ export default {
       this.onUpload()
     },
     onUpload () {
-      const storageRef = storageFirebase.ref(`/img/covers/${this.selectedFile.name}`)
-      const task = storageRef.put(this.selectedFile)
+      this.auxStorage = storageFirebase.ref(`/aux/${this.selectedFile.name}`)
+      const task = this.auxStorage.put(this.selectedFile)
       task.on('state_changed', snapshot => {
         let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
         this.uploadValue = percentage
@@ -163,21 +166,42 @@ export default {
         this.uploadValue = 100
         // downloadURL
         task.snapshot.ref.getDownloadURL().then((url) => {
-          this.cover = url
+          this.urlAux = url
           console.log(this.cover)
         })
       })
     },
-    createButton () {
-      booksCollection.add({
+    onUpdate: async function (bookId) {
+      const storage = storageFirebase.ref(`/${store.state.userNick.toLowerCase()}/books/${bookId}/cover/${this.selectedFile.name}`)
+      const task = storage.put(this.selectedFile)
+      await task.on('state_changed', snapshot => {
+        let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        this.uploadValue = percentage
+      }, error => { console.log(error.message) },
+      () => {
+        this.uploadValue = 100
+        // downloadURL
+        task.snapshot.ref.getDownloadURL().then((url) => {
+          booksCollection.doc(bookId).update({
+            cover: url
+          })
+        })
+      })
+    },
+    createButton: async function () {
+      var bookID = ''
+      await booksCollection.add({
         title: this.title,
         author: this.author,
         tags: this.tags,
         description: this.description,
-        cover: this.cover,
+        // cover: this.cover,
         published: this.published,
         user_id: this.userID
+      }).then(docRef => {
+        bookID = docRef.id
       })
+      await this.onUpdate(bookID)
       this.title = ''
       this.author = ''
       this.tags = []
