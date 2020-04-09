@@ -164,7 +164,7 @@ export default {
       this.onUpload()
     },
     onUpload () {
-      const storageRef = storageFirebase.ref(`/img/profile_pictures/${store.state.userNick}/${this.selectedFile.name}`)
+      const storageRef = storageFirebase.ref(`/${store.state.userNick.toLowerCase()}/profile_pictures/${this.selectedFile.name}`)
       const task = storageRef.put(this.selectedFile)
       task.on('state_changed', snapshot => {
         let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
