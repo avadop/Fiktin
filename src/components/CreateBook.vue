@@ -131,7 +131,6 @@ export default {
       repited: false,
       modalCreate: false,
 
-      auxStorage: '',
       auxCover: ''
     }
   },
@@ -156,8 +155,8 @@ export default {
       this.onUpload()
     },
     onUpload () {
-      this.auxStorage = storageFirebase.ref(`/aux/${this.selectedFile.name}`)
-      const task = this.auxStorage.put(this.selectedFile)
+      const storage = storageFirebase.ref(`/aux/${this.selectedFile.name}`)
+      const task = storage.put(this.selectedFile)
       task.on('state_changed', snapshot => {
         let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
         this.uploadValue = percentage
