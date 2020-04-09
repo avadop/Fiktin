@@ -50,8 +50,8 @@
             accept="image/*"
           ></b-form-file>
           <b-row class="my-1">
-              <b-img :src="this.cover" fluid width="250%" alt="No has subido ninguna imagen"></b-img>
-              <b-button v-if="this.cover != null" class="my-2" variant="danger" @click="removeImg">Eliminar</b-button>
+              <b-img :src="this.auxCover" fluid width="250%" alt="No has subido ninguna imagen"></b-img>
+              <b-button v-if="this.auxCover != null" class="my-2" variant="danger" @click="removeImg">Eliminar</b-button>
           </b-row>
         </b-container>
       </b-container>
@@ -132,7 +132,7 @@ export default {
       modalCreate: false,
 
       auxStorage: '',
-      auxUrl: ''
+      auxCover: ''
     }
   },
   watch: {
@@ -149,7 +149,7 @@ export default {
   },
   methods: {
     removeImg () {
-      this.cover = null
+      this.auxCover = null
     },
     onFileSelected (event) {
       this.selectedFile = event.target.files[0]
@@ -166,7 +166,7 @@ export default {
         this.uploadValue = 100
         // downloadURL
         task.snapshot.ref.getDownloadURL().then((url) => {
-          this.urlAux = url
+          this.auxCover = url
           console.log(this.cover)
         })
       })
