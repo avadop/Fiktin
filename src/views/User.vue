@@ -1,34 +1,57 @@
 <template>
   <div class="user">
+    <b-card class="background-card">
       <div v-if=loggedIn>
-        <div v-if=!edit>
-            <p>Nick: {{ nick }}</p>
-            <p>Nombre: {{ name }}</p>
-            <p>email: {{ email }}</p>
-            <b-img :src="this.picture" fluid width="250%" alt="No tienes imagen de perfil"></b-img>
-            <b-button variant="primary" @click="switchEdit"> Modificar</b-button>
-            <b-button variant="danger" class="mr-auto" @click="modal = true"> Eliminar</b-button>
-        </div>
+        <b-list-group-item v-if=!edit>
+          <div class="d-flex justify-content-start">
+            <!-- Img perfil -->
+            <div class="card-img-box">
+              <img class="card-img-top" :src="this.picture" alt="Imgane de perfil">
+            </div>
+            <div>
+              <br>
+              <!-- nick -->
+              <div class="d-flex justify-content-start">
+                <h4>{{ nick }}</h4>
+              </div>
+              <!-- nombre -->
+              <div class="d-flex justify-content-start">
+                <h6 class="user-name">{{ name }}</h6>
+              </div>
+              <!-- mail -->
+              <div class="d-flex justify-content-start">
+                <p><b-icon icon="envelope"></b-icon> {{ email }}</p>
+              </div>
+              <!-- botones -->
+              <div class="d-flex mr-1 buttons">
+                <b-button variant="outline-dark" @click="switchEdit"> Modificar</b-button>
+                <b-button variant="danger" class="mr-auto" @click="modal = true"> Eliminar</b-button>
+              </div>
+            </div>
+          </div>
+        </b-list-group-item>
         <div v-else>
             <ModifyUser :email="email" :name="name" :userKey="userKey" :password="password" :picture="picture"
-            @new-name="newName" @new-email="newEmail" @new-password="newPassword" @new-picture="newPicture" @flip-edit="switchEdit"/>
-            <b-button variant="primary" class="mr-auto" @click="switchEdit"> Cancelar</b-button>
+            @new-name="newName" @new-email="newEmail" @new-password="newPassword" @new-picture="newPicture" @flip-edit="switchEdit" @switchEdit="switchEdit"/>
         </div>
 
-      <b-modal v-model="modal" hide-footer hide-header>
-        <div class="d-block text-center">
-          <h3>Eliminar usuario</h3>
-          <p>¿Está seguro que desea eliminar usuario?</p>
-          <span> Una vez realizado dicha operación no se podrá volver atrás </span>
-        </div>
-        <b-button class="mt-3" variant="outline-danger" block @click="deleteUser">ELIMINAR</b-button>
-        <b-button class="mt-2" variant="primary" block @click="modal = false">Cancelar</b-button>
-      </b-modal>
+        <b-modal id="modal-delete" v-model="modal" hide-footer hide-header>
+          <div class="d-block text-center">
+            <h3>Eliminar usuario</h3>
+            <p>¿Está seguro que desea eliminar usuario?</p>
+            <span> Una vez realizado dicha operación no se podrá volver atrás </span>
+          </div>
+          <div id="buttons-layout" class="d-flex justify-content-center">
+            <b-button id="modal-buttons" class="mt-2" variant="primary" block @click="modal = false">Cancelar</b-button>
+            <b-button id="modal-buttons" class="mt-2" variant="outline-danger" block @click="deleteUser">ELIMINAR</b-button>
+          </div>
+        </b-modal>
+      </div>
 
-    </div>
-    <div v-else>
-        <p>No tienes la sesion iniciada</p>
-    </div>
+      <div v-else>
+          <p>No tienes la sesion iniciada</p>
+      </div>
+    </b-card>
   </div>
 </template>
 
@@ -106,6 +129,47 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.background-card {
+  background-color: #e2e7ec;
+}
+.card-img-box {
+  text-align: center;
+  min-width: 260px;
+}
+.card-img-top {
+  display: block;
+  max-height: 140px;
+  width: auto;
+}
+.user-name {
+  color: #7b8793;
+}
+.buttons {
+  position: absolute;
+  left: 0;
+  right: 95px;
+  margin-left: auto;
+  margin-right: auto;
+  bottom: 10px;
+  width: 106px;
+}
+.card-body {
+  padding-left: 60px;
+  padding-right: 60px;
+}
 
+</style>
+
+<style>
+#modal-delete {
+  margin-top: 180px;
+}
+#buttons-layout {
+  padding-top:12px;
+}
+
+#modal-buttons {
+  width:150px;
+}
 </style>

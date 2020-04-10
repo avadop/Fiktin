@@ -2,7 +2,7 @@
   <div class="CreateLibrary">
     <b-card class="background-card">
       <div v-if="this.internetConnection === 0" class="d-flex justify-content-end">
-        <h4 class="mr-auto">Sección de tus bibliotecas</h4>
+        <h4 class="mr-auto">Mis bibliotecas</h4>
         <!-- Botón de creación de librería según la conexión. Si no hay, no aparece el botón -->
         <b-button v-if="!opened" variant="info" size="sm" class="m-md-2" :disabled="modifying != -1" @click="btnCreateNewLib()">
           <b-icon icon="plus"></b-icon> Crear biblioteca

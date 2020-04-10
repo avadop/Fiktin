@@ -75,8 +75,18 @@
       </b-container>
       <div class="d-flex justify-content-end">
         <b-button variant="outline-secondary" @click="cancelButton()">Cancelar</b-button>
-        <b-button variant="dark" @click="createButton()" :disabled="this.name.length <= 0 || checkNames() || !checkDescription()">Crear</b-button>
+        <b-button variant="dark" @click="modalCreate = true" :disabled="this.name.length <= 0 || checkNames() || !checkDescription()">Crear</b-button>
       </div>
+
+      <b-modal id="modal-create" v-model="modalCreate" hide-footer hide-header>
+        <div class="d-block text-center">
+          <p>¿Está seguro que desea crear el libro con esos datos?</p>
+        </div>
+        <div class="d-flex justify-content-center">
+          <b-button id="button-modal-return" class="mt-1" variant="outline-secondary" block @click="modalCreate = false">Volver Atrás</b-button>
+          <b-button id="button-modal-accept" class="mt-1" variant="primary" block @click="createButton()">Confirmar</b-button>
+        </div>
+      </b-modal>
     </b-card>
   </div>
 </template>
@@ -93,7 +103,8 @@ export default {
       name: '',
       description: '',
       privacy: 'public',
-      librariesNamesList: []
+      librariesNamesList: [],
+      modalCreate: false
     }
   },
   mounted () {
@@ -156,6 +167,7 @@ export default {
     },
     async createButton () {
       var userNick = store.state.userNick
+      this.modalCreate = false
       await librariesCollection.add({
         name: this.name,
         description: this.description,
@@ -167,6 +179,7 @@ export default {
       this.$emit('create')
     },
     cancelButton () {
+      this.modalCreate = false
       this.$emit('cancel')
     }
   }
@@ -178,5 +191,20 @@ export default {
     color: #fff;
     background-color: #838c95;
     border-color: #838c95;
+}
+</style>
+
+<style>
+#modal-create {
+  margin: 40%;
+  margin-top: 180px;
+  font-size: 20px;
+  max-width: 300px;
+}
+#button-modal-accept {
+  width: 100px;
+}
+#button-modal-return {
+  width: 200px;
 }
 </style>

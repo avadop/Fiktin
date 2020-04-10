@@ -2,7 +2,7 @@
   <div class="books">
     <b-card class="background-card">
       <div v-show = "!create" class="d-flex justify-content-end">
-        <h4 class="mr-auto">Sección de tus libros</h4>
+        <h4 class="mr-auto">Mis libros</h4>
         <b-button variant="info" size="sm" class="m-md-2" @click="createButton">
           <b-icon icon="plus"></b-icon> Crear libro
         </b-button>
