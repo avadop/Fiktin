@@ -98,7 +98,7 @@
 </template>
 
 <script>
-import { booksCollection, storageFirebase } from '../firebase.js'
+import { booksCollection, sectionsCollection, storageFirebase } from '../firebase.js'
 import { store } from '../store/index.js'
 
 export default {
@@ -157,7 +157,18 @@ export default {
         })
       })
     },
-    createButton () {
+    createButton: async function () {
+      var sections = []
+      sections.push(await sectionsCollection.add({
+        name: 'Primera sección',
+        book_author_ID: this.userID,
+        book_title: this.title,
+        gadgets: [{
+          htmlText: '',
+          component: 'Normal',
+          componentName: 'Texto normal'
+        }]
+      }))
       booksCollection.add({
         title: this.title,
         author: this.author,
@@ -165,7 +176,8 @@ export default {
         description: this.description,
         cover: this.cover,
         published: this.published,
-        user_id: this.userID
+        user_id: this.userID,
+        sections: [sections[0].id]
       })
       this.title = ''
       this.author = ''
