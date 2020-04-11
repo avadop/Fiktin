@@ -112,6 +112,7 @@
 
 <script>
 import { booksCollection, storageFirebase } from '../firebase.js'
+import { store } from '../store/index.js'
 
 export default {
   name: 'ModifyBook',
@@ -156,7 +157,8 @@ export default {
       this.onUpload()
     },
     onUpload () {
-      const storageRef = storageFirebase.ref(`/img/covers/${this.selectedFile.name}`)
+      const storageRef = storageFirebase.ref(`/${store.state.userNick.toLowerCase()}/books/${this.id}/cover/${this.selectedFile.name}`)
+      // const storageRef = storageFirebase.ref(`/img/covers/${this.selectedFile.name}`)
       const task = storageRef.put(this.selectedFile)
       task.on('state_changed', snapshot => {
         let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100

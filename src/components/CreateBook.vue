@@ -50,8 +50,8 @@
             accept="image/*"
           ></b-form-file>
           <b-row class="my-1">
-              <b-img :src="this.cover" fluid width="250%" alt="No has subido ninguna imagen"></b-img>
-              <b-button v-if="this.cover != null" class="my-2" variant="danger" @click="removeImg">Eliminar</b-button>
+              <b-img :src="this.auxCover" fluid width="250%" alt="No has subido ninguna imagen"></b-img>
+              <b-button v-if="this.auxCover != null" class="my-2" variant="danger" @click="removeImg">Eliminar</b-button>
           </b-row>
         </b-container>
       </b-container>
@@ -129,7 +129,9 @@ export default {
 
       repitedTitle: [],
       repited: false,
-      modalCreate: false
+      modalCreate: false,
+
+      auxCover: ''
     }
   },
   watch: {
@@ -146,15 +148,15 @@ export default {
   },
   methods: {
     removeImg () {
-      this.cover = null
+      this.auxCover = null
     },
     onFileSelected (event) {
       this.selectedFile = event.target.files[0]
       this.onUpload()
     },
     onUpload () {
-      const storageRef = storageFirebase.ref(`/img/covers/${this.selectedFile.name}`)
-      const task = storageRef.put(this.selectedFile)
+      const storage = storageFirebase.ref(`/aux/${this.selectedFile.name}`)
+      const task = storage.put(this.selectedFile)
       task.on('state_changed', snapshot => {
         let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
         this.uploadValue = percentage
@@ -163,10 +165,29 @@ export default {
         this.uploadValue = 100
         // downloadURL
         task.snapshot.ref.getDownloadURL().then((url) => {
-          this.cover = url
+          this.auxCover = url
           console.log(this.cover)
         })
       })
+    },
+    onUpdate: async function (bookId) {
+      if (this.auxCover != null) {
+        const storage = storageFirebase.ref(`/${store.state.userNick.toLowerCase()}/books/${bookId}/cover/${this.selectedFile.name}`)
+        const task = storage.put(this.selectedFile)
+        await task.on('state_changed', snapshot => {
+          let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          this.uploadValue = percentage
+        }, error => { console.log(error.message) },
+        () => {
+          this.uploadValue = 100
+          // downloadURL
+          task.snapshot.ref.getDownloadURL().then(async function (url) {
+            await booksCollection.doc(bookId).update({
+              cover: url
+            })
+          })
+        })
+      }
     },
     createButton: async function () {
       var sections = []
@@ -180,16 +201,19 @@ export default {
           componentName: 'Texto normal'
         }]
       }))
-      booksCollection.add({
+      var bookID = ''
+      await booksCollection.add({
         title: this.title,
         author: this.author,
         tags: this.tags,
         description: this.description,
-        cover: this.cover,
         published: this.published,
         user_id: this.userID,
         sections: [sections[0].id]
+      }).then(docRef => {
+        bookID = docRef.id
       })
+      this.onUpdate(bookID)
       this.title = ''
       this.author = ''
       this.tags = []
