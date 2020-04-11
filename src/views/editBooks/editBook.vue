@@ -1,5 +1,6 @@
 <template>
   <div>
+    <LoadingModal v-if="loading"/>
     <div class="buttons">
       <button class="buttonBack" @click="goBack()">Salir sin guardar</button>
       <button class="buttonBackAndSave" @click="goBackAndSave()">Guardar y salir</button>
@@ -9,7 +10,7 @@
         <b-col cols="3"><h5>Sección: {{ sectionName }}</h5></b-col>
         <b-col cols="1"><b-button variant="outline-secondary" size="sm" @click="openManagementSectionModal()"><b-icon icon="gear"/></b-button>
         <SectionManagementModal v-if="showManagementSectionModal" :name="sectionName" :id="sectionID" :book_title="book.title" :book_author_ID="book.userID" :sectionsList="book.sections" @update="updateBookSections" @load="refresh" @saveActual="save" @cancel="openManagementSectionModal"/></b-col>
-        <b-col cols="3"><b-form-select size="sm" v-model="sectionID" :options="book.sections" @change="refresh(sectionID)"></b-form-select></b-col>
+        <b-col cols="3"><b-form-select size="sm" v-model="nextSectionID" :options="sectionsData" @change="save(), refresh(nextSectionID)"></b-form-select></b-col>
       </b-row>
     </div>
     <div class="editBook">
@@ -105,6 +106,7 @@
 <script>
 import { sectionsCollection, booksCollection } from '@/firebase.js'
 import SectionManagementModal from '@/components/modals/SectionManagementModal.vue'
+import LoadingModal from '@/components/modals/LoadingModal.vue'
 import Normal from '@/components/gadgets/Normal.vue'
 import Header1 from '@/components/gadgets/Header1.vue'
 import Header2 from '@/components/gadgets/Header2.vue'
@@ -114,6 +116,7 @@ export default {
   name: 'editBook',
   components: {
     SectionManagementModal,
+    LoadingModal,
     Normal,
     Header1,
     Header2,
@@ -126,6 +129,9 @@ export default {
     return {
       sectionName: '', // Nombre de la sección
       sectionID: '', // ID de la sección actual
+      nextSectionID: '', // ID de la sección que deseamos cargar
+      sectionsData: [],
+      loading: false,
       showManagementSectionModal: false,
       boldActive: 0,
       boldUse: false,
@@ -147,11 +153,20 @@ export default {
   },
   methods: {
     refresh: async function (sectionID) {
+      this.loading = true
+      this.sectionsData = []
       await sectionsCollection.doc(sectionID).get().then(doc => {
         this.data = doc.data().gadgets
         this.sectionName = doc.data().name
         this.sectionID = doc.id
+        this.nextSectionID = doc.id
       })
+      for (var i = 0; i < this.book.sections.length; ++i) {
+        await sectionsCollection.doc(this.book.sections[i]).get().then(doc => {
+          this.sectionsData.push({ value: doc.id, text: doc.data().name })
+        })
+      }
+      this.loading = false
     },
     itemUp (index) {
       if (index > 0) {

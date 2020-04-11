@@ -38,6 +38,7 @@
                 </div>
                 <!-- Botones -->
                 <div class="m-md-2">
+                  <b-button v-if="(modifying===-1 || modifying !==index) && library.id == searchHistory" variant="outline-dark" :disabled="opened || modifying != -1" @click.stop="btnEmptyHistory(library.id)">Vaciar historial</b-button>
                   <b-button v-if="(modifying===-1 || modifying !==index) && library.id !== searchHistory" variant="outline-dark" :disabled="opened || modifying != -1" @click.stop="btnModifyLib(index)">Modificar</b-button>
                   <b-button v-if="modifying!==index && library.id !== searchHistory" variant="danger" :disabled="opened || modifying != -1" @click.stop="btnDeleteHandler(index)">Eliminar</b-button>
                   <DeleteLibraryModal v-if="showModal===index" :name="librariesList[index].name" :id="librariesList[index].id" @cancel="btnDeleteHandler" @delete="deleteLib"/>
@@ -177,6 +178,18 @@ export default {
     btnDeleteHandler (index) {
       // Usamos un modal dinámico
       this.showModal = index
+    },
+
+    /**
+     * @param {String} id: ID de la biblioteca que se desea vaciar.
+     * Cada vez que se presiona el botón de vaciar, se llama a este método.
+     * Se encarga de vaciar de libros la biblioteca con el id pasado como parámetro. Después de hacerlo, recarga la página.
+     */
+    async btnEmptyHistory (id) {
+      await librariesCollection.doc(id).update({
+        array_keys: []
+      })
+      this.refresh()
     },
 
     /**
