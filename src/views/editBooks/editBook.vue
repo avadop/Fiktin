@@ -1,8 +1,16 @@
 <template>
   <div>
     <div class="buttons">
-      <button class="buttonBack" @click="goBack()">Atrás</button>
+      <button class="buttonBack" @click="goBack()">Salir sin guardar</button>
+      <button class="buttonBackAndSave" @click="goBackAndSave()">Guardar y salir</button>
       <h3 class="title">{{ book.title }}</h3>
+      <br>
+      <b-row>
+        <b-col cols="3"><h5>Sección: {{ sectionName }}</h5></b-col>
+        <b-col cols="1"><b-button variant="outline-secondary" size="sm" @click="openManagementSectionModal()"><b-icon icon="gear"/></b-button>
+        <SectionManagementModal v-if="showManagementSectionModal" :name="sectionName" :id="sectionID" :book_title="book.title" :book_author_ID="book.userID" :sectionsList="book.sections" @update="updateBookSections" @load="refresh" @saveActual="save" @cancel="openManagementSectionModal"/></b-col>
+        <b-col cols="3"><b-form-select size="sm" v-model="sectionID" :options="book.sections" @change="refresh(sectionID)"></b-form-select></b-col>
+      </b-row>
     </div>
     <div class="editBook">
       <div class="sidebar">
@@ -25,7 +33,7 @@
                 <b-icon icon="chevron-up" class="marginLeftButtonSelected" @click.stop @mouseup="itemUp(index)">Subir gadget</b-icon>
                 <b-icon icon="chevron-down" class="marginLeftButtonSelected" @click.stop @mouseup="itemDown(index)">Bajar gadget</b-icon>
                 <b-icon icon="layers" class="marginLeftButtonSelected" @click.stop @mouseup="itemClone(index)">Duplicar gadget</b-icon>
-                <b-icon icon="trash-fill" class="marginLeftButtonSelected" @click.stop @mouseup="itemDelete(index)">Eliminar gaget</b-icon>
+                <b-icon icon="trash-fill" class="marginLeftButtonSelected" @click.stop @mouseup="itemDelete(index)">Eliminar gadget</b-icon>
               </div>
             </div>
           </div>
@@ -58,7 +66,7 @@
             <b-icon icon="type-h3" class="buttonPressedRightBorder" v-else @mousedown="onLiveEditComponent($event, 'Header3')">Añadir título 3</b-icon>
           </div>
         </div>
-        <b-icon icon="cloud-upload" class="buttonNormalRightBorder" @mousedown="save()">Save</b-icon>
+        <b-icon icon="cloud-upload" class="buttonNormalRightBorder" @mouseup="save()">Save</b-icon>
       </div>
       <!--Poniendo el contenteditable, keyup y click aquí, podemos controlar las flechas de una forma muy sencilla-->
       <div class="document" @keyup="checkStyles" @keydown.tab.prevent>
@@ -95,6 +103,8 @@
 </template>
 
 <script>
+import { sectionsCollection, booksCollection } from '@/firebase.js'
+import SectionManagementModal from '@/components/modals/SectionManagementModal.vue'
 import Normal from '@/components/gadgets/Normal.vue'
 import Header1 from '@/components/gadgets/Header1.vue'
 import Header2 from '@/components/gadgets/Header2.vue'
@@ -103,6 +113,7 @@ import Header3 from '@/components/gadgets/Header3.vue'
 export default {
   name: 'editBook',
   components: {
+    SectionManagementModal,
     Normal,
     Header1,
     Header2,
@@ -113,6 +124,9 @@ export default {
   },
   data () {
     return {
+      sectionName: '', // Nombre de la sección
+      sectionID: '', // ID de la sección actual
+      showManagementSectionModal: false,
       boldActive: 0,
       boldUse: false,
       italicActive: 0,
@@ -125,21 +139,20 @@ export default {
       header2Active: 0,
       header3Active: 0,
       lastPress: -1,
-      data: [{
-        htmlText: '<b>Bold </b><i>Italiccc </i><u>underline </u>plaintext',
-        component: 'Normal',
-        componentName: 'Texto normal' }, {
-        htmlText: '<b>Bold </b><i>Italiccc </i><u>underline </u>',
-        component: 'Normal',
-        componentName: 'Texto normal' }, {
-        plainText: 'Nooo',
-        htmlText: '<h1>Nooo</h1>',
-        component: 'Header1',
-        componentName: 'Título'
-      }]
+      data: []
     }
   },
+  mounted () {
+    this.refresh(this.book.sections[0])
+  },
   methods: {
+    refresh: async function (sectionID) {
+      await sectionsCollection.doc(sectionID).get().then(doc => {
+        this.data = doc.data().gadgets
+        this.sectionName = doc.data().name
+        this.sectionID = doc.id
+      })
+    },
     itemUp (index) {
       if (index > 0) {
         var aux = this.data[index]
@@ -162,6 +175,12 @@ export default {
       // Debido a problemas de clonaciones, es necesario poner los textos manualmente
       if (this.data[index].component === 'Normal') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, component: 'Normal', componentName: 'Texto normal' })
       else if (this.data[index].component === 'Header1') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Header1', componentName: 'Título' })
+    },
+    async updateBookSections (newSections) {
+      await booksCollection.doc(this.book.ID).update({
+        sections: newSections
+      })
+      this.book.sections = newSections
     },
     addNormal () {
       this.data.splice(this.lastPress + 1, 0, { htmlText: '', component: 'Normal', componentName: 'Texto normal' })
@@ -302,8 +321,17 @@ export default {
       if (btn === 'Header2') this.header2Active = val
       if (btn === 'Header3') this.header3Active = val
     },
-    save () {
-      alert('Hay que implementar save')
+    openManagementSectionModal () {
+      this.showManagementSectionModal = !this.showManagementSectionModal
+    },
+    async save () {
+      if (this.sectionName !== '') {
+        sectionsCollection.doc(this.sectionID).update({
+          gadgets: this.data
+        })
+      } else {
+        window.alert('Para guardar una sección, debes darla un nombre primero')
+      }
     },
     saveHTML (htmlText, index) {
       this.data[index].htmlText = htmlText
@@ -314,6 +342,10 @@ export default {
     },
     goBack () {
       this.$router.replace({ name: 'readBook', params: { book: this.book } })
+    },
+    goBackAndSave () {
+      this.save()
+      this.goBack()
     }
   }
 }
@@ -331,6 +363,12 @@ export default {
   cursor: pointer;
   background-color: lightgreen;
   border: 1px solid darkgreen;
+}
+.buttonBackAndSave {
+  cursor: pointer;
+  background-color: lightgreen;
+  border: 1px solid darkgreen;
+  margin-left: 5px;
 }
 .title {
   vertical-align: top;

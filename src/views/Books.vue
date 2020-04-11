@@ -46,7 +46,7 @@
                   <b-dropdown-item id="modifyButton" @click.stop="modifyBook(book)" v-show="modifyID !== book.ID">Modificar</b-dropdown-item>
                   <b-dropdown-item @click.stop="addToLibraryButton(idx)">Añadir a bibliotecas</b-dropdown-item>
                   <b-dropdown-divider></b-dropdown-divider>
-                  <b-dropdown-item variant="danger" v-if="modifyID !== book.ID" @click.stop="deleteBook(book.ID)"><b-icon icon="trash-fill"></b-icon> Eliminar</b-dropdown-item>
+                  <b-dropdown-item variant="danger" v-if="modifyID !== book.ID" @click.stop="deleteBook(book.ID, idx)"><b-icon icon="trash-fill"></b-icon> Eliminar</b-dropdown-item>
                 </b-dropdown>
               </div>
               <AddToLibraryModal v-if="showModal===idx" :bookId="primaryKeys[idx]" @add="addToLibrary" @cancel="addToLibraryButton"/>
@@ -55,7 +55,7 @@
 
           <!-- componente modificar libro -->
           <div v-else>
-            <ModifyBook :bookAux="book" @delete="deleteBook(book.id)" @cancel="discardChangesBook" @save="saveChangesBook()"/>
+            <ModifyBook :bookAux="book" @delete="deleteBook(book.ID, idx)" @cancel="discardChangesBook" @save="saveChangesBook()"/>
           </div>
         </div>
       </div>
@@ -67,7 +67,7 @@
 import ModifyBook from '@/components/ModifyBook.vue'
 import CreateBook from '@/components/CreateBook.vue'
 import AddToLibraryModal from '@/components/modals/AddToLibraryModal.vue'
-import { booksCollection, userCollection, librariesCollection } from '../firebase.js'
+import { booksCollection, userCollection, librariesCollection, sectionsCollection } from '../firebase.js'
 import { store } from '../store/index.js'
 
 export default {
@@ -113,13 +113,17 @@ export default {
               tags: doc.data().tags,
               published: doc.data().published,
               userID: doc.data().user_id,
+              sections: doc.data().sections,
               ID: doc.id
             })
           }
         })
       })
     },
-    deleteBook: async function (ID) {
+    deleteBook: async function (ID, idx) {
+      for (var i = 0; i < this.books[idx].sections.length; ++i) {
+        await sectionsCollection.doc(this.books[idx].sections[i]).delete()
+      }
       await booksCollection.doc(ID).delete()
       this.refresh()
     },
