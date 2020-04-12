@@ -208,6 +208,7 @@ export default {
           this.closing = true
           var c = this.extractIDs()
           this.$emit('update', c)
+          this.$emit('saveActual')
           for (var i = 0; i < this.sectionsData.length; ++i) {
             await sectionsCollection.doc(this.sectionsData[i].id).update({
               name: this.sectionsData[i].name

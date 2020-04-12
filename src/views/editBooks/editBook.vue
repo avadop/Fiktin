@@ -68,6 +68,7 @@
           </div>
         </div>
         <b-icon icon="cloud-upload" class="buttonNormalRightBorder" @mouseup="save()">Save</b-icon>
+        <b-icon icon="plus" class="addGadgetButton" @click="addSectionChange()">Añadir</b-icon>
       </div>
       <!--Poniendo el contenteditable, keyup y click aquí, podemos controlar las flechas de una forma muy sencilla-->
       <div class="document" @keyup="checkStyles" @keydown.tab.prevent>
@@ -97,6 +98,13 @@
             :plainTextAux="text.plainText"
             :index="index"
             @html="savePlaneAndHTML"/>
+          <ChangeSection v-if="text.component=='ChangeSection'"
+            :actualSection="sectionID"
+            :auxSectionsData="sectionsData"
+            :selectedSection="text.next"
+            :textAux="text.plainText"
+            :index="index"
+            @section="saveHTMLAndSection"/>
         </div>
       </div>
     </div>
@@ -111,6 +119,7 @@ import Normal from '@/components/gadgets/Normal.vue'
 import Header1 from '@/components/gadgets/Header1.vue'
 import Header2 from '@/components/gadgets/Header2.vue'
 import Header3 from '@/components/gadgets/Header3.vue'
+import ChangeSection from '@/components/gadgets/ChangeSection.vue'
 
 export default {
   name: 'editBook',
@@ -120,7 +129,8 @@ export default {
     Normal,
     Header1,
     Header2,
-    Header3
+    Header3,
+    ChangeSection
   },
   props: {
     book: Object
@@ -129,7 +139,7 @@ export default {
     return {
       sectionName: '', // Nombre de la sección
       sectionID: '', // ID de la sección actual
-      nextSectionID: '', // ID de la sección que deseamos cargar
+      nextSectionID: this.book.sections[0], // ID de la sección que deseamos cargar
       sectionsData: [],
       loading: false,
       showManagementSectionModal: false,
@@ -154,32 +164,34 @@ export default {
   methods: {
     refresh: async function (sectionID) {
       this.loading = true
+      this.lastPress = -1
       this.sectionsData = []
-      await sectionsCollection.doc(sectionID).get().then(doc => {
-        this.data = doc.data().gadgets
-        this.sectionName = doc.data().name
-        this.sectionID = doc.id
-        this.nextSectionID = doc.id
-      })
+      this.data = []
       for (var i = 0; i < this.book.sections.length; ++i) {
         await sectionsCollection.doc(this.book.sections[i]).get().then(doc => {
           this.sectionsData.push({ value: doc.id, text: doc.data().name })
         })
       }
+      await sectionsCollection.doc(sectionID).get().then(doc => {
+        this.sectionName = doc.data().name
+        this.sectionID = doc.id
+        this.nextSectionID = doc.id
+        this.data = this.data.concat(doc.data().gadgets)
+      })
       this.loading = false
     },
     itemUp (index) {
       if (index > 0) {
         var aux = this.data[index]
-        this.$set(this.data, index, this.data[index - 1])
-        this.$set(this.data, index - 1, aux)
+        this.data.splice(index, 1, this.data[index - 1])
+        this.data.splice(index - 1, 1, aux)
       }
     },
     itemDown (index) {
       if (index < this.data.length - 1) {
         var aux = this.data[index]
-        this.$set(this.data, index, this.data[index + 1])
-        this.$set(this.data, index + 1, aux)
+        this.data.splice(index, 1, this.data[index + 1])
+        this.data.splice(index + 1, 1, aux)
       }
     },
     itemDelete (index) {
@@ -190,6 +202,7 @@ export default {
       // Debido a problemas de clonaciones, es necesario poner los textos manualmente
       if (this.data[index].component === 'Normal') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, component: 'Normal', componentName: 'Texto normal' })
       else if (this.data[index].component === 'Header1') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Header1', componentName: 'Título' })
+      else if (this.data[index].component === 'ChangeSection') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, next: this.data[index].next, component: 'ChangeSection', componentName: 'cambio de sección' })
     },
     async updateBookSections (newSections) {
       await booksCollection.doc(this.book.ID).update({
@@ -202,6 +215,11 @@ export default {
     },
     addTitle () {
       this.data.splice(this.lastPress + 1, 0, { plainText: '', htmlText: '<h1></h1>', component: 'Header1', componentName: 'Título' })
+    },
+    addSectionChange () {
+      if (this.sectionsData.length > 1) {
+        this.data.splice(this.lastPress + 1, 0, { plainText: '', htmlText: '<span></span>', next: this.sectionsData[0].value, component: 'ChangeSection', componentName: 'cambio de sección' })
+      } else window.alert('Para añadir un cambio de sección, debes tener más de una sección creada')
     },
     checkStyles () {
       // Normal
@@ -354,6 +372,11 @@ export default {
     savePlaneAndHTML (plainText, htmlText, index) {
       this.data[index].plainText = plainText
       this.data[index].htmlText = htmlText
+    },
+    saveHTMLAndSection (htmlText, plainText, section, index) {
+      this.data[index].htmlText = htmlText
+      this.data[index].plainText = plainText
+      this.data[index].next = section
     },
     goBack () {
       this.$router.replace({ name: 'readBook', params: { book: this.book } })
