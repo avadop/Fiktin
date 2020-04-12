@@ -71,7 +71,8 @@
           <span style="font-size: 20px;">Multimedia</span>
           <b-icon icon="plus" class="addGadgetButton" @click="addFile()">Añadir</b-icon>
           <div class="multimediaPanelOptions">
-            <b-icon icon="folder" class="addGadgetButton" @click="addFile()">Añadir</b-icon>
+            <b-icon icon="image-fill" class="addGadgetButton" @click="changeFileType('picture')">Añadir</b-icon>
+            <b-icon icon="camera-video-fill" class="addGadgetButton" @click="changeFileType('video')">Añadir</b-icon>
           </div>
         </div>
         <b-icon icon="cloud-upload" class="buttonNormalRightBorder" @mouseup="save()">Save</b-icon>
@@ -104,6 +105,12 @@
             :plainTextAux="text.plainText"
             :index="index"
             @html="savePlaneAndHTML"/>
+          <Picture v-if="text.component==='Picture'"
+            :index="index"
+            @html="savePlaneAndHTML"/>
+          <Video v-if="text.component==='Video'"
+            :index="index"
+            @html="savePlaneAndHTML"/>
         </div>
       </div>
     </div>
@@ -118,6 +125,8 @@ import Normal from '@/components/gadgets/Normal.vue'
 import Header1 from '@/components/gadgets/Header1.vue'
 import Header2 from '@/components/gadgets/Header2.vue'
 import Header3 from '@/components/gadgets/Header3.vue'
+import Picture from '@/components/gadgets/Picture.vue'
+import Video from '@/components/gadgets/Video.vue'
 
 export default {
   name: 'editBook',
@@ -127,7 +136,9 @@ export default {
     Normal,
     Header1,
     Header2,
-    Header3
+    Header3,
+    Picture,
+    Video
   },
   props: {
     book: Object
@@ -152,7 +163,10 @@ export default {
       header2Active: 0,
       header3Active: 0,
       lastPress: -1,
-      data: []
+      data: [],
+
+      picture: false,
+      video: false
     }
   },
   mounted () {
@@ -199,7 +213,8 @@ export default {
       else if (this.data[index].component === 'Header1') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Header1', componentName: 'Título' })
       else if (this.data[index].component === 'Header2') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Header2', componentName: 'Título' })
       else if (this.data[index].component === 'Header3') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Header3', componentName: 'Título' })
-      else if (this.data[index].component === 'Multimedia') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Multimedia', componentName: 'Multimedia' })
+      else if (this.data[index].component === 'Picture') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Picture', componentName: 'Multimedia' })
+      else if (this.data[index].component === 'Video') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Video', componentName: 'Multimedia' })
     },
     async updateBookSections (newSections) {
       await booksCollection.doc(this.book.ID).update({
@@ -348,6 +363,25 @@ export default {
       if (btn === 'Header1') this.header1Active = val
       if (btn === 'Header2') this.header2Active = val
       if (btn === 'Header3') this.header3Active = val
+    },
+    changeFileType (value) {
+      if (value === 'picture') {
+        this.picture = true
+        this.video = false
+      } else if (value === 'video') {
+        this.video = true
+        this.picture = false
+      }
+      this.clickFileType()
+    },
+    clickFileType () {
+      if (this.data[this.lastPress].componentName === 'Multimedia') {
+        if (this.picture === true) {
+          this.data[this.lastPress].component = 'Picture'
+        } else if (this.video === true) {
+          this.data[this.lastPress].component = 'Video'
+        }
+      }
     },
     openManagementSectionModal () {
       this.showManagementSectionModal = !this.showManagementSectionModal
