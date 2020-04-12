@@ -67,6 +67,13 @@
             <b-icon icon="type-h3" class="buttonPressedRightBorder" v-else @mousedown="onLiveEditComponent($event, 'Header3')">Añadir título 3</b-icon>
           </div>
         </div>
+        <div class="multimediaPanel">
+          <span style="font-size: 20px;">Multimedia</span>
+          <b-icon icon="plus" class="addGadgetButton" @click="addFile()">Añadir</b-icon>
+          <div class="multimediaPanelOptions">
+            <b-icon icon="folder" class="addGadgetButton" @click="addFile()">Añadir</b-icon>
+          </div>
+        </div>
         <b-icon icon="cloud-upload" class="buttonNormalRightBorder" @mouseup="save()">Save</b-icon>
       </div>
       <!--Poniendo el contenteditable, keyup y click aquí, podemos controlar las flechas de una forma muy sencilla-->
@@ -190,6 +197,7 @@ export default {
       // Debido a problemas de clonaciones, es necesario poner los textos manualmente
       if (this.data[index].component === 'Normal') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, component: 'Normal', componentName: 'Texto normal' })
       else if (this.data[index].component === 'Header1') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Header1', componentName: 'Título' })
+      else if (this.data[index].component === 'Multimedia') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Multimedia', componentName: 'Multimedia' })
     },
     async updateBookSections (newSections) {
       await booksCollection.doc(this.book.ID).update({
@@ -202,6 +210,9 @@ export default {
     },
     addTitle () {
       this.data.splice(this.lastPress + 1, 0, { plainText: '', htmlText: '<h1></h1>', component: 'Header1', componentName: 'Título' })
+    },
+    addFile () {
+      this.data.splice(this.lastPress + 1, 0, { plainText: '', htmlTex: '', component: 'Multimedia', componentName: 'Multimedia' })
     },
     checkStyles () {
       // Normal
@@ -476,6 +487,16 @@ export default {
 .headerPanelOptions {
   margin-top: 5px;
   justify-content: center;
+  display: flex;
+}
+.multimediaPanel {
+  display: inline-block;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-right: 1px solid darkgray;
+}
+.multimediaPanelOptions {
+  margin-top: 5px;
   display: flex;
 }
 .addGadgetButton {
