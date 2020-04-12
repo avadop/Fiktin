@@ -190,6 +190,8 @@ export default {
       // Debido a problemas de clonaciones, es necesario poner los textos manualmente
       if (this.data[index].component === 'Normal') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, component: 'Normal', componentName: 'Texto normal' })
       else if (this.data[index].component === 'Header1') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Header1', componentName: 'Título' })
+      else if (this.data[index].component === 'Header2') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Header2', componentName: 'Título' })
+      else if (this.data[index].component === 'Header3') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Header3', componentName: 'Título' })
     },
     async updateBookSections (newSections) {
       await booksCollection.doc(this.book.ID).update({
