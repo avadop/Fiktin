@@ -1,6 +1,6 @@
 <template>
   <div>
-     <b-modal id="modal-video" v-model="openModal" hide-footer hide-header no-close-on-backdrop>
+     <b-modal v-if="(this.lastPressed === this.index)" id="modal-video" v-model="openModal" hide-footer hide-header no-close-on-backdrop>
         <div class="d-block text-center">
           <p>Elija el video que desea añadir</p>
         </div>
@@ -33,6 +33,7 @@
           </div>
 
           <b-row class="my-1">
+            <p v-if="this.selectedFile !== '' && this.video === ''">Espere a que cargue el video</p>
             <iframe v-if="this.video !== ''" :src="this.video" fluid width="250%"></iframe>
           </b-row>
         </b-container>
@@ -56,7 +57,8 @@ export default {
     index: Number,
     bookID: String,
     htmlTextAux: String,
-    openModal: Boolean
+    openModal: Boolean,
+    lastPressed: Number
   },
   data () {
     return {
@@ -64,11 +66,6 @@ export default {
       video: '',
       autoplay: false,
       loop: false
-    }
-  },
-  mounted () {
-    if (this.openModal || this.htmlTextAux === '') {
-      this.$bvModal.show('modal-video')
     }
   },
   methods: {

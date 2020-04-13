@@ -110,6 +110,7 @@
             :htmlTextAux="text.htmlText"
             :index="index"
             :openModal="openModalPicture"
+            :lastPressed="lastPress"
             @cancel-picture="cancelMultimedia"
             @html="saveHTMLMultimedia"/>
           <VideoGadget v-if="text.component==='Video'"
@@ -117,6 +118,7 @@
             :htmlTextAux="text.htmlText"
             :bookID="bookID"
             :openModal="openModalVideo"
+            :lastPressed="lastPress"
             @cancel-video="cancelMultimedia"
             @html="saveHTMLMultimedia"/>
         </div>

@@ -1,6 +1,6 @@
 <template>
   <div>
-     <b-modal id="modal-picture" v-model="openModal" hide-footer hide-header no-close-on-backdrop>
+     <b-modal v-if="(this.lastPressed === this.index)" id="modal-picture" v-model="openModal" hide-footer hide-header no-close-on-backdrop>
         <div class="d-block text-center">
           <p>Elija la imagen que desea añadir</p>
         </div>
@@ -13,6 +13,7 @@
             accept="image/*"
           ></b-form-file>
           <b-row class="my-1">
+            <p v-if="this.selectedFile !== '' && this.picture === ''">Espere a que cargue la imagen</p>
             <b-img v-if="this.picture !== ''" :src="this.picture" fluid width="250%"></b-img>
           </b-row>
         </b-container>
@@ -36,17 +37,13 @@ export default {
     index: Number,
     bookID: String,
     htmlTextAux: String,
-    openModal: Boolean
+    openModal: Boolean,
+    lastPressed: Number
   },
   data () {
     return {
       selectedFile: '',
       picture: ''
-    }
-  },
-  mounted () {
-    if (this.openModal || this.htmlTextAux === '') {
-      this.$bvModal.show('modal-picture')
     }
   },
   methods: {
