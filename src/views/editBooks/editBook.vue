@@ -105,11 +105,13 @@
             :plainTextAux="text.plainText"
             :index="index"
             @html="savePlaneAndHTML"/>
-          <Picture v-if="text.component==='Picture'"
+          <PictureGadget v-if="text.component==='Picture'"
             :index="index"
+            @cancel-picture="cancelMultimedia"
             @html="savePlaneAndHTML"/>
-          <Video v-if="text.component==='Video'"
+          <VideoGadget v-if="text.component==='Video'"
             :index="index"
+            @cancel-video="cancelMultimedia"
             @html="savePlaneAndHTML"/>
         </div>
       </div>
@@ -125,8 +127,8 @@ import Normal from '@/components/gadgets/Normal.vue'
 import Header1 from '@/components/gadgets/Header1.vue'
 import Header2 from '@/components/gadgets/Header2.vue'
 import Header3 from '@/components/gadgets/Header3.vue'
-import Picture from '@/components/gadgets/Picture.vue'
-import Video from '@/components/gadgets/Video.vue'
+import PictureGadget from '@/components/gadgets/PictureGadget.vue'
+import VideoGadget from '@/components/gadgets/VideoGadget.vue'
 
 export default {
   name: 'editBook',
@@ -137,8 +139,8 @@ export default {
     Header1,
     Header2,
     Header3,
-    Picture,
-    Video
+    PictureGadget,
+    VideoGadget
   },
   props: {
     book: Object
@@ -382,6 +384,11 @@ export default {
           this.data[this.lastPress].component = 'Video'
         }
       }
+    },
+    cancelMultimedia () {
+      this.data[this.lastPress].component = 'Multimedia'
+      this.video = false
+      this.image = false
     },
     openManagementSectionModal () {
       this.showManagementSectionModal = !this.showManagementSectionModal
