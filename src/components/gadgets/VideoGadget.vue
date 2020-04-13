@@ -2,7 +2,7 @@
   <div>
      <b-modal v-if="(this.lastPressed === this.index)" id="modal-video" v-model="openModal" hide-footer hide-header no-close-on-backdrop>
         <div class="d-block text-center">
-          <p>Elija el video que desea añadir</p>
+          <h5>Elija el video que desea añadir</h5>
         </div>
         <b-container fluid class="col">
           <b-form-file
@@ -14,20 +14,12 @@
           ></b-form-file>
 
           <div id="optionsCheckbox" label="Opciones de reproduccion">
-              <b-form-checkbox
-                id="checkbox-autoplay"
-                v-model="autoplay"
-                name="checkbox-autoplay"
-                value="true"
-                unchecked-value="false">
+              <b-form-checkbox id="checkbox-autoplay" v-model="autoplay"
+                name="checkbox-autoplay" value="true" unchecked-value="false">
                 Autorreproducción
               </b-form-checkbox>
-              <b-form-checkbox
-                id="checkbox-loop"
-                v-model="loop"
-                name="checkbox-loop"
-                value="true"
-                unchecked-value="false">
+              <b-form-checkbox id="checkbox-loop" v-model="loop"
+                name="checkbox-loop" value="true" unchecked-value="false">
                 Bucle
               </b-form-checkbox>
           </div>
@@ -125,5 +117,11 @@ export default {
   cursor: text;
   display: block;
   min-height: 28px;
+}
+</style>
+
+<style>
+#optionsCheckbox {
+  padding: 10px;
 }
 </style>

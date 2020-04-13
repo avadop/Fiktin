@@ -2,7 +2,7 @@
   <div>
      <b-modal v-if="(this.lastPressed === this.index)" id="modal-picture" v-model="openModal" hide-footer hide-header no-close-on-backdrop>
         <div class="d-block text-center">
-          <p>Elija la imagen que desea añadir</p>
+          <h5>Elija la imagen que desea añadir</h5>
         </div>
         <b-container fluid class="col">
           <b-form-file
