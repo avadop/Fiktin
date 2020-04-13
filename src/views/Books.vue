@@ -181,6 +181,7 @@ export default {
   background-color: #e2e7ec;
 }
 .card.mb-2 {
+  cursor: auto!important;
   width: 250px;
   height: 400px;
   margin-left: 10px;

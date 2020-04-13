@@ -43,7 +43,7 @@
       <div class="h3 mb-2, options">
         <div class="normalPanel">
           <span style="font-size: 20px;">Texto normal</span>
-          <b-icon icon="plus" class="addGadgetButton" @click="addNormal()">Añadir</b-icon>
+          <b-icon icon="fonts" class="addGadgetButton" @click="addNormal()">Añadir</b-icon>
           <div class="normalPanelOptions">
             <b-icon icon="type-bold" class="buttonNormal" v-if="boldActive!=1" @mousedown="onLiveEditComponent($event, 'Bold')">Bold</b-icon>
             <b-icon icon="type-bold" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Bold')">Bold</b-icon>
@@ -67,6 +67,7 @@
             <b-icon icon="type-h3" class="buttonPressedRightBorder" v-else @mousedown="onLiveEditComponent($event, 'Header3')">Añadir título 3</b-icon>
           </div>
         </div>
+
         <div class="multimediaPanel">
           <span style="font-size: 20px;">Multimedia</span>
           <b-icon icon="plus" class="addGadgetButton" @click="addFile()">Añadir</b-icon>
@@ -74,6 +75,15 @@
             <b-icon icon="image-fill" class="addGadgetButton" @click="changeFileType('picture')">Añadir</b-icon>
             <b-icon icon="camera-video-fill" class="addGadgetButton" @click="changeFileType('video')">Añadir</b-icon>
           </div>
+        </div>
+
+        <div class="sections">
+          <span style="font-size: 20px">Siguiente sección</span>
+          <b-icon icon="box-arrow-right" class="addGadgetButton" @click="addSectionChange()">Añadir</b-icon>
+          <div/>
+          <span style="font-size: 20px">Repetir sección</span>
+          <b-icon icon="arrow-repeat" class="addGadgetButton" @click="addSectionRepeat()">Añadir</b-icon>
+
         </div>
         <b-icon icon="cloud-upload" class="buttonNormalRightBorder" @mouseup="save()">Save</b-icon>
       </div>
@@ -105,6 +115,7 @@
             :plainTextAux="text.plainText"
             :index="index"
             @html="savePlaneAndHTML"/>
+
           <PictureGadget v-if="text.component==='Picture'"
             :bookID="bookID"
             :htmlTextAux="text.htmlText"
@@ -121,6 +132,21 @@
             :lastPressed="lastPress"
             @cancel-video="cancelMultimedia"
             @html="saveHTMLMultimedia"/>
+
+          <ChangeSection v-if="text.component=='ChangeSection'"
+            :actualSection="sectionID"
+            :auxSectionsData="sectionsData"
+            :selectedSection="text.next"
+            :textAux="text.plainText"
+            :index="index"
+            @section="saveHTMLAndSection"/>
+          <RepeatSection v-if="text.component=='RepeatSection'"
+            :actualSection="sectionID"
+            :sectionName="sectionName"
+            :textAux="text.plainText"
+            :index="index"
+            @html="savePlaneAndHTML"/>
+
         </div>
       </div>
     </div>
@@ -135,8 +161,12 @@ import Normal from '@/components/gadgets/Normal.vue'
 import Header1 from '@/components/gadgets/Header1.vue'
 import Header2 from '@/components/gadgets/Header2.vue'
 import Header3 from '@/components/gadgets/Header3.vue'
+
 import PictureGadget from '@/components/gadgets/PictureGadget.vue'
 import VideoGadget from '@/components/gadgets/VideoGadget.vue'
+
+import ChangeSection from '@/components/gadgets/ChangeSection.vue'
+import RepeatSection from '@/components/gadgets/RepeatSection.vue'
 
 export default {
   name: 'editBook',
@@ -147,8 +177,13 @@ export default {
     Header1,
     Header2,
     Header3,
+
     PictureGadget,
-    VideoGadget
+    VideoGadget,
+
+    ChangeSection,
+    RepeatSection
+
   },
   props: {
     book: Object,
@@ -158,7 +193,7 @@ export default {
     return {
       sectionName: '', // Nombre de la sección
       sectionID: '', // ID de la sección actual
-      nextSectionID: '', // ID de la sección que deseamos cargar
+      nextSectionID: this.book.sections[0], // ID de la sección que deseamos cargar
       sectionsData: [],
       loading: false,
       showManagementSectionModal: false,
@@ -188,32 +223,34 @@ export default {
   methods: {
     refresh: async function (sectionID) {
       this.loading = true
+      this.lastPress = -1
       this.sectionsData = []
-      await sectionsCollection.doc(sectionID).get().then(doc => {
-        this.data = doc.data().gadgets
-        this.sectionName = doc.data().name
-        this.sectionID = doc.id
-        this.nextSectionID = doc.id
-      })
+      this.data = []
       for (var i = 0; i < this.book.sections.length; ++i) {
         await sectionsCollection.doc(this.book.sections[i]).get().then(doc => {
           this.sectionsData.push({ value: doc.id, text: doc.data().name })
         })
       }
+      await sectionsCollection.doc(sectionID).get().then(doc => {
+        this.sectionName = doc.data().name
+        this.sectionID = doc.id
+        this.nextSectionID = doc.id
+        this.data = this.data.concat(doc.data().gadgets)
+      })
       this.loading = false
     },
     itemUp (index) {
       if (index > 0) {
         var aux = this.data[index]
-        this.$set(this.data, index, this.data[index - 1])
-        this.$set(this.data, index - 1, aux)
+        this.data.splice(index, 1, this.data[index - 1])
+        this.data.splice(index - 1, 1, aux)
       }
     },
     itemDown (index) {
       if (index < this.data.length - 1) {
         var aux = this.data[index]
-        this.$set(this.data, index, this.data[index + 1])
-        this.$set(this.data, index + 1, aux)
+        this.data.splice(index, 1, this.data[index + 1])
+        this.data.splice(index + 1, 1, aux)
       }
     },
     itemDelete (index) {
@@ -226,8 +263,12 @@ export default {
       else if (this.data[index].component === 'Header1') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Header1', componentName: 'Título' })
       else if (this.data[index].component === 'Header2') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Header2', componentName: 'Título' })
       else if (this.data[index].component === 'Header3') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Header3', componentName: 'Título' })
+
       else if (this.data[index].component === 'Picture') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, component: 'Picture', componentName: 'Multimedia' })
       else if (this.data[index].component === 'Video') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, component: 'Video', componentName: 'Multimedia' })
+
+      else if (this.data[index].component === 'ChangeSection') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, next: this.data[index].next, component: 'ChangeSection', componentName: 'cambio de sección' })
+      else if (this.data[index].component === 'RepeatSection') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'RepeatSection', componentName: 'repetición de sección' })
     },
     async updateBookSections (newSections) {
       await booksCollection.doc(this.book.ID).update({
@@ -243,6 +284,14 @@ export default {
     },
     addFile () {
       this.data.splice(this.lastPress + 1, 0, { htmlText: '', component: 'Multimedia', componentName: 'Multimedia' })
+    },
+    addSectionChange () {
+      if (this.sectionsData.length > 1) {
+        this.data.splice(this.lastPress + 1, 0, { plainText: '', htmlText: '<span></span>', next: this.sectionsData[0].value, component: 'ChangeSection', componentName: 'cambio de sección' })
+      } else window.alert('Para añadir un cambio de sección, debes tener más de una sección creada')
+    },
+    addSectionRepeat () {
+      this.data.splice(this.lastPress + 1, 0, { plainText: '', htmlText: '<span></span>', component: 'RepeatSection', componentName: 'repetición de sección' })
     },
     checkStyles () {
       // Normal
@@ -278,6 +327,7 @@ export default {
     },
     onLiveEditComponent (evt, component) {
       evt.preventDefault() // Prevenimos perder el foco del cursor SOLO para estos botones (save no está entre ellos para que funcione todo correctamente)
+      if (this.lastPress === -1) this.lastPress = 0
       var a = this.data[this.lastPress].component
       if (a === 'Normal') {
         if (component === 'Bold') {
@@ -430,6 +480,11 @@ export default {
       this.data[index].plainText = plainText
       this.data[index].htmlText = htmlText
     },
+    saveHTMLAndSection (htmlText, plainText, section, index) {
+      this.data[index].htmlText = htmlText
+      this.data[index].plainText = plainText
+      this.data[index].next = section
+    },
     goBack () {
       this.$router.replace({ name: 'readBook', params: { book: this.book } })
     },
@@ -562,6 +617,12 @@ export default {
 .multimediaPanelOptions {
   margin-top: 5px;
   display: flex;
+}
+.sections {
+  display: inline-block;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-right: 1px solid darkgray;
 }
 .addGadgetButton {
   background-color: rgb(227, 229, 241);
