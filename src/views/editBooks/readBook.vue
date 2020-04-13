@@ -58,7 +58,7 @@ export default {
       this.data[index].htmlText = htmlText
     },
     goEdit () {
-      this.$router.replace({ name: 'editBook', params: { book: this.book } })
+      this.$router.replace({ name: 'editBook', params: { book: this.book, bookID: this.bookID } })
     },
     goBack () {
       this.$router.go(-1)

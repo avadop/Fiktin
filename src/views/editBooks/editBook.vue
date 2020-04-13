@@ -106,13 +106,19 @@
             :index="index"
             @html="savePlaneAndHTML"/>
           <PictureGadget v-if="text.component==='Picture'"
+            :bookID="bookID"
+            :htmlTextAux="text.htmlText"
             :index="index"
+            :openModal="openModalMultimedia"
             @cancel-picture="cancelMultimedia"
-            @html="savePlaneAndHTML"/>
+            @html="saveHTMLMultimedia"/>
           <VideoGadget v-if="text.component==='Video'"
             :index="index"
+            :htmlTextAux="text.htmlText"
+            :bookID="bookID"
+            :openModal="openModalMultimedia"
             @cancel-video="cancelMultimedia"
-            @html="savePlaneAndHTML"/>
+            @html="saveHTMLMultimedia"/>
         </div>
       </div>
     </div>
@@ -143,7 +149,8 @@ export default {
     VideoGadget
   },
   props: {
-    book: Object
+    book: Object,
+    bookID: String
   },
   data () {
     return {
@@ -168,7 +175,8 @@ export default {
       data: [],
 
       picture: false,
-      video: false
+      video: false,
+      openModalMultimedia: false
     }
   },
   mounted () {
@@ -215,8 +223,8 @@ export default {
       else if (this.data[index].component === 'Header1') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Header1', componentName: 'Título' })
       else if (this.data[index].component === 'Header2') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Header2', componentName: 'Título' })
       else if (this.data[index].component === 'Header3') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Header3', componentName: 'Título' })
-      else if (this.data[index].component === 'Picture') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Picture', componentName: 'Multimedia' })
-      else if (this.data[index].component === 'Video') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Video', componentName: 'Multimedia' })
+      else if (this.data[index].component === 'Picture') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, component: 'Picture', componentName: 'Multimedia' })
+      else if (this.data[index].component === 'Video') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, component: 'Video', componentName: 'Multimedia' })
     },
     async updateBookSections (newSections) {
       await booksCollection.doc(this.book.ID).update({
@@ -231,7 +239,7 @@ export default {
       this.data.splice(this.lastPress + 1, 0, { plainText: '', htmlText: '<h1></h1>', component: 'Header1', componentName: 'Título' })
     },
     addFile () {
-      this.data.splice(this.lastPress + 1, 0, { plainText: '', htmlTex: '', component: 'Multimedia', componentName: 'Multimedia' })
+      this.data.splice(this.lastPress + 1, 0, { htmlText: '', component: 'Multimedia', componentName: 'Multimedia' })
     },
     checkStyles () {
       // Normal
@@ -374,6 +382,7 @@ export default {
         this.video = true
         this.picture = false
       }
+      this.openModalMultimedia = true
       this.clickFileType()
     },
     clickFileType () {
@@ -386,9 +395,9 @@ export default {
       }
     },
     cancelMultimedia () {
-      this.data[this.lastPress].component = 'Multimedia'
       this.video = false
       this.image = false
+      this.openModalMultimedia = false
     },
     openManagementSectionModal () {
       this.showManagementSectionModal = !this.showManagementSectionModal
@@ -401,6 +410,12 @@ export default {
       } else {
         window.alert('Para guardar una sección, debes darla un nombre primero')
       }
+    },
+    saveHTMLMultimedia (htmlText, index) {
+      this.data[index].htmlText = htmlText
+      this.image = false
+      this.video = false
+      this.openModalMultimedia = false
     },
     saveHTML (htmlText, index) {
       this.data[index].htmlText = htmlText
