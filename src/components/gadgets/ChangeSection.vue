@@ -1,5 +1,6 @@
 <template>
   <div class="border">
+    <h6 class="title">Cambio de sección</h6>
     <b-row style="padding-bottom: 10px;">
       <b-col cols="3"><span>Texto (opcional): </span></b-col>
       <b-col>
@@ -88,6 +89,9 @@ export default {
 <style scoped>
 .border {
   padding: 10px;
+}
+.title {
+  font-weight: bold;
 }
 .text {
   display: flex;
