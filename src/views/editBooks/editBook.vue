@@ -109,14 +109,14 @@
             :bookID="bookID"
             :htmlTextAux="text.htmlText"
             :index="index"
-            :openModal="openModalMultimedia"
+            :openModal="openModalPicture"
             @cancel-picture="cancelMultimedia"
             @html="saveHTMLMultimedia"/>
           <VideoGadget v-if="text.component==='Video'"
             :index="index"
             :htmlTextAux="text.htmlText"
             :bookID="bookID"
-            :openModal="openModalMultimedia"
+            :openModal="openModalVideo"
             @cancel-video="cancelMultimedia"
             @html="saveHTMLMultimedia"/>
         </div>
@@ -176,7 +176,8 @@ export default {
 
       picture: false,
       video: false,
-      openModalMultimedia: false
+      openModalPicture: false,
+      openModalVideo: false
     }
   },
   mounted () {
@@ -378,11 +379,12 @@ export default {
       if (value === 'picture') {
         this.picture = true
         this.video = false
+        this.openModalPicture = true
       } else if (value === 'video') {
         this.video = true
         this.picture = false
+        this.openModalVideo = true
       }
-      this.openModalMultimedia = true
       this.clickFileType()
     },
     clickFileType () {
@@ -397,7 +399,8 @@ export default {
     cancelMultimedia () {
       this.video = false
       this.image = false
-      this.openModalMultimedia = false
+      this.openModalVideo = false
+      this.openModalPicture = false
     },
     openManagementSectionModal () {
       this.showManagementSectionModal = !this.showManagementSectionModal
@@ -415,7 +418,8 @@ export default {
       this.data[index].htmlText = htmlText
       this.image = false
       this.video = false
-      this.openModalMultimedia = false
+      this.openModalVideo = false
+      this.openModalPicture = false
     },
     saveHTML (htmlText, index) {
       this.data[index].htmlText = htmlText

@@ -13,7 +13,7 @@
             accept="image/*"
           ></b-form-file>
           <b-row class="my-1">
-            <b-img v-if="this.picture != null" :src="this.picture" fluid width="250%"></b-img>
+            <b-img v-if="this.picture !== ''" :src="this.picture" fluid width="250%"></b-img>
           </b-row>
         </b-container>
         <div class="d-flex justify-content-center">
@@ -52,7 +52,7 @@ export default {
   methods: {
     onFileSelected () {
       if (this.selectedFile !== '' && this.selectedFile !== event.target.files[0]) {
-        const storageRef = storageFirebase.ref(`/${store.state.userNick.toLowerCase()}/books/${this.bookID}/multimedia/${this.selectedFile.name}`)
+        const storageRef = storageFirebase.ref(`/${store.state.userNick.toLowerCase()}/books/${this.bookID}/multimedia/${this.index + '_gadget_' + this.selectedFile.name}`)
         storageRef.delete()
         this.selectedFile = event.target.files[0]
         this.onUpload()
@@ -62,7 +62,7 @@ export default {
       }
     },
     onUpload () {
-      const storageRef = storageFirebase.ref(`/${store.state.userNick.toLowerCase()}/books/${this.bookID}/multimedia/${this.selectedFile.name}`)
+      const storageRef = storageFirebase.ref(`/${store.state.userNick.toLowerCase()}/books/${this.bookID}/multimedia/${this.index + '_gadget_' + this.selectedFile.name}`)
       const task = storageRef.put(this.selectedFile)
       task.on('state_changed', snapshot => {
         let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
@@ -78,11 +78,9 @@ export default {
     },
     createButton: async function () {
       var htmlText = ('<img src="' + this.picture + '" width="460" height="300">')
-      this.openModal = false
       this.$emit('html', htmlText, this.index)
     },
     cancelar () {
-      this.openModal = false
       this.$emit('cancel-picture')
     }
   },
