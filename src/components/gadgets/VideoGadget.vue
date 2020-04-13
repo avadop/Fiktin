@@ -1,6 +1,6 @@
 <template>
   <div>
-     <b-modal id="modal-video" v-model="openModal" hide-footer hide-header>
+     <b-modal id="modal-video" v-model="openModal" hide-footer hide-header no-close-on-backdrop>
         <div class="d-block text-center">
           <p>Elija el video que desea añadir</p>
         </div>
@@ -12,6 +12,26 @@
             drop-placeholder="Arrastra aquí el video..."
             accept="video/*"
           ></b-form-file>
+
+          <div id="optionsCheckbox" label="Opciones de reproduccion">
+              <b-form-checkbox
+                id="checkbox-autoplay"
+                v-model="autoplay"
+                name="checkbox-autoplay"
+                value="true"
+                unchecked-value="false">
+                Autorreproducción
+              </b-form-checkbox>
+              <b-form-checkbox
+                id="checkbox-loop"
+                v-model="loop"
+                name="checkbox-loop"
+                value="true"
+                unchecked-value="false">
+                Bucle
+              </b-form-checkbox>
+          </div>
+
           <b-row class="my-1">
             <iframe v-if="this.video !== ''" :src="this.video" fluid width="250%"></iframe>
           </b-row>
@@ -41,7 +61,9 @@ export default {
   data () {
     return {
       selectedFile: '',
-      video: ''
+      video: '',
+      autoplay: false,
+      loop: false
     }
   },
   mounted () {
@@ -77,11 +99,23 @@ export default {
       })
     },
     createButton: async function () {
-      var htmlText = ('<video width="460" height="300" controls><source src="' + this.video +
-        ' type="' + this.type + '">No se puede reproducir el video en este navegador</video>')
+      var htmlText = '<video width="460" height="300" controls'
+      if (this.autoplay) {
+        htmlText = htmlText + ' autoplay '
+      }
+      if (this.loop) {
+        htmlText = htmlText + ' loop '
+      }
+      htmlText = htmlText + '><source src="' + this.video +
+        ' type="' + this.type + '">No se puede reproducir el video en este navegador</video>'
+
+      this.autoplay = false
+      this.loop = false
       this.$emit('html', htmlText, this.index)
     },
     cancelar () {
+      this.autoplay = false
+      this.loop = false
       this.$emit('cancel-video')
     }
   }

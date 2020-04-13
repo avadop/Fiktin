@@ -1,6 +1,6 @@
 <template>
   <div>
-     <b-modal id="modal-picture" v-model="openModal" hide-footer hide-header>
+     <b-modal id="modal-picture" v-model="openModal" hide-footer hide-header no-close-on-backdrop>
         <div class="d-block text-center">
           <p>Elija la imagen que desea añadir</p>
         </div>
