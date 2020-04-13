@@ -67,12 +67,23 @@
             <b-icon icon="type-h3" class="buttonPressedRightBorder" v-else @mousedown="onLiveEditComponent($event, 'Header3')">Añadir título 3</b-icon>
           </div>
         </div>
+
+        <div class="multimediaPanel">
+          <span style="font-size: 20px;">Multimedia</span>
+          <b-icon icon="plus" class="addGadgetButton" @click="addFile()">Añadir</b-icon>
+          <div class="multimediaPanelOptions">
+            <b-icon icon="image-fill" class="addGadgetButton" @click="changeFileType('picture')">Añadir</b-icon>
+            <b-icon icon="camera-video-fill" class="addGadgetButton" @click="changeFileType('video')">Añadir</b-icon>
+          </div>
+        </div>
+
         <div class="sections">
           <span style="font-size: 20px">Siguiente sección</span>
           <b-icon icon="box-arrow-right" class="addGadgetButton" @click="addSectionChange()">Añadir</b-icon>
           <div/>
           <span style="font-size: 20px">Repetir sección</span>
           <b-icon icon="arrow-repeat" class="addGadgetButton" @click="addSectionRepeat()">Añadir</b-icon>
+
         </div>
         <b-icon icon="cloud-upload" class="buttonNormalRightBorder" @mouseup="save()">Save</b-icon>
       </div>
@@ -104,6 +115,24 @@
             :plainTextAux="text.plainText"
             :index="index"
             @html="savePlaneAndHTML"/>
+
+          <PictureGadget v-if="text.component==='Picture'"
+            :bookID="bookID"
+            :htmlTextAux="text.htmlText"
+            :index="index"
+            :openModal="openModalPicture"
+            :lastPressed="lastPress"
+            @cancel-picture="cancelMultimedia"
+            @html="saveHTMLMultimedia"/>
+          <VideoGadget v-if="text.component==='Video'"
+            :index="index"
+            :htmlTextAux="text.htmlText"
+            :bookID="bookID"
+            :openModal="openModalVideo"
+            :lastPressed="lastPress"
+            @cancel-video="cancelMultimedia"
+            @html="saveHTMLMultimedia"/>
+
           <ChangeSection v-if="text.component=='ChangeSection'"
             :actualSection="sectionID"
             :auxSectionsData="sectionsData"
@@ -117,6 +146,7 @@
             :textAux="text.plainText"
             :index="index"
             @html="savePlaneAndHTML"/>
+
         </div>
       </div>
     </div>
@@ -131,6 +161,10 @@ import Normal from '@/components/gadgets/Normal.vue'
 import Header1 from '@/components/gadgets/Header1.vue'
 import Header2 from '@/components/gadgets/Header2.vue'
 import Header3 from '@/components/gadgets/Header3.vue'
+
+import PictureGadget from '@/components/gadgets/PictureGadget.vue'
+import VideoGadget from '@/components/gadgets/VideoGadget.vue'
+
 import ChangeSection from '@/components/gadgets/ChangeSection.vue'
 import RepeatSection from '@/components/gadgets/RepeatSection.vue'
 
@@ -143,11 +177,17 @@ export default {
     Header1,
     Header2,
     Header3,
+
+    PictureGadget,
+    VideoGadget,
+
     ChangeSection,
     RepeatSection
+
   },
   props: {
-    book: Object
+    book: Object,
+    bookID: String
   },
   data () {
     return {
@@ -169,7 +209,12 @@ export default {
       header2Active: 0,
       header3Active: 0,
       lastPress: -1,
-      data: []
+      data: [],
+
+      picture: false,
+      video: false,
+      openModalPicture: false,
+      openModalVideo: false
     }
   },
   mounted () {
@@ -218,6 +263,10 @@ export default {
       else if (this.data[index].component === 'Header1') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Header1', componentName: 'Título' })
       else if (this.data[index].component === 'Header2') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Header2', componentName: 'Título' })
       else if (this.data[index].component === 'Header3') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Header3', componentName: 'Título' })
+
+      else if (this.data[index].component === 'Picture') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, component: 'Picture', componentName: 'Multimedia' })
+      else if (this.data[index].component === 'Video') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, component: 'Video', componentName: 'Multimedia' })
+
       else if (this.data[index].component === 'ChangeSection') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, next: this.data[index].next, component: 'ChangeSection', componentName: 'cambio de sección' })
       else if (this.data[index].component === 'RepeatSection') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'RepeatSection', componentName: 'repetición de sección' })
     },
@@ -232,6 +281,9 @@ export default {
     },
     addTitle () {
       this.data.splice(this.lastPress + 1, 0, { plainText: '', htmlText: '<h1></h1>', component: 'Header1', componentName: 'Título' })
+    },
+    addFile () {
+      this.data.splice(this.lastPress + 1, 0, { htmlText: '', component: 'Multimedia', componentName: 'Multimedia' })
     },
     addSectionChange () {
       if (this.sectionsData.length > 1) {
@@ -375,6 +427,33 @@ export default {
       if (btn === 'Header2') this.header2Active = val
       if (btn === 'Header3') this.header3Active = val
     },
+    changeFileType (value) {
+      if (value === 'picture') {
+        this.picture = true
+        this.video = false
+        this.openModalPicture = true
+      } else if (value === 'video') {
+        this.video = true
+        this.picture = false
+        this.openModalVideo = true
+      }
+      this.clickFileType()
+    },
+    clickFileType () {
+      if (this.data[this.lastPress].componentName === 'Multimedia') {
+        if (this.picture === true) {
+          this.data[this.lastPress].component = 'Picture'
+        } else if (this.video === true) {
+          this.data[this.lastPress].component = 'Video'
+        }
+      }
+    },
+    cancelMultimedia () {
+      this.video = false
+      this.image = false
+      this.openModalVideo = false
+      this.openModalPicture = false
+    },
     openManagementSectionModal () {
       this.showManagementSectionModal = !this.showManagementSectionModal
     },
@@ -386,6 +465,13 @@ export default {
       } else {
         window.alert('Para guardar una sección, debes darla un nombre primero')
       }
+    },
+    saveHTMLMultimedia (htmlText, index) {
+      this.data[index].htmlText = htmlText
+      this.image = false
+      this.video = false
+      this.openModalVideo = false
+      this.openModalPicture = false
     },
     saveHTML (htmlText, index) {
       this.data[index].htmlText = htmlText
@@ -520,6 +606,16 @@ export default {
 .headerPanelOptions {
   margin-top: 5px;
   justify-content: center;
+  display: flex;
+}
+.multimediaPanel {
+  display: inline-block;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-right: 1px solid darkgray;
+}
+.multimediaPanelOptions {
+  margin-top: 5px;
   display: flex;
 }
 .sections {
