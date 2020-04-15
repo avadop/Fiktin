@@ -74,6 +74,10 @@
           <span style="font-size: 20px">Repetir sección</span>
           <b-icon icon="arrow-repeat" class="addGadgetButton" @click="addSectionRepeat()">Añadir</b-icon>
         </div>
+        <div class="decisions">
+          <span style="font-size: 20px">Decisiones</span>
+          <b-icon icon="list-task" class="addGadgetButton" @click="addDecisionMaking()">Añadir</b-icon>
+        </div>
         <b-icon icon="cloud-upload" class="buttonNormalRightBorder" @mouseup="save()">Save</b-icon>
       </div>
       <!--Poniendo el contenteditable, keyup y click aquí, podemos controlar las flechas de una forma muy sencilla-->
@@ -110,13 +114,21 @@
             :selectedSection="text.next"
             :textAux="text.plainText"
             :index="index"
-            @section="saveHTMLAndSection"/>
+            @section="saveHTMLAndSection"
+            @save="save"/>
           <RepeatSection v-if="text.component=='RepeatSection'"
             :actualSection="sectionID"
             :sectionName="sectionName"
             :textAux="text.plainText"
             :index="index"
             @html="savePlaneAndHTML"/>
+          <DecisionMaking v-if="text.component=='DecisionMaking'"
+            :actualSection="sectionID"
+            :auxSectionsData="sectionsData"
+            :auxDecisions="text.choices"
+            :auxNumberOfOptions="text.numberOfOptions"
+            :index="index"
+            @section="saveChoices"/>
         </div>
       </div>
     </div>
@@ -133,6 +145,7 @@ import Header2 from '@/components/gadgets/Header2.vue'
 import Header3 from '@/components/gadgets/Header3.vue'
 import ChangeSection from '@/components/gadgets/ChangeSection.vue'
 import RepeatSection from '@/components/gadgets/RepeatSection.vue'
+import DecisionMaking from '@/components/gadgets/DecisionMaking.vue'
 
 export default {
   name: 'editBook',
@@ -144,7 +157,8 @@ export default {
     Header2,
     Header3,
     ChangeSection,
-    RepeatSection
+    RepeatSection,
+    DecisionMaking
   },
   props: {
     book: Object
@@ -183,7 +197,9 @@ export default {
       this.data = []
       for (var i = 0; i < this.book.sections.length; ++i) {
         await sectionsCollection.doc(this.book.sections[i]).get().then(doc => {
-          this.sectionsData.push({ value: doc.id, text: doc.data().name })
+          if (doc.exists) {
+            this.sectionsData.push({ value: doc.id, text: doc.data().name })
+          }
         })
       }
       await sectionsCollection.doc(sectionID).get().then(doc => {
@@ -220,12 +236,21 @@ export default {
       else if (this.data[index].component === 'Header3') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Header3', componentName: 'Título' })
       else if (this.data[index].component === 'ChangeSection') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, next: this.data[index].next, component: 'ChangeSection', componentName: 'cambio de sección' })
       else if (this.data[index].component === 'RepeatSection') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'RepeatSection', componentName: 'repetición de sección' })
+      else if (this.data[index].component === 'DecisionMaking') {
+        var a = []
+        for (var i = 0; i < this.data[index].choices.length; ++i) {
+          // Es necesario hacer un clonado completo para evitar que se copie la dirección en memoria del array
+          // Esto provoca que cada gagdet sea independiente. Sin esto, al modificar la copia, se modificarían tanto el resto de copias como el original
+          a.push({ plainText: this.data[index].choices[i].plainText, htmlText: this.data[index].choices[i].htmlText, choice: this.data[index].choices[i].choice, action: this.data[index].choices[i].action })
+        }
+        this.data.splice(index + 1, 0, { choices: a, numberOfOptions: this.data[index].numberOfOptions, component: 'DecisionMaking', componentName: 'toma de decisiones' })
+      }
     },
     async updateBookSections (newSections) {
+      this.book.sections = newSections
       await booksCollection.doc(this.book.ID).update({
         sections: newSections
       })
-      this.book.sections = newSections
     },
     addNormal () {
       this.data.splice(this.lastPress + 1, 0, { htmlText: '', component: 'Normal', componentName: 'Texto normal' })
@@ -236,12 +261,24 @@ export default {
     addSectionChange () {
       if (this.sectionsData.length > 1) {
         this.data.splice(this.lastPress + 1, 0, { plainText: '', htmlText: '<span></span>', next: this.sectionsData[0].value, component: 'ChangeSection', componentName: 'cambio de sección' })
-      } else window.alert('Para añadir un cambio de sección, debes tener más de una sección creada')
+      } else window.alert('Para añadir un cambio de sección debes tener más de una sección creada')
     },
     addSectionRepeat () {
       this.data.splice(this.lastPress + 1, 0, { plainText: '', htmlText: '<span></span>', component: 'RepeatSection', componentName: 'repetición de sección' })
     },
+    addDecisionMaking () {
+      if (this.sectionsData.length > 1) {
+        this.data.splice(this.lastPress + 1, 0, {
+          choices: [{ plainText: '', htmlText: '<span></span>', choice: 'Section', action: this.sectionsData[0].value }, { plainText: '', htmlText: '<span></span>', choice: 'Section', action: this.sectionsData[0].value }],
+          numberOfOptions: 2,
+          component: 'DecisionMaking',
+          componentName: 'toma de decisiones'
+        })
+      } else window.alert('Para añadir una toma de decisiones debes tener más de una sección creada')
+    },
     checkStyles () {
+      // En caso de acceder sin ningún componente (medida de seguridad. La ejecución no debería entrar aquí)
+      if (this.data[this.lastPress].component === undefined) return
       // Normal
       if (this.data[this.lastPress].component === 'Normal') {
         // Negrita
@@ -380,7 +417,7 @@ export default {
     },
     async save () {
       if (this.sectionName !== '') {
-        sectionsCollection.doc(this.sectionID).update({
+        await sectionsCollection.doc(this.sectionID).update({
           gadgets: this.data
         })
       } else {
@@ -398,6 +435,10 @@ export default {
       this.data[index].htmlText = htmlText
       this.data[index].plainText = plainText
       this.data[index].next = section
+    },
+    saveChoices (decisions, numberOfOptions, index) {
+      this.data[index].choices = decisions
+      this.data[index].numberOfOptions = numberOfOptions
     },
     goBack () {
       this.$router.replace({ name: 'readBook', params: { book: this.book } })
@@ -523,6 +564,12 @@ export default {
   display: flex;
 }
 .sections {
+  display: inline-block;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-right: 1px solid darkgray;
+}
+.decisions {
   display: inline-block;
   padding-left: 5px;
   padding-right: 5px;

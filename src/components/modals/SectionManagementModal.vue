@@ -67,7 +67,7 @@
       <b-spinner label="Spinning"/>
     </div>
     <template v-slot:modal-footer>
-      <b-button class="size" size="mt-1" variant="outline-secondary" @click="closeButton">Cerrar</b-button>
+      <b-button class="size" size="mt-1" variant="outline-secondary" @click="hide">Cerrar</b-button>
     </template>
   </b-modal>
 </template>
@@ -100,6 +100,7 @@ export default {
   methods: {
     refresh: async function () {
       this.loading = true
+      await this.$emit('saveActual', this.id)
       for (var i = 0; i < this.sectionsList.length; ++i) {
         await sectionsCollection.doc(this.sectionsList[i]).get().then(doc => {
           this.sectionsData.push({ id: doc.id, name: doc.data().name })
@@ -135,7 +136,7 @@ export default {
       this.sectionsData.splice(index + 1, 0, { id: 'Cargando...', name: 'Cargando...' })
       // Si clonamos la sección actual, primero la guardamos
       if (this.sectionsData[index].id === this.id) {
-        this.$emit('saveActual')
+        await this.$emit('saveActual')
       }
       // Descargamos todos los datos de la sección a clonar
       await sectionsCollection.doc(this.sectionsData[index].id).get().then(doc => {
@@ -156,7 +157,7 @@ export default {
       this.sectionsData.splice(index + 1, 0, { id: b.id, name: a.name.substring(0, 50) })
       // Actualizamos las secciones de la bd de libros
       var c = this.extractIDs()
-      this.$emit('update', c)
+      await this.$emit('update', c)
       this.busy = false
     },
     async sectionDelete (index) {
@@ -171,12 +172,12 @@ export default {
         if (this.sectionsData[index].id === this.id) {
           this.sectionsData.splice(index, 1)
           c = this.extractIDs()
-          this.$emit('update', c)
-          this.$emit('load', this.sectionsData[0].id)
+          await this.$emit('update', c)
+          await this.$emit('load', this.sectionsData[0].id)
         } else {
           this.sectionsData.splice(index, 1)
           c = this.extractIDs()
-          this.$emit('update', c)
+          await this.$emit('update', c)
         }
       } else {
         window.alert('No se puede borrar esta sección al no haber ninguna más')
@@ -198,7 +199,7 @@ export default {
       })
       this.sectionsData.push({ id: a.id, name: 'Nueva sección' })
       var c = this.extractIDs()
-      this.$emit('update', c)
+      await this.$emit('update', c)
       this.busy = false
     },
     async closeButton () {
@@ -207,16 +208,19 @@ export default {
         if (this.changes) {
           this.closing = true
           var c = this.extractIDs()
-          this.$emit('update', c)
-          this.$emit('saveActual')
+          await this.$emit('update', c)
           for (var i = 0; i < this.sectionsData.length; ++i) {
-            await sectionsCollection.doc(this.sectionsData[i].id).update({
-              name: this.sectionsData[i].name
+            await sectionsCollection.doc(this.sectionsData[i].id).get().then(doc => {
+              if (doc.exists) {
+                sectionsCollection.doc(this.sectionsData[i].id).update({
+                  name: this.sectionsData[i].name
+                })
+              }
             })
           }
-          this.$emit('load', this.id)
+          await this.$emit('load', this.id)
         }
-        this.$emit('cancel')
+        await this.$emit('cancel')
       } else window.alert('Debes dar un nombre válido a todas las secciones (nombres vacíos o solo con espacios no son válidos)')
     },
     extractIDs () {
@@ -232,6 +236,9 @@ export default {
         if (this.sectionsData[i].name.trim() === '') a = false
       }
       return a
+    },
+    hide () {
+      this.$bvModal.hide('bv-modal-example')
     }
   }
 }

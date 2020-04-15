@@ -1,6 +1,7 @@
 <template>
   <div class="border">
     <h6 class="title">Cambio de sección</h6>
+    <span style="color: red;" v-if="!valid">No hay más secciones a las que saltar. Este gadget no se verá al leer el libro</span>
     <b-row style="padding-bottom: 10px;">
       <b-col cols="3"><span>Texto (opcional): </span></b-col>
       <b-col>
@@ -29,7 +30,8 @@ export default {
     return {
       aux: [],
       text: this.textAux,
-      selectedSectionID: this.selectedSection
+      selectedSectionID: this.selectedSection,
+      valid: true
     }
   },
   watch: {
@@ -54,20 +56,25 @@ export default {
   methods: {
     refresh () {
       this.aux = []
+      this.valid = false
       this.selectedSectionID = this.selectedSection
       this.text = this.textAux
       // Es necesario hacer el deep clone en cada refresh
       this.deepClone()
+      this.checkContent(this.aux)
       var end = false
       for (var i = 0; i < this.aux.length && !end; ++i) {
-        if (this.aux[i].value === this.actualSection && this.aux.length > 1) {
-          if (i === 0 && this.aux[i].value === this.selectedSectionID) {
+        if (this.aux[i].value === this.actualSection) {
+          if (i === 0 && this.aux[i].value === this.selectedSectionID && this.aux.length > 1) {
             this.selectedSectionID = this.aux[1].value
           }
           this.aux.splice(i, 1)
           end = true
         }
       }
+      if (this.aux.length > 0) this.valid = true
+      if (!this.valid) this.selectedSectionID = ''
+      this.save()
     },
     deepClone () {
       // NO se pueden asignar props directamente a data, porque copian la dirección del padre
@@ -77,10 +84,23 @@ export default {
         this.aux.push(this.auxSectionsData[i])
       }
     },
+    checkContent (aux) {
+      if ((this.selectedSectionID === '' || this.selectedSectionID === undefined) && this.auxSectionsData.length > 1) this.selectedSectionID = this.auxSectionsData[0].value
+      else {
+        var quit = false
+        for (var i = 0; i < aux.length && !quit; ++i) {
+          if (this.selectedSectionID === aux[i].value) quit = true
+        }
+        if (!quit && this.auxSectionsData.length > 1) this.selectedSectionID = this.auxSectionsData[0].value
+        else if (!quit) this.selectedSectionID = ''
+      }
+    },
     save () {
       var plainText = this.text.substring(0, 2000)
       var htmlText = ('<span>' + plainText + '</span>')
+      if (this.selectedSectionID === undefined) this.selectedSectionID = ''
       this.$emit('section', htmlText, plainText, this.selectedSectionID, this.index)
+      this.$emit('save')
     }
   }
 }
