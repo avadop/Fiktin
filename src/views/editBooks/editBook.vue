@@ -330,7 +330,8 @@ export default {
     },
     checkStyles () {
       // En caso de acceder sin ningún componente (medida de seguridad. La ejecución no debería entrar aquí)
-      if (this.data[this.lastPress].component === undefined) return
+      if (this.lastPress === -1) this.lastPress = 0
+      else if (this.data[this.lastPress].component === undefined) return
       // Normal
       if (this.data[this.lastPress].component === 'Normal') {
         // Negrita
@@ -355,6 +356,14 @@ export default {
       // Título 3
       if (this.data[this.lastPress].component === 'Header3') this.changeButtons('Header3', 1)
       else this.changeButtons('Header3', 0)
+      // Multimedia
+      if (this.data[this.lastPress].componentName === 'Multimedia') {
+        if (this.picture === true) {
+          this.data[this.lastPress].component = 'Picture'
+        } else if (this.video === true) {
+          this.data[this.lastPress].component = 'Video'
+        }
+      }
     },
     checkDelete (index) {
       this.data.splice(index, 1)
@@ -474,16 +483,7 @@ export default {
         this.picture = false
         this.openModalVideo = true
       }
-      this.clickFileType()
-    },
-    clickFileType () {
-      if (this.data[this.lastPress].componentName === 'Multimedia') {
-        if (this.picture === true) {
-          this.data[this.lastPress].component = 'Picture'
-        } else if (this.video === true) {
-          this.data[this.lastPress].component = 'Video'
-        }
-      }
+      this.checkStyles()
     },
     cancelMultimedia () {
       this.video = false
