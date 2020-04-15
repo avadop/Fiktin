@@ -196,8 +196,7 @@ export default {
 
     ChangeSection,
     RepeatSection,
-    DecisionMaking,
-    RepeatSection
+    DecisionMaking
 
   },
   props: {
