@@ -97,3 +97,12 @@ export default {
   min-height: 28px;
 }
 </style>
+
+<style>
+#button-modal-accept {
+  width: 115px;
+}
+#button-modal-return {
+  width: 130px;
+}
+</style>
