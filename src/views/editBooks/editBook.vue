@@ -83,11 +83,14 @@
           <div/>
           <span style="font-size: 20px">Repetir sección</span>
           <b-icon icon="arrow-repeat" class="addGadgetButton" @click="addSectionRepeat()">Añadir</b-icon>
-
         </div>
+
         <div class="decisions">
           <span style="font-size: 20px">Decisiones</span>
           <b-icon icon="list-task" class="addGadgetButton" @click="addDecisionMaking()">Añadir</b-icon>
+        <div/>
+          <span style="font-size: 20px">Adivinanzas</span>
+          <b-icon icon="question" class="addGadgetButton" @click="addRiddle()">Añadir</b-icon>
         </div>
         <b-icon icon="cloud-upload" class="buttonNormalRightBorder" @mouseup="save()">Save</b-icon>
       </div>
@@ -158,6 +161,14 @@
             :auxNumberOfOptions="text.numberOfOptions"
             :index="index"
             @section="saveChoices"/>
+          <Riddle v-if="text.component=='Riddle'"
+            :actualSection="sectionID"
+            :auxSectionsData="sectionsData"
+            :selectedSection="text.next"
+            :textAux="text.plainText"
+            :index="index"
+            @section="saveHTMLAndSection"
+            @save="save"/>
 
         </div>
       </div>
@@ -180,6 +191,7 @@ import VideoGadget from '@/components/gadgets/VideoGadget.vue'
 import ChangeSection from '@/components/gadgets/ChangeSection.vue'
 import RepeatSection from '@/components/gadgets/RepeatSection.vue'
 import DecisionMaking from '@/components/gadgets/DecisionMaking.vue'
+import Riddle from '@/components/gadgets/Riddle.vue'
 
 export default {
   name: 'editBook',
@@ -196,7 +208,8 @@ export default {
 
     ChangeSection,
     RepeatSection,
-    DecisionMaking
+    DecisionMaking,
+    Riddle
 
   },
   props: {
@@ -327,6 +340,11 @@ export default {
           componentName: 'toma de decisiones'
         })
       } else window.alert('Para añadir una toma de decisiones debes tener más de una sección creada')
+    },
+    addRiddle () {
+      if (this.sectionsData.length > 1) {
+        this.data.splice(this.lastPress + 1, 0, { plainText: '', htmlText: '<span></span>', next: this.sectionsData[0].value, component: 'ChangeSection', componentName: 'cambio de sección' })
+      } else window.alert('Para añadir un cambio de sección debes tener más de una sección creada')
     },
     checkStyles () {
       // En caso de acceder sin ningún componente (medida de seguridad. La ejecución no debería entrar aquí)
