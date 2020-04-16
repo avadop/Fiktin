@@ -343,7 +343,7 @@ export default {
     },
     addRiddle () {
       if (this.sectionsData.length > 1) {
-        this.data.splice(this.lastPress + 1, 0, { plainText: '', htmlText: '<span></span>', next: this.sectionsData[0].value, component: 'ChangeSection', componentName: 'cambio de sección' })
+        this.data.splice(this.lastPress + 1, 0, { plainText: '', htmlText: '<span></span>', next: this.sectionsData[0].value, component: 'Riddle', componentName: 'riddle' })
       } else window.alert('Para añadir un cambio de sección debes tener más de una sección creada')
     },
     checkStyles () {
