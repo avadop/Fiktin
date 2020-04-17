@@ -161,13 +161,16 @@
             :auxNumberOfOptions="text.numberOfOptions"
             :index="index"
             @section="saveChoices"/>
+
           <Riddle v-if="text.component=='Riddle'"
             :actualSection="sectionID"
             :auxSectionsData="sectionsData"
-            :selectedSection="text.next"
-            :textAux="text.plainText"
+            :wrongSectionAux="text.wrongSection"
+            :rightSectionAux="text.rightSection"
+            :riddleTextAux="text.riddleText"
+            :answerTextAux="text.answerText"
             :index="index"
-            @section="saveHTMLAndSection"
+            @section="saveHTMLRiddle"
             @save="save"/>
 
         </div>
@@ -306,6 +309,14 @@ export default {
           a.push({ plainText: this.data[index].choices[i].plainText, htmlText: this.data[index].choices[i].htmlText, choice: this.data[index].choices[i].choice, action: this.data[index].choices[i].action })
         }
         this.data.splice(index + 1, 0, { choices: a, numberOfOptions: this.data[index].numberOfOptions, component: 'DecisionMaking', componentName: 'toma de decisiones' })
+      } else if (this.data[index].component === 'Riddle') {
+        this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText,
+          riddleText: this.data[index].riddleText,
+          answerText: this.data[index].answerText,
+          rightSection: this.data[index].rightSection,
+          wrongSection: this.data[index].wrongSection,
+          component: 'Riddle',
+          componentName: 'riddle' })
       }
     },
     async updateBookSections (newSections) {
@@ -343,8 +354,14 @@ export default {
     },
     addRiddle () {
       if (this.sectionsData.length > 1) {
-        this.data.splice(this.lastPress + 1, 0, { plainText: '', htmlText: '<span></span>', next: this.sectionsData[0].value, component: 'Riddle', componentName: 'riddle' })
-      } else window.alert('Para añadir un cambio de sección debes tener más de una sección creada')
+        this.data.splice(this.lastPress + 1, 0, { htmlText: '',
+          riddleText: '',
+          answerText: '',
+          rightSection: this.sectionsData[0].value,
+          wrongSection: '',
+          component: 'Riddle',
+          componentName: 'riddle' })
+      } else window.alert('Para añadir una adivinanza debes tener más de una sección creada')
     },
     checkStyles () {
       // En caso de acceder sin ningún componente (medida de seguridad. La ejecución no debería entrar aquí)
@@ -543,6 +560,13 @@ export default {
     saveChoices (decisions, numberOfOptions, index) {
       this.data[index].choices = decisions
       this.data[index].numberOfOptions = numberOfOptions
+    },
+    saveHTMLRiddle (htmlText, riddleText, answerText, rightSection, wrongSection, index) {
+      this.data[index].riddleText = riddleText
+      this.data[index].answerText = answerText
+      this.data[index].htmlText = htmlText
+      this.data[index].rightSection = rightSection
+      this.data[index].wrongSection = wrongSection
     },
     goBack () {
       this.$router.replace({ name: 'readBook', params: { book: this.book } })
