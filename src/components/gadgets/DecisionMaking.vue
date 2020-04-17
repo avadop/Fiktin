@@ -13,7 +13,7 @@
       <b-row style="padding-bottom: 10px;">
         <b-col cols="3"><span>Texto (opcional): </span></b-col>
         <b-col>
-          <b-form-input size="sm" @blur="save()" v-model="element.plainText" :formatter="formatMaxText" placeholder="Escribe un mensaje si quieres (max 2000 caracteres)"></b-form-input>
+          <b-form-input size="sm" style="margin-bottom: 6px;" @blur="save()" v-model="element.plainText" :formatter="formatMaxText" placeholder="Escribe un mensaje si quieres (max 2000 caracteres)"></b-form-input>
           <span v-if="element.plainText.length > 1800" style="color: red;">Estas cerca del limite de caracteres, llevas {{ element.plainText.length }} /2000</span>
         </b-col>
       </b-row>
