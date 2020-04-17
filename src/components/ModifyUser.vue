@@ -113,7 +113,7 @@
         <b-button variant="dark" type="submit" @click="modal = true"> Confirmar</b-button>
       </form>
 
-      <b-modal id="modal-modify" v-model="modal" hide-footer hide-header>
+      <b-modal id="modal-modify" v-model="modal" hide-footer hide-header no-close-on-backdrop>
         <div class="d-block text-center">
           <p>¿Está seguro que desea aplicar los cambios?</p>
         </div>
