@@ -169,9 +169,9 @@
             :rightSectionAux="text.rightSection"
             :riddleTextAux="text.riddleText"
             :answerTextAux="text.answerText"
+            :numberOfTriesAux="text.numberOfTries"
             :index="index"
-            @section="saveHTMLRiddle"
-            @save="save"/>
+            @section="saveHTMLRiddle"/>
 
         </div>
       </div>
@@ -315,6 +315,7 @@ export default {
           answerText: this.data[index].answerText,
           rightSection: this.data[index].rightSection,
           wrongSection: this.data[index].wrongSection,
+          numberOfTries: this.data[index].numberOfTries,
           component: 'Riddle',
           componentName: 'riddle' })
       }
@@ -359,6 +360,7 @@ export default {
           answerText: '',
           rightSection: this.sectionsData[0].value,
           wrongSection: '',
+          numberOfTries: '1',
           component: 'Riddle',
           componentName: 'riddle' })
       } else window.alert('Para añadir una adivinanza debes tener más de una sección creada')
@@ -561,12 +563,13 @@ export default {
       this.data[index].choices = decisions
       this.data[index].numberOfOptions = numberOfOptions
     },
-    saveHTMLRiddle (htmlText, riddleText, answerText, rightSection, wrongSection, index) {
+    saveHTMLRiddle (htmlText, riddleText, answerText, rightSection, wrongSection, numberOfTries, index) {
       this.data[index].riddleText = riddleText
       this.data[index].answerText = answerText
       this.data[index].htmlText = htmlText
       this.data[index].rightSection = rightSection
       this.data[index].wrongSection = wrongSection
+      this.data[index].numberOfTries = numberOfTries
     },
     goBack () {
       this.$router.replace({ name: 'readBook', params: { book: this.book } })
