@@ -55,6 +55,7 @@
             <b-icon icon="type-strikethrough" class="buttonPressedRightBorder" v-else @mousedown="onLiveEditComponent($event, 'StrikeThrough')">strikeThrough</b-icon>
           </div>
         </div>
+
         <div class="headerPanel">
           <span style="font-size: 20px;">Título</span>
           <b-icon icon="plus" class="addGadgetButton" @click="addTitle()">Añadir</b-icon>
@@ -83,11 +84,16 @@
           <div/>
           <span style="font-size: 20px">Repetir sección</span>
           <b-icon icon="arrow-repeat" class="addGadgetButton" @click="addSectionRepeat()">Añadir</b-icon>
-
         </div>
+
         <div class="decisions">
           <span style="font-size: 20px">Decisiones</span>
           <b-icon icon="list-task" class="addGadgetButton" @click="addDecisionMaking()">Añadir</b-icon>
+        </div>
+
+        <div class="randoms">
+          <span style="font-size: 20px">Número<br>aleatorio</span>
+          <b-icon icon="hash" class="addGadgetButton" @click="addRandomNumber()">Añadir</b-icon>
         </div>
         <b-icon icon="cloud-upload" class="buttonNormalRightBorder" @mouseup="save()">Save</b-icon>
       </div>
@@ -158,7 +164,15 @@
             :auxNumberOfOptions="text.numberOfOptions"
             :index="index"
             @section="saveChoices"/>
-
+          <RandomNumber v-if="text.component=='RandomNumber'"
+            :actualSection="sectionID"
+            :auxSectionsData="sectionsData"
+            :auxConditions="text.conditions"
+            :auxNumberOfConditions="text.numberOfConditions"
+            :auxLowerLimit="text.lowerLimit"
+            :auxUpperLimit="text.upperLimit"
+            :index="index"
+            @random="saveRandomNumbers"/>
         </div>
       </div>
     </div>
@@ -180,6 +194,7 @@ import VideoGadget from '@/components/gadgets/VideoGadget.vue'
 import ChangeSection from '@/components/gadgets/ChangeSection.vue'
 import RepeatSection from '@/components/gadgets/RepeatSection.vue'
 import DecisionMaking from '@/components/gadgets/DecisionMaking.vue'
+import RandomNumber from '@/components/gadgets/RandomNumber.vue'
 
 export default {
   name: 'editBook',
@@ -196,7 +211,8 @@ export default {
 
     ChangeSection,
     RepeatSection,
-    DecisionMaking
+    DecisionMaking,
+    RandomNumber
 
   },
   props: {
@@ -293,6 +309,12 @@ export default {
           a.push({ plainText: this.data[index].choices[i].plainText, htmlText: this.data[index].choices[i].htmlText, choice: this.data[index].choices[i].choice, action: this.data[index].choices[i].action })
         }
         this.data.splice(index + 1, 0, { choices: a, numberOfOptions: this.data[index].numberOfOptions, component: 'DecisionMaking', componentName: 'toma de decisiones' })
+      } else if (this.data[index].component === 'RandomNumber') {
+        var b = []
+        for (var j = 0; j < this.data[index].conditions.length; ++j) {
+          b.push({ condition: this.data[index].conditions[j].condition, number: this.data[index].conditions[j].number, section: this.data[index].conditions[j].section })
+        }
+        this.data.splice(index + 1, 0, { lowerLimit: this.data[index].lowerLimit, upperLimit: this.data[index].upperLimit, numberOfConditions: this.data[index].numberOfConditions, conditions: b, component: 'RandomNumber', componentName: 'número aleatorio' })
       }
     },
     async updateBookSections (newSections) {
@@ -327,6 +349,9 @@ export default {
           componentName: 'toma de decisiones'
         })
       } else window.alert('Para añadir una toma de decisiones debes tener más de una sección creada')
+    },
+    addRandomNumber () {
+      this.data.splice(this.lastPress + 1, 0, { lowerLimit: 0, upperLimit: 10, conditions: [], numberOfConditions: 0, component: 'RandomNumber', componentName: 'número aleatorio' })
     },
     checkStyles () {
       // En caso de acceder sin ningún componente (medida de seguridad. La ejecución no debería entrar aquí)
@@ -526,6 +551,12 @@ export default {
       this.data[index].choices = decisions
       this.data[index].numberOfOptions = numberOfOptions
     },
+    saveRandomNumbers (conditions, numberOfConditions, lowerLimit, upperLimit, index) {
+      this.data[index].conditions = conditions
+      this.data[index].numberOfConditions = numberOfConditions
+      this.data[index].lowerLimit = lowerLimit
+      this.data[index].upperLimit = upperLimit
+    },
     goBack () {
       this.$router.replace({ name: 'readBook', params: { book: this.book } })
     },
@@ -666,6 +697,12 @@ export default {
   border-right: 1px solid darkgray;
 }
 .decisions {
+  display: inline-block;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-right: 1px solid darkgray;
+}
+.randoms {
   display: inline-block;
   padding-left: 5px;
   padding-right: 5px;
