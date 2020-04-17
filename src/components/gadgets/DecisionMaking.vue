@@ -92,7 +92,6 @@ export default {
           }
         }
         if (this.aux.length > 1) this.valid = true
-        if (!this.valid) this.selectedSectionID = ''
       }
       if (splice) this.aux.splice(iSplice, 1)
     },
@@ -157,15 +156,9 @@ export default {
 .title {
   font-weight: bold;
 }
-.text {
-  display: flex;
-}
 .table {
   border: 1px solid rgb(218, 218, 218);
   padding: 10px;
   margin-bottom: 10px;
-}
-.selection {
-  display: flex;
 }
 </style>
