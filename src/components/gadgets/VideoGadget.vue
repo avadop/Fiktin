@@ -124,4 +124,10 @@ export default {
 #optionsCheckbox {
   padding: 10px;
 }
+#button-modal-accept {
+  width: 115px;
+}
+#button-modal-return {
+  width: 130px;
+}
 </style>

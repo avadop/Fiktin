@@ -89,6 +89,9 @@
         <div class="decisions">
           <span style="font-size: 20px">Decisiones</span>
           <b-icon icon="list-task" class="addGadgetButton" @click="addDecisionMaking()">Añadir</b-icon>
+        <div/>
+          <span style="font-size: 20px">Adivinanzas</span>
+          <b-icon icon="question" class="addGadgetButton" @click="addRiddle()">Añadir</b-icon>
         </div>
 
         <div class="randoms">
@@ -164,6 +167,17 @@
             :auxNumberOfOptions="text.numberOfOptions"
             :index="index"
             @section="saveChoices"/>
+
+          <Riddle v-if="text.component=='Riddle'"
+            :actualSection="sectionID"
+            :auxSectionsData="sectionsData"
+            :wrongSectionAux="text.wrongSection"
+            :rightSectionAux="text.rightSection"
+            :riddleTextAux="text.riddleText"
+            :answerTextAux="text.answerText"
+            :numberOfTriesAux="text.numberOfTries"
+            :index="index"
+            @section="saveHTMLRiddle"/>
           <RandomNumber v-if="text.component=='RandomNumber'"
             :actualSection="sectionID"
             :auxSectionsData="sectionsData"
@@ -194,6 +208,7 @@ import VideoGadget from '@/components/gadgets/VideoGadget.vue'
 import ChangeSection from '@/components/gadgets/ChangeSection.vue'
 import RepeatSection from '@/components/gadgets/RepeatSection.vue'
 import DecisionMaking from '@/components/gadgets/DecisionMaking.vue'
+import Riddle from '@/components/gadgets/Riddle.vue'
 import RandomNumber from '@/components/gadgets/RandomNumber.vue'
 
 export default {
@@ -212,6 +227,7 @@ export default {
     ChangeSection,
     RepeatSection,
     DecisionMaking,
+    Riddle,
     RandomNumber
 
   },
@@ -309,6 +325,15 @@ export default {
           a.push({ plainText: this.data[index].choices[i].plainText, htmlText: this.data[index].choices[i].htmlText, choice: this.data[index].choices[i].choice, action: this.data[index].choices[i].action })
         }
         this.data.splice(index + 1, 0, { choices: a, numberOfOptions: this.data[index].numberOfOptions, component: 'DecisionMaking', componentName: 'toma de decisiones' })
+      } else if (this.data[index].component === 'Riddle') {
+        this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText,
+          riddleText: this.data[index].riddleText,
+          answerText: this.data[index].answerText,
+          rightSection: this.data[index].rightSection,
+          wrongSection: this.data[index].wrongSection,
+          numberOfTries: this.data[index].numberOfTries,
+          component: 'Riddle',
+          componentName: 'riddle' })
       } else if (this.data[index].component === 'RandomNumber') {
         var b = []
         for (var j = 0; j < this.data[index].conditions.length; ++j) {
@@ -349,6 +374,18 @@ export default {
           componentName: 'toma de decisiones'
         })
       } else window.alert('Para añadir una toma de decisiones debes tener más de una sección creada')
+    },
+    addRiddle () {
+      if (this.sectionsData.length > 1) {
+        this.data.splice(this.lastPress + 1, 0, { htmlText: '',
+          riddleText: '',
+          answerText: '',
+          rightSection: this.sectionsData[0].value,
+          wrongSection: '',
+          numberOfTries: '1',
+          component: 'Riddle',
+          componentName: 'riddle' })
+      } else window.alert('Para añadir una adivinanza debes tener más de una sección creada')
     },
     addRandomNumber () {
       this.data.splice(this.lastPress + 1, 0, { lowerLimit: 0, upperLimit: 10, conditions: [], numberOfConditions: 0, component: 'RandomNumber', componentName: 'número aleatorio' })
@@ -550,6 +587,14 @@ export default {
     saveChoices (decisions, numberOfOptions, index) {
       this.data[index].choices = decisions
       this.data[index].numberOfOptions = numberOfOptions
+    },
+    saveHTMLRiddle (htmlText, riddleText, answerText, rightSection, wrongSection, numberOfTries, index) {
+      this.data[index].riddleText = riddleText
+      this.data[index].answerText = answerText
+      this.data[index].htmlText = htmlText
+      this.data[index].rightSection = rightSection
+      this.data[index].wrongSection = wrongSection
+      this.data[index].numberOfTries = numberOfTries
     },
     saveRandomNumbers (conditions, numberOfConditions, lowerLimit, upperLimit, index) {
       this.data[index].conditions = conditions
