@@ -13,8 +13,8 @@
       <b-row style="padding-bottom: 10px;">
         <b-col cols="3"><span>Texto (opcional): </span></b-col>
         <b-col>
-          <b-form-input size="sm" v-if="element.plainText.length>2000" :state="false" @blur="save()" v-model="element.plainText" placeholder="Escribe un mensaje si quieres (max 2000 caracteres)"></b-form-input>
-          <b-form-input size="sm" v-else @blur="save()" v-model="element.plainText" placeholder="Escribe un mensaje si quieres (max 2000 caracteres)"></b-form-input>
+          <b-form-input size="sm" @blur="save()" v-model="element.plainText" :formatter="formatMaxText" placeholder="Escribe un mensaje si quieres (max 2000 caracteres)"></b-form-input>
+          <span v-if="element.plainText.length > 1800" style="color: red;">Estas cerca del limite de caracteres, llevas {{ element.plainText.length }} /2000</span>
         </b-col>
       </b-row>
       <b-row>
@@ -137,13 +137,16 @@ export default {
     },
     save () {
       for (var i = 0; i < this.decisions.length; ++i) {
-        var plainText = this.decisions[i].plainText.substring(0, 2000)
+        var plainText = this.decisions[i].plainText
         var htmlText = ('<span>' + plainText + '</span>')
         this.decisions[i].htmlText = htmlText
         if (this.decisions[i].action === undefined) this.decisions[i].action = ''
       }
       this.numberOfOptions = parseInt(this.numberOfOptions, 10)
       this.$emit('section', this.decisions, this.numberOfOptions, this.index)
+    },
+    formatMaxText (value) {
+      return String(value).substring(0, 2000)
     }
   }
 }
