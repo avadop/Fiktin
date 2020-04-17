@@ -22,7 +22,7 @@
       <router-view v-if="loggedIn"/>
     </div>
 
-    <b-modal v-model="modal" hide-footer hide-header>
+    <b-modal v-model="modal" hide-footer hide-header no-close-on-backdrop>
         <div class="d-block text-center">
           <h3>Cerrar Sesión</h3>
           <p>¿Está seguro que desea cerrar sesión?</p>

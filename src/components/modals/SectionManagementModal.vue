@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="bv-modal-example" size="lg" title="Gestión de secciones" centered scrollable @hide="closeButton">
+  <b-modal id="bv-modal-example" size="lg" title="Gestión de secciones" centered scrollable @hide="closeButton" no-close-on-backdrop>
     <div v-if="!loading && !closing">
       <h6>Sección actual: {{ id }} - {{ name }}</h6>
       <br>

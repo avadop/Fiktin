@@ -11,7 +11,7 @@
               <b-container sm="3">
                 <label>Imagen de perfil:</label>
                 <b-button v-if="this.newPicture != null" class="my-2" variant="danger-dark" @click="removeImg"><b-icon variant="danger" icon="x"></b-icon></b-button>
-                <b-form-file v-show="this.uploadValue==0 && this.newPicture == null" @change="onFileSelected"
+                <b-form-file v-show="this.uploadValue===0 && this.newPicture === null" @change="onFileSelected"
                   class="my-2"
                   placeholder="Selecciona una imagen o arrastrala aquí..."
                   drop-placeholder="Arrastra aquí la imagen..."
@@ -53,7 +53,8 @@
               <div class="d-flex">
                 <b-icon class="h4" icon="shield-lock"></b-icon>
                 <b-form-input
-                  v-if="newPassword.length == 0"
+                  v-if="newPassword.length === 0"
+                  trim
                   type="password"
                   v-model="newPassword"
                   class="ml-2 input-form"
@@ -64,6 +65,7 @@
                   v-else
                   type="password"
                   v-model="newPassword"
+                  trim
                   class="ml-2 input-form"
                   :state="correctPassword"
                   aria-describedby="input-live-help input-live-feedback"
@@ -81,7 +83,8 @@
               <div class="d-flex">
                 <b-icon class="h4" icon="shield-lock-fill"></b-icon>
                 <b-form-input
-                  v-if="newPassword2.length == 0"
+                  v-if="newPassword2.length === 0"
+                  trim
                   type="password"
                   v-model="newPassword2"
                   class="ml-2 input-form"
@@ -91,6 +94,7 @@
                 <b-form-input
                   v-else
                   type="password"
+                  trim
                   v-model="newPassword2"
                   class="ml-2 input-form"
                   :state="samePasswords"
@@ -109,7 +113,7 @@
         <b-button variant="dark" type="submit" @click="modal = true"> Confirmar</b-button>
       </form>
 
-      <b-modal id="modal-modify" v-model="modal" hide-footer hide-header>
+      <b-modal id="modal-modify" v-model="modal" hide-footer hide-header no-close-on-backdrop>
         <div class="d-block text-center">
           <p>¿Está seguro que desea aplicar los cambios?</p>
         </div>

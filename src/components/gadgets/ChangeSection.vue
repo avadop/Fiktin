@@ -5,8 +5,8 @@
     <b-row style="padding-bottom: 10px;">
       <b-col cols="3"><span>Texto (opcional): </span></b-col>
       <b-col>
-        <b-form-input size="sm" v-if="text.length>2000" :state="false" @blur="save()" v-model="text" placeholder="Escribe un mensaje si quieres (max 2000 caracteres)"></b-form-input>
-        <b-form-input size="sm" v-else @blur="save()" v-model="text" placeholder="Escribe un mensaje si quieres (max 2000 caracteres)"></b-form-input>
+        <b-form-input size="sm" style="margin-bottom: 10px;" @blur="save()" v-model="text" :formatter="formatMaxText" placeholder="Escribe un mensaje si quieres (max 2000 caracteres)"></b-form-input>
+        <span v-if="text.length > 1800" style="color: red;">Estas cerca del limite de caracteres, llevas {{ this.text.length}} /2000</span>
       </b-col>
     </b-row>
     <b-row>
@@ -96,11 +96,14 @@ export default {
       }
     },
     save () {
-      var plainText = this.text.substring(0, 2000)
+      var plainText = this.text
       var htmlText = ('<span>' + plainText + '</span>')
       if (this.selectedSectionID === undefined) this.selectedSectionID = ''
       this.$emit('section', htmlText, plainText, this.selectedSectionID, this.index)
       this.$emit('save')
+    },
+    formatMaxText (value) {
+      return String(value).substring(0, 2000)
     }
   }
 }

@@ -42,7 +42,7 @@
       <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="show = true, numberOfTriesPreview = parseInt(numberOfTries,10)">Preview</b-button>
     </div>
 
-    <b-modal v-model="show" hide-footer hide-header >
+    <b-modal v-model="show" hide-footer hide-header centered>
       <div class="d-block text-left">
         <h5 style="margin-bottom: 10px;">Adivinanza</h5>
       </div>

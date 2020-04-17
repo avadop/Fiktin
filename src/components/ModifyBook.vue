@@ -97,7 +97,7 @@
         <b-button variant="dark" @click="modalModify = true" :disabled="(this.uploadValue != 0 && this.uploadValue != 100) || repited || title.length < 3 || title.length > 50 || description.length > 250">Guardar</b-button>
       </div>
 
-      <b-modal id="modal-modify" v-model="modalModify" hide-footer hide-header>
+      <b-modal id="modal-modify" v-model="modalModify" hide-footer hide-header >
         <div class="d-block text-center">
           <p>¿Está seguro que desea aplicar las modificaciones?</p>
         </div>

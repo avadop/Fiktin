@@ -5,6 +5,7 @@
       <div class="d-flex">
         <b-icon class="h4" icon="person"></b-icon>
         <b-form-input
+          trim
           type="text"
           v-model="nick"
           class="ml-2 input-form"
@@ -17,6 +18,7 @@
       <div class="d-flex">
         <b-icon class="h4" icon="shield-lock"></b-icon>
         <b-form-input
+          trim
           type="password"
           v-model="password"
           class="ml-2 input-form"

@@ -35,7 +35,7 @@
             @new-name="newName" @new-email="newEmail" @new-password="newPassword" @new-picture="newPicture" @flip-edit="switchEdit" @switchEdit="switchEdit"/>
         </div>
 
-        <b-modal id="modal-delete" v-model="modal" hide-footer hide-header>
+        <b-modal id="modal-delete" v-model="modal" hide-footer hide-header no-close-on-backdrop>
           <div class="d-block text-center">
             <h3>Eliminar usuario</h3>
             <p>¿Está seguro que desea eliminar usuario?</p>

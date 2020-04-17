@@ -7,8 +7,9 @@
         <div class="d-flex">
           <b-icon class="h4" icon="person"></b-icon>
           <b-form-input
-            v-if="newNick.length == 0"
+            v-if="newNick.length === 0"
             type="text"
+            trim
             v-model="newNick"
             class="ml-2 input-form"
             aria-describedby="input-live-help input-live-feedback"
@@ -17,6 +18,7 @@
           <b-form-input
             v-else
             type="text"
+            trim
             v-model="newNick"
             class="input-form"
             :state="!exists && newNick.length >= 4 && newNick.length <= 10"
@@ -62,10 +64,11 @@
         <div class="d-flex">
           <b-icon class="h4" icon="shield-lock"></b-icon>
             <b-form-input
-              v-if="newPassword.length == 0"
+              v-if="newPassword.length === 0"
               type="password"
               v-model="newPassword"
               class="ml-2 input-form"
+              trim
               aria-describedby="input-live-help input-live-feedback"
               placeholder="Contraseña"
             ></b-form-input>
@@ -74,6 +77,7 @@
               type="password"
               v-model="newPassword"
               class="ml-2 input-form"
+              trim
               :state="newPassword.length >= 6 && newPassword.length <= 12"
               aria-describedby="input-live-help input-live-feedback"
               placeholder="Contraseña"
@@ -90,7 +94,8 @@
         <div class="d-flex">
           <b-icon class="h4" icon="shield-lock-fill"></b-icon>
           <b-form-input
-            v-if="newPassword2.length == 0"
+            v-if="newPassword2.length === 0"
+            trim
             type="password"
             v-model="newPassword2"
             class="ml-2 input-form"
@@ -99,6 +104,7 @@
           ></b-form-input>
           <b-form-input
             v-else
+            trim
             type="password"
             v-model="newPassword2"
             class="ml-2 input-form"
