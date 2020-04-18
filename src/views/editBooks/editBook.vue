@@ -84,14 +84,17 @@
           <div/>
           <span style="font-size: 20px">Repetir sección</span>
           <b-icon icon="arrow-repeat" class="addGadgetButton" @click="addSectionRepeat()">Añadir</b-icon>
-        </div>
-
-        <div class="decisions">
+          <div/>
           <span style="font-size: 20px">Decisiones</span>
           <b-icon icon="list-task" class="addGadgetButton" @click="addDecisionMaking()">Añadir</b-icon>
-        <div/>
+        </div>
+
+        <div class="games">
           <span style="font-size: 20px">Adivinanzas</span>
           <b-icon icon="question" class="addGadgetButton" @click="addRiddle()">Añadir</b-icon>
+          <div/>
+          <span style="font-size: 20px">Secuencia</span>
+          <b-icon icon="three-dots" class="addGadgetButton" @click="addSequence()">Añadir</b-icon>
         </div>
 
         <div class="randoms">
@@ -179,6 +182,17 @@
             :changeSectionWhenWrongAux="text.changeSectionWhenWrong"
             :index="index"
             @section="saveHTMLRiddle"/>
+          <Sequence v-if="text.component=='Sequence'"
+            :actualSection="sectionID"
+            :auxSectionsData="sectionsData"
+            :auxSequence="text.sequence"
+            :auxSolution="text.solution"
+            :auxChangeSectionWhenWrong="text.changeSectionWhenWrong"
+            :auxWrongSection="text.wrongSection"
+            :auxRightSection="text.rightSection"
+            :auxNumberOfTries="text.numberOfTries"
+            :index="index"
+            @section="saveSequence"/>
           <RandomNumber v-if="text.component=='RandomNumber'"
             :actualSection="sectionID"
             :auxSectionsData="sectionsData"
@@ -210,6 +224,7 @@ import ChangeSection from '@/components/gadgets/ChangeSection.vue'
 import RepeatSection from '@/components/gadgets/RepeatSection.vue'
 import DecisionMaking from '@/components/gadgets/DecisionMaking.vue'
 import Riddle from '@/components/gadgets/Riddle.vue'
+import Sequence from '@/components/gadgets/Sequence.vue'
 import RandomNumber from '@/components/gadgets/RandomNumber.vue'
 
 export default {
@@ -229,6 +244,7 @@ export default {
     RepeatSection,
     DecisionMaking,
     Riddle,
+    Sequence,
     RandomNumber
 
   },
@@ -316,8 +332,8 @@ export default {
       else if (this.data[index].component === 'Picture') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, component: 'Picture', componentName: 'Multimedia' })
       else if (this.data[index].component === 'Video') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, component: 'Video', componentName: 'Multimedia' })
 
-      else if (this.data[index].component === 'ChangeSection') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, next: this.data[index].next, component: 'ChangeSection', componentName: 'cambio de sección' })
-      else if (this.data[index].component === 'RepeatSection') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'RepeatSection', componentName: 'repetición de sección' })
+      else if (this.data[index].component === 'ChangeSection') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, next: this.data[index].next, component: 'ChangeSection', componentName: 'Cambio de sección' })
+      else if (this.data[index].component === 'RepeatSection') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'RepeatSection', componentName: 'Repetición de sección' })
       else if (this.data[index].component === 'DecisionMaking') {
         var a = []
         for (var i = 0; i < this.data[index].choices.length; ++i) {
@@ -325,7 +341,7 @@ export default {
           // Esto provoca que cada gagdet sea independiente. Sin esto, al modificar la copia, se modificarían tanto el resto de copias como el original
           a.push({ plainText: this.data[index].choices[i].plainText, htmlText: this.data[index].choices[i].htmlText, choice: this.data[index].choices[i].choice, action: this.data[index].choices[i].action })
         }
-        this.data.splice(index + 1, 0, { choices: a, numberOfOptions: this.data[index].numberOfOptions, component: 'DecisionMaking', componentName: 'toma de decisiones' })
+        this.data.splice(index + 1, 0, { choices: a, numberOfOptions: this.data[index].numberOfOptions, component: 'DecisionMaking', componentName: 'Toma de decisiones' })
       } else if (this.data[index].component === 'Riddle') {
         this.data.splice(index + 1, 0, { changeSectionWhenWrong: this.data[index].changeSectionWhenWrong,
           riddleText: this.data[index].riddleText,
@@ -334,13 +350,24 @@ export default {
           wrongSection: this.data[index].wrongSection,
           numberOfTries: this.data[index].numberOfTries,
           component: 'Riddle',
-          componentName: 'riddle' })
+          componentName: 'Adivinanza' })
       } else if (this.data[index].component === 'RandomNumber') {
         var b = []
         for (var j = 0; j < this.data[index].conditions.length; ++j) {
           b.push({ condition: this.data[index].conditions[j].condition, number: this.data[index].conditions[j].number, section: this.data[index].conditions[j].section })
         }
-        this.data.splice(index + 1, 0, { lowerLimit: this.data[index].lowerLimit, upperLimit: this.data[index].upperLimit, numberOfConditions: this.data[index].numberOfConditions, conditions: b, component: 'RandomNumber', componentName: 'número aleatorio' })
+        this.data.splice(index + 1, 0, { lowerLimit: this.data[index].lowerLimit, upperLimit: this.data[index].upperLimit, numberOfConditions: this.data[index].numberOfConditions, conditions: b, component: 'RandomNumber', componentName: 'Número aleatorio' })
+      } else if (this.data[index].component === 'Sequence') {
+        var c = [] // Secuencia
+        var d = [] // Soluciones
+        var k
+        for (k = 0; k < this.data[index].sequence.length; ++k) {
+          c.push({ text: this.data[index].sequence[k].text })
+        }
+        for (k = 0; k < this.data[index].solution.length; ++k) {
+          d.push({ text: this.data[index].solution[k].text })
+        }
+        this.data.splice(index + 1, 0, { numberOfTries: this.data[index].numberOfTries, sequence: c, solution: d, changeSectionWhenWrong: this.data[index].changeSectionWhenWrong, wrongSection: this.data[index].wrongSection, rightSection: this.data[index].rightSection, component: 'Sequence', componentName: 'Secuencia' })
       }
     },
     async updateBookSections (newSections) {
@@ -360,11 +387,11 @@ export default {
     },
     addSectionChange () {
       if (this.sectionsData.length > 1) {
-        this.data.splice(this.lastPress + 1, 0, { plainText: '', htmlText: '<span></span>', next: this.sectionsData[0].value, component: 'ChangeSection', componentName: 'cambio de sección' })
+        this.data.splice(this.lastPress + 1, 0, { plainText: '', htmlText: '<span></span>', next: this.sectionsData[0].value, component: 'ChangeSection', componentName: 'Cambio de sección' })
       } else window.alert('Para añadir un cambio de sección debes tener más de una sección creada')
     },
     addSectionRepeat () {
-      this.data.splice(this.lastPress + 1, 0, { plainText: '', htmlText: '<span></span>', component: 'RepeatSection', componentName: 'repetición de sección' })
+      this.data.splice(this.lastPress + 1, 0, { plainText: '', htmlText: '<span></span>', component: 'RepeatSection', componentName: 'Repetición de sección' })
     },
     addDecisionMaking () {
       if (this.sectionsData.length > 1) {
@@ -372,7 +399,7 @@ export default {
           choices: [{ plainText: '', htmlText: '<span></span>', choice: 'Section', action: this.sectionsData[0].value }, { plainText: '', htmlText: '<span></span>', choice: 'Section', action: this.sectionsData[0].value }],
           numberOfOptions: 2,
           component: 'DecisionMaking',
-          componentName: 'toma de decisiones'
+          componentName: 'Toma de decisiones'
         })
       } else window.alert('Para añadir una toma de decisiones debes tener más de una sección creada')
     },
@@ -385,11 +412,16 @@ export default {
           wrongSection: '',
           numberOfTries: '1',
           component: 'Riddle',
-          componentName: 'Riddle' })
+          componentName: 'Adivinanza' })
       } else window.alert('Para añadir una adivinanza debes tener más de una sección creada')
     },
+    addSequence () {
+      if (this.sectionsData.length > 1) {
+        this.data.splice(this.lastPress + 1, 0, { numberOfTries: 1, sequence: [{ text: '' }], solution: [{ text: '' }], changeSectionWhenWrong: false, wrongSection: '', rightSection: this.sectionsData[0].value, component: 'Sequence', componentName: 'Secuencia' })
+      } else window.alert('Para añadir una secuencia debes tener más de una sección creada')
+    },
     addRandomNumber () {
-      this.data.splice(this.lastPress + 1, 0, { lowerLimit: 0, upperLimit: 10, conditions: [], numberOfConditions: 0, component: 'RandomNumber', componentName: 'número aleatorio' })
+      this.data.splice(this.lastPress + 1, 0, { lowerLimit: 0, upperLimit: 10, conditions: [], numberOfConditions: 0, component: 'RandomNumber', componentName: 'Número aleatorio' })
     },
     checkStyles () {
       // En caso de acceder sin ningún componente (medida de seguridad. La ejecución no debería entrar aquí)
@@ -597,6 +629,14 @@ export default {
       this.data[index].wrongSection = wrongSection
       this.data[index].numberOfTries = numberOfTries
     },
+    saveSequence (sequence, solution, changeSectionWhenWrong, wrongSection, rightSection, numberOfTries, index) {
+      this.data[index].sequence = sequence
+      this.data[index].solution = solution
+      this.data[index].changeSectionWhenWrong = changeSectionWhenWrong
+      this.data[index].wrongSection = wrongSection
+      this.data[index].rightSection = rightSection
+      this.data[index].numberOfTries = numberOfTries
+    },
     saveRandomNumbers (conditions, numberOfConditions, lowerLimit, upperLimit, index) {
       this.data[index].conditions = conditions
       this.data[index].numberOfConditions = numberOfConditions
@@ -742,7 +782,7 @@ export default {
   padding-right: 5px;
   border-right: 1px solid darkgray;
 }
-.decisions {
+.games {
   display: inline-block;
   padding-left: 5px;
   padding-right: 5px;
