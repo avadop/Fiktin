@@ -176,6 +176,7 @@
             :riddleTextAux="text.riddleText"
             :answerTextAux="text.answerText"
             :numberOfTriesAux="text.numberOfTries"
+            :changeSectionWhenWrongAux="text.changeSectionWhenWrong"
             :index="index"
             @section="saveHTMLRiddle"/>
           <RandomNumber v-if="text.component=='RandomNumber'"
@@ -326,7 +327,7 @@ export default {
         }
         this.data.splice(index + 1, 0, { choices: a, numberOfOptions: this.data[index].numberOfOptions, component: 'DecisionMaking', componentName: 'toma de decisiones' })
       } else if (this.data[index].component === 'Riddle') {
-        this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText,
+        this.data.splice(index + 1, 0, { changeSectionWhenWrong: this.data[index].changeSectionWhenWrong,
           riddleText: this.data[index].riddleText,
           answerText: this.data[index].answerText,
           rightSection: this.data[index].rightSection,
@@ -377,14 +378,14 @@ export default {
     },
     addRiddle () {
       if (this.sectionsData.length > 1) {
-        this.data.splice(this.lastPress + 1, 0, { htmlText: '',
+        this.data.splice(this.lastPress + 1, 0, { changeSectionWhenWrong: false,
           riddleText: '',
           answerText: '',
           rightSection: this.sectionsData[0].value,
           wrongSection: '',
           numberOfTries: '1',
           component: 'Riddle',
-          componentName: 'riddle' })
+          componentName: 'Riddle' })
       } else window.alert('Para añadir una adivinanza debes tener más de una sección creada')
     },
     addRandomNumber () {
@@ -588,10 +589,10 @@ export default {
       this.data[index].choices = decisions
       this.data[index].numberOfOptions = numberOfOptions
     },
-    saveHTMLRiddle (htmlText, riddleText, answerText, rightSection, wrongSection, numberOfTries, index) {
+    saveHTMLRiddle (changeSectionWhenWrong, riddleText, answerText, rightSection, wrongSection, numberOfTries, index) {
       this.data[index].riddleText = riddleText
       this.data[index].answerText = answerText
-      this.data[index].htmlText = htmlText
+      this.data[index].changeSectionWhenWrong = changeSectionWhenWrong
       this.data[index].rightSection = rightSection
       this.data[index].wrongSection = wrongSection
       this.data[index].numberOfTries = numberOfTries

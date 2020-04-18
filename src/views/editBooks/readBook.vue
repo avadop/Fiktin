@@ -13,7 +13,7 @@
     <div class="readBook">
       <div v-for="(text, index) in sectionGadgets" :key="index">
         <span v-if="basicGadget(text)" v-html="text.htmlText"/>
-        <RiddleReading v-if="text.componentName === 'riddle'"
+        <RiddleReading v-if="text.componentName === 'Riddle'"
          :numberOfTriesAux="text.numberOfTries"
          :riddleText="text.riddleText"
          :answerText="text.answerText"
