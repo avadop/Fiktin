@@ -79,7 +79,8 @@ export default {
                 tags: doc1.data().tags,
                 userID: doc1.data().user_id,
                 nick: doc2.data().nick,
-                name: doc2.data().name
+                name: doc2.data().name,
+                sections: doc1.data().sections
               })
             })
           }

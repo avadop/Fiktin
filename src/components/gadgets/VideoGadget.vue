@@ -88,7 +88,7 @@ export default {
       })
     },
     createButton: async function () {
-      var htmlText = '<video width="460" height="300" controls'
+      var htmlText = '<video width="460" height="300" style="padding-top: 13px; padding-bottom: 13px;" controls'
       if (this.autoplay) {
         htmlText = htmlText + ' autoplay '
       }

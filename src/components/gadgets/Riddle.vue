@@ -33,7 +33,7 @@
       <b-row v-if="changeSectionWhenWrong === true">
         <b-col cols="5"><span>Sección a la que quieres saltar si se falla la respuesta: </span></b-col>
         <b-col><b-form-select size="sm" @change="save()" v-model="wrongSectionID" :options="aux"></b-form-select></b-col>
-        <b-button style="width: 20px; margin-right:50px;" class="my-1" variant="danger-dark" @click="changeSectionWhenWrong = false, wrongSectionID = ''"><b-icon style="heigh:50px;width:50px;" variant="danger" icon="x"></b-icon></b-button>
+        <b-button style="width: 20px; margin-right:50px;" class="my-1" variant="danger-dark" @click="noWrongSection()"><b-icon style="heigh:50px;width:50px;" variant="danger" icon="x"></b-icon></b-button>
       </b-row>
       <div v-else>
         <span @click="changeSectionWhenWrong = true" style="color: darkblue; font-weight: bold; cursor: pointer;"> Agregar salto de seccion al fallar la respuesta</span>
@@ -74,6 +74,7 @@ export default {
     rightSectionAux: String,
     wrongSectionAux: String,
     numberOfTriesAux: String,
+    changeSectionWhenWrongAux: Boolean,
     index: Number
   },
   data () {
@@ -88,9 +89,7 @@ export default {
       valid: true,
       show: false,
       numberOfTriesPreview: 0,
-      htmlText: '',
-      changeSectionWhenWrong: false,
-
+      changeSectionWhenWrong: this.changeSectionWhenWrongAux,
       correctPreview: null
     }
   },
@@ -165,10 +164,9 @@ export default {
       }
     },
     save () {
-      var htmlText = ('nada')
       if (this.wrongSectionID === undefined) this.wrongSectionID = ''
       if (this.rightSectionID === undefined) this.rightSectionID = ''
-      this.$emit('section', htmlText, this.riddleText, this.answerText, this.rightSectionID, this.wrongSectionID, this.numberOfTries, this.index)
+      this.$emit('section', this.changeSectionWhenWrong, this.riddleText, this.answerText, this.rightSectionID, this.wrongSectionID, this.numberOfTries, this.index)
     },
     tryAnswer () {
       if (this.numberOfTriesPreview > 0) {
@@ -176,6 +174,11 @@ export default {
         if (this.tryText === this.answerText) this.correctPreview = true
         else this.correctPreview = false
       }
+    },
+    noWrongSection () {
+      this.changeSectionWhenWrong = false
+      this.wrongSectionID = ''
+      this.save()
     },
     formatMaxRiddle (value) {
       return String(value).substring(0, 2000)
