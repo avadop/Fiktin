@@ -74,7 +74,7 @@ export default {
       })
     },
     createButton: async function () {
-      var htmlText = ('<img src="' + this.picture + '" width="460" height="300">')
+      var htmlText = ('<img src="' + this.picture + '" width="460" height="300" style="padding-top: 13px; padding-bottom: 13px;">')
       this.$emit('html', htmlText, this.index)
     },
     cancelar () {
