@@ -20,6 +20,9 @@
          :wrongSection="text.wrongSection"
          :rightSection="text.rightSection"
          @answered="loadSection"/>
+         <ExpandableTextReading v-if="text.component === 'ExpandableText'"
+         :mainText="text.mainText"
+         :expandedText="text.expandedText"/>
       </div>
     </div>
   </div>
@@ -29,11 +32,13 @@
 import { librariesCollection, sectionsCollection } from '@/firebase.js'
 import { store } from '../../store/index.js'
 import RiddleReading from '@/components/readingGadgets/RiddleReading.vue'
+import ExpandableTextReading from '@/components/readingGadgets/ExpandableTextReading.vue'
 
 export default {
   name: 'readBook',
   components: {
-    RiddleReading
+    RiddleReading,
+    ExpandableTextReading
   },
   props: {
     book: Object,
