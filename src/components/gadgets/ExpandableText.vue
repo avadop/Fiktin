@@ -97,7 +97,6 @@ export default {
 .container {
   vertical-align: top;
   height: auto !important;
-  font-weight: bold;
   background-color: #dfdfdf;
   border-radius: 5px;
 }
