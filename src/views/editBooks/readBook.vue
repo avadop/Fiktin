@@ -1,5 +1,6 @@
 <template>
   <div>
+    <LoadingModal v-if="loading"/>
     <div class="buttons">
       <button class="buttonBack" @click="goBack()">Atrás</button>
       <button class="buttonEdit" v-if="isBookOfLoggedUser() && book.published===false" @click="goEdit()">Editar</button>
@@ -10,9 +11,20 @@
         <b-col cols="3"><b-form-select size="sm" v-model="currentSectionID" :options="sectionsData" @change="loadSection(currentSectionID)"></b-form-select></b-col>
       </b-row>
     </div>
-    <div class="readBook">
+    <div class="readBook" v-if="sectionExists">
       <div v-for="(text, index) in sectionGadgets" :key="index">
         <span v-if="basicGadget(text)" v-html="text.htmlText"/>
+        <ChangeSectionReading v-if="text.component === 'ChangeSection'"
+        :htmlText="text.htmlText"
+        :next="text.next"
+        @change="loadSection"/>
+        <RepeatSectionReading v-if="text.component === 'RepeatSection'"
+        :htmlText="text.htmlText"
+        :actual="currentSectionID"
+        @change="loadSection"/>
+        <DecisionMakingReading v-if="text.component === 'DecisionMaking'"
+        :choices="text.choices"
+        @chose="loadSection"/>
         <RiddleReading v-if="text.component === 'Riddle'"
          :numberOfTriesAux="text.numberOfTries"
          :riddleText="text.riddleText"
@@ -25,18 +37,29 @@
          :expandedText="text.expandedText"/>
       </div>
     </div>
+    <div v-else>
+      <h1>Vaya, parece que la sección a la que intentas acceder no existe :-(</h1>
+    </div>
   </div>
 </template>
 
 <script>
 import { librariesCollection, sectionsCollection } from '@/firebase.js'
 import { store } from '../../store/index.js'
+import LoadingModal from '@/components/modals/LoadingModal.vue'
+import ChangeSectionReading from '@/components/readingGadgets/ChangeSectionReading.vue'
+import RepeatSectionReading from '@/components/readingGadgets/RepeatSectionReading.vue'
+import DecisionMakingReading from '@/components/readingGadgets/DecisionMakingReading.vue'
 import RiddleReading from '@/components/readingGadgets/RiddleReading.vue'
 import ExpandableTextReading from '@/components/readingGadgets/ExpandableTextReading.vue'
 
 export default {
   name: 'readBook',
   components: {
+    LoadingModal,
+    ChangeSectionReading,
+    RepeatSectionReading,
+    DecisionMakingReading,
     RiddleReading,
     ExpandableTextReading
   },
@@ -46,6 +69,8 @@ export default {
   },
   data () {
     return {
+      loading: false,
+      sectionExists: true,
       searchNick: store.state.userNick.concat('_historial').toLowerCase(),
       currentSectionID: '',
       sectionGadgets: [],
@@ -61,21 +86,33 @@ export default {
   },
   methods: {
     async loadBook () {
+      this.loading = true
       this.sectionsData = []
       for (var i = 0; i < this.book.sections.length; ++i) {
         await sectionsCollection.doc(this.book.sections[i]).get().then(doc => {
           if (doc.exists) {
+            this.sectionExists = true
             this.sectionsData.push({ value: doc.id, text: doc.data().name })
+          } else {
+            this.sectionExists = false
           }
         })
       }
+      this.loading = false
     },
     async loadSection (sectionID) {
+      this.loading = true
       this.currentSectionID = sectionID
       await sectionsCollection.doc(sectionID).get().then(doc => {
-        this.sectionGadgets = doc.data().gadgets
-        this.sectionName = doc.data().name
+        if (doc.exists) {
+          this.sectionExists = true
+          this.sectionGadgets = doc.data().gadgets
+          this.sectionName = doc.data().name
+        } else {
+          this.sectionExists = false
+        }
       })
+      this.loading = false
     },
     addBookToLibrary: async function () {
       var a
