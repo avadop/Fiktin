@@ -40,12 +40,13 @@
       </b-container>
       <div class="d-flex justify-content-center">
         <b-button variant="outline-secondary" @click="preview = !preview">Previsualizar</b-button>
-        <b-button id="button-modal-accept" class="mt-1" variant="dark" block @click="createButton" :disabled="mainText.length > 1000 || mainText.length < 0 || expandedText.length > 1000 || expandedText.length < 0">Confirmar</b-button>
+        <b-button id="button-modal-accept" class="mt-1" variant="dark" block @click="createButton" v-show="expandedText != expandedTextAux || mainText != mainTextAux" :disabled="mainText.length > 1000 || mainText.length < 0 || expandedText.length > 1000 || expandedText.length < 0">Guardar</b-button>
       </div>
-      <b-card v-show="preview">
+      <div v-show="preview">
+        <hr>
         <p @click="show = !show" style="cursor: pointer;">{{ mainText }}</p>
         <p class="container" v-show="show">{{expandedText}}</p>
-      </b-card>
+      </div>
     </b-card>
   </div>
 </template>

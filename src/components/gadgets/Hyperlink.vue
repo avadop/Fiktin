@@ -39,12 +39,12 @@
       </b-container>
       <div class="d-flex justify-content-center">
         <b-button variant="outline-secondary" @click="preview = !preview">Previsulizar</b-button>
-        <b-button id="button-modal-accept" class="mt-1" variant="dark" block @click="createButton" :disabled="hyperlinkText.length > 100 || hyperlinkText.length < 0 || mainText.length > 1000 || mainText.length < 0">Confirmar</b-button>
+        <b-button id="button-modal-accept" class="mt-1" variant="dark" block @click="createButton" v-show="hyperlinkText != hyperlinkTextAux || mainText != mainTextAux" :disabled="hyperlinkText.length > 100 || hyperlinkText.length < 0 || mainText.length > 1000 || mainText.length < 0">Guardar</b-button>
       </div>
-      <b-card v-show="preview">
-        <h5>Previsualización</h5>
+      <div v-show="preview">
+        <hr>
         <a :href="hyperlinkText" target="_blank">{{mainText}}</a>
-      </b-card>
+      </div>
     </b-card>
   </div>
 </template>

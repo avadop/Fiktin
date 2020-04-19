@@ -40,14 +40,15 @@
       </b-container>
       <div class="d-flex justify-content-center">
         <b-button variant="outline-secondary" @click="preview = !preview">Previsulizar</b-button>
-        <b-button id="button-modal-accept" class="mt-1" variant="dark" block @click="createButton" :disabled="mainText.length > 1000 || mainText.length < 0 || popupText.length > 1000 || popupText.length < 0">Confirmar</b-button>
+        <b-button id="button-modal-accept" class="mt-1" variant="dark" block @click="createButton" v-show="popupText != popupTextAux || mainText != mainTextAux" :disabled="mainText.length > 1000 || mainText.length < 0 || popupText.length > 1000 || popupText.length < 0">Guardar</b-button>
       </div>
-      <b-card v-show="preview">
+      <div v-show="preview">
+        <hr>
         <span>{{ mainText }}<span @click="openPopupTextModal = !openPopupTextModal" style="cursor: pointer; color: #0a8df4;"> [...]</span></span>
         <b-modal v-model="openPopupTextModal" hide-footer hide-header>
           <p v-show="openPopupTextModal">{{popupText}}</p>
         </b-modal>
-      </b-card>
+      </div>
     </b-card>
   </div>
 </template>
