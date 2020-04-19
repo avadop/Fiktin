@@ -78,11 +78,18 @@
           </div>
         </div>
 
-        <div class="multimediaPanel exandableTextPanel">
+        <div class="exandableTextPanel multimediaPanel">
           <span style="font-size: 20px;">Texto expandible</span>
           <b-icon icon="plus" class="addGadgetButton" @click="addExandableText()">Añadir</b-icon>
           <div class="multimediaPanelOptions">
             <b-icon icon="pencil" class="addGadgetButton" @click="editExpandableText()">Añadir</b-icon>
+          </div>
+        </div>
+        <div class="popupTextPanel multimediaPanel">
+          <span style="font-size: 20px;">Texto emergente</span>
+          <b-icon icon="plus" class="addGadgetButton" @click="addPopupText()">Añadir</b-icon>
+          <div class="multimediaPanelOptions">
+            <b-icon icon="pencil" class="addGadgetButton" @click="editPopupText()">Añadir</b-icon>
           </div>
         </div>
 
@@ -148,6 +155,14 @@
             :lastPressed="lastPress"
             @cancel="cancelExpandableText"
             @html="saveExpandableText"/>
+          <PopupText v-if="text.component=='PopupText'"
+            :index="index"
+            :mainTextAux="text.mainText"
+            :popupTextAux="text.popupText"
+            :openModal="openModalPopup"
+            :lastPressed="lastPress"
+            @cancel="cancelPopupText"
+            @html="savePopupText"/>
 
           <PictureGadget v-if="text.component==='Picture'"
             :bookID="bookID"
@@ -235,6 +250,7 @@ import Header2 from '@/components/gadgets/Header2.vue'
 import Header3 from '@/components/gadgets/Header3.vue'
 
 import ExpandableText from '@/components/gadgets/ExpandableText.vue'
+import PopupText from '@/components/gadgets/PopupText.vue'
 
 import PictureGadget from '@/components/gadgets/PictureGadget.vue'
 import VideoGadget from '@/components/gadgets/VideoGadget.vue'
@@ -257,6 +273,7 @@ export default {
     Header3,
 
     ExpandableText,
+    PopupText,
 
     PictureGadget,
     VideoGadget,
@@ -299,7 +316,8 @@ export default {
       video: false,
       openModalPicture: false,
       openModalVideo: false,
-      openModalExpandable: false
+      openModalExpandable: false,
+      openModalPopup: false
     }
   },
   mounted () {
@@ -352,6 +370,7 @@ export default {
       else if (this.data[index].component === 'Header3') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Header3', componentName: 'Título' })
 
       else if (this.data[index].component === 'ExpandableText') this.data.splice(index + 1, 0, { mainText: this.data[index].mainText, expandedText: this.data[index].expandedText, component: 'ExpandableText', componentName: 'Texto expandible' })
+      else if (this.data[index].component === 'PopupText') this.data.splice(index + 1, 0, { mainText: this.data[index].mainText, popupText: this.data[index].popupText, component: 'PopupText', componentName: 'Texto emergente' })
 
       else if (this.data[index].component === 'Picture') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, component: 'Picture', componentName: 'Multimedia' })
       else if (this.data[index].component === 'Video') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, component: 'Video', componentName: 'Multimedia' })
@@ -408,6 +427,9 @@ export default {
     },
     addExandableText () {
       this.data.splice(this.lastPress + 1, 0, { mainText: '', expandedText: '', component: 'ExpandableText', componentName: 'Texto expandible' })
+    },
+    addPopupText () {
+      this.data.splice(this.lastPress + 1, 0, { mainText: '', popupText: '', component: 'PopupText', componentName: 'Texto emergente' })
     },
     addFile () {
       this.data.splice(this.lastPress + 1, 0, { htmlText: '', component: 'Multimedia', componentName: 'Multimedia' })
@@ -610,6 +632,9 @@ export default {
     cancelExpandableText () {
       this.openModalExpandable = false
     },
+    cancelPopupText () {
+      this.openModalPopup = false
+    },
     cancelMultimedia () {
       this.video = false
       this.image = false
@@ -618,6 +643,9 @@ export default {
     },
     editExpandableText (value) {
       this.openModalExpandable = true
+    },
+    editPopupText (value) {
+      this.openModalPopup = true
     },
     openManagementSectionModal () {
       this.showManagementSectionModal = !this.showManagementSectionModal
@@ -635,6 +663,11 @@ export default {
       this.data[index].mainText = mainText
       this.data[index].expandedText = expandedText
       this.openModalExpandable = false
+    },
+    savePopupText (mainText, popupText, index) {
+      this.data[index].mainText = mainText
+      this.data[index].popupText = popupText
+      this.openModalPopup = false
     },
     saveHTMLMultimedia (htmlText, index) {
       this.data[index].htmlText = htmlText
