@@ -43,9 +43,9 @@
         <b-button id="button-modal-accept" class="mt-1" variant="dark" block @click="createButton" :disabled="mainText.length > 1000 || mainText.length < 0 || expandedText.length > 1000 || expandedText.length < 0">Confirmar</b-button>
       </div>
     </b-modal>
-    <div class="container">
+    <div>
       <p @click="show = !show" style="cursor: pointer;">{{ mainText }}</p>
-      <p v-show="show">{{expandedText}}</p>
+      <p class="container" v-show="show">{{expandedText}}</p>
     </div>
   </div>
 </template>
@@ -67,7 +67,22 @@ export default {
       show: false
     }
   },
+  watch: {
+    mainTextAux: function () {
+      this.refresh()
+    },
+    expandedTextAux: function () {
+      this.refresh()
+    },
+    index: function () {
+      this.refresh()
+    }
+  },
   methods: {
+    refresh () {
+      this.mainText = this.mainTextAux
+      this.expandedText = this.expandedTextAux
+    },
     createButton: async function () {
       this.$emit('html', this.mainText, this.expandedText, this.index)
     },
