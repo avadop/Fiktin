@@ -1,8 +1,8 @@
 <template>
   <div>
-    <b-modal v-if="(this.lastPressed === this.index)" id="modal-expandable-text" v-model="openModal" hide-footer hide-header no-close-on-backdrop>
+    <b-card>
       <div class="d-block text-center">
-        <h5>Edite su texto expandible</h5>
+        <h5>Edite su hipervínculo</h5>
       </div>
       <b-container fluid class="col">
         <label>Hipervínculo</label>
@@ -38,13 +38,14 @@
         </b-form-invalid-feedback>
       </b-container>
       <div class="d-flex justify-content-center">
-        <b-button id="button-modal-return" class="mt-1" variant="outline-secondary" block @click="cancel()">Cancelar</b-button>
+        <b-button variant="outline-secondary" @click="preview = !preview">Previsulizar</b-button>
         <b-button id="button-modal-accept" class="mt-1" variant="dark" block @click="createButton" :disabled="hyperlinkText.length > 100 || hyperlinkText.length < 0 || mainText.length > 1000 || mainText.length < 0">Confirmar</b-button>
       </div>
-    </b-modal>
-    <div>
-      <a :href="hyperlinkText" target="_blank">{{mainText}}</a>
-    </div>
+      <b-card v-show="preview">
+        <h5>Previsualización</h5>
+        <a :href="hyperlinkText" target="_blank">{{mainText}}</a>
+      </b-card>
+    </b-card>
   </div>
 </template>
 
@@ -55,14 +56,13 @@ export default {
     mainTextAux: String,
     hyperlinkTextAux: String,
     index: Number,
-    openModal: Boolean,
     lastPressed: Number
   },
   data () {
     return {
       mainText: this.mainTextAux,
       hyperlinkText: this.hyperlinkTextAux,
-      show: false
+      preview: false
     }
   },
   watch: {
@@ -83,9 +83,6 @@ export default {
     },
     createButton: async function () {
       this.$emit('html', this.mainText, this.hyperlinkText, this.index)
-    },
-    cancel () {
-      this.$emit('cancel')
     }
   }
 }

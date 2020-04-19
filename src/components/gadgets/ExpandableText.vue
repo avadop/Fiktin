@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-modal v-if="(this.lastPressed === this.index)" id="modal-expandable-text" v-model="openModal" hide-footer hide-header no-close-on-backdrop>
+    <b-card>
       <div class="d-block text-center">
         <h5>Edite su texto expandible</h5>
       </div>
@@ -39,14 +39,14 @@
         </b-form-invalid-feedback>
       </b-container>
       <div class="d-flex justify-content-center">
-        <b-button id="button-modal-return" class="mt-1" variant="outline-secondary" block @click="cancel()">Cancelar</b-button>
+        <b-button variant="outline-secondary" @click="preview = !preview">Previsualizar</b-button>
         <b-button id="button-modal-accept" class="mt-1" variant="dark" block @click="createButton" :disabled="mainText.length > 1000 || mainText.length < 0 || expandedText.length > 1000 || expandedText.length < 0">Confirmar</b-button>
       </div>
-    </b-modal>
-    <div>
-      <p @click="show = !show" style="cursor: pointer;">{{ mainText }}</p>
-      <p class="container" v-show="show">{{expandedText}}</p>
-    </div>
+      <b-card v-show="preview">
+        <p @click="show = !show" style="cursor: pointer;">{{ mainText }}</p>
+        <p class="container" v-show="show">{{expandedText}}</p>
+      </b-card>
+    </b-card>
   </div>
 </template>
 
@@ -57,14 +57,14 @@ export default {
     mainTextAux: String,
     expandedTextAux: String,
     index: Number,
-    openModal: Boolean,
     lastPressed: Number
   },
   data () {
     return {
       mainText: this.mainTextAux,
       expandedText: this.expandedTextAux,
-      show: false
+      show: false,
+      preview: false
     }
   },
   watch: {
@@ -85,9 +85,6 @@ export default {
     },
     createButton: async function () {
       this.$emit('html', this.mainText, this.expandedText, this.index)
-    },
-    cancel () {
-      this.$emit('cancel')
     }
   }
 }

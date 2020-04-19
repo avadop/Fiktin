@@ -81,23 +81,14 @@
         <div class="exandableTextPanel multimediaPanel">
           <span style="font-size: 20px;">Texto expandible</span>
           <b-icon icon="plus" class="addGadgetButton" @click="addExandableText()">Añadir</b-icon>
-          <div class="multimediaPanelOptions">
-            <b-icon icon="pencil" class="addGadgetButton" @click="editExpandableText()">Añadir</b-icon>
-          </div>
         </div>
         <div class="popupTextPanel multimediaPanel">
           <span style="font-size: 20px;">Texto emergente</span>
           <b-icon icon="plus" class="addGadgetButton" @click="addPopupText()">Añadir</b-icon>
-          <div class="multimediaPanelOptions">
-            <b-icon icon="pencil" class="addGadgetButton" @click="editPopupText()">Añadir</b-icon>
-          </div>
         </div>
         <div class="hyperlinkPanel multimediaPanel">
           <span style="font-size: 20px;">Hipervínculo</span>
-          <b-icon icon="plus" class="addGadgetButton" @click="addHyperlink()">Añadir</b-icon>
-          <div class="multimediaPanelOptions">
-            <b-icon icon="pencil" class="addGadgetButton" @click="editHyperlink()">Añadir</b-icon>
-          </div>
+          <b-icon icon="link" class="addGadgetButton" @click="addHyperlink()">Añadir</b-icon>
         </div>
 
         <div class="sections">
@@ -158,25 +149,19 @@
             :index="index"
             :mainTextAux="text.mainText"
             :expandedTextAux="text.expandedText"
-            :openModal="openModalExpandable"
             :lastPressed="lastPress"
-            @cancel="cancelExpandableText"
             @html="saveExpandableText"/>
           <PopupText v-if="text.component=='PopupText'"
             :index="index"
             :mainTextAux="text.mainText"
             :popupTextAux="text.popupText"
-            :openModal="openModalPopup"
             :lastPressed="lastPress"
-            @cancel="cancelPopupText"
             @html="savePopupText"/>
           <Hyperlink v-if="text.component=='Hyperlink'"
             :index="index"
             :mainTextAux="text.mainText"
             :hyperlinkTextAux="text.hyperlinkText"
-            :openModal="openModalHyperlink"
             :lastPressed="lastPress"
-            @cancel="cancelHyperlink"
             @html="saveHyperlink"/>
 
           <PictureGadget v-if="text.component==='Picture'"
@@ -332,10 +317,7 @@ export default {
       picture: false,
       video: false,
       openModalPicture: false,
-      openModalVideo: false,
-      openModalExpandable: false,
-      openModalPopup: false,
-      openModalHyperlink: false
+      openModalVideo: false
     }
   },
   mounted () {
@@ -651,29 +633,11 @@ export default {
       }
       this.checkStyles()
     },
-    cancelExpandableText () {
-      this.openModalExpandable = false
-    },
-    cancelPopupText () {
-      this.openModalPopup = false
-    },
-    cancelHyperlink () {
-      this.openModalHyperlink = false
-    },
     cancelMultimedia () {
       this.video = false
       this.image = false
       this.openModalVideo = false
       this.openModalPicture = false
-    },
-    editExpandableText (value) {
-      this.openModalExpandable = true
-    },
-    editPopupText (value) {
-      this.openModalPopup = true
-    },
-    editHyperlink (value) {
-      this.openModalHyperlink = true
     },
     openManagementSectionModal () {
       this.showManagementSectionModal = !this.showManagementSectionModal
@@ -690,17 +654,14 @@ export default {
     saveExpandableText (mainText, expandedText, index) {
       this.data[index].mainText = mainText
       this.data[index].expandedText = expandedText
-      this.openModalExpandable = false
     },
     savePopupText (mainText, popupText, index) {
       this.data[index].mainText = mainText
       this.data[index].popupText = popupText
-      this.openModalPopup = false
     },
     saveHyperlink (mainText, hyperlinkText, index) {
       this.data[index].mainText = mainText
       this.data[index].hyperlinkText = hyperlinkText
-      this.openModalHyperlink = false
     },
     saveHTMLMultimedia (htmlText, index) {
       this.data[index].htmlText = htmlText
