@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-modal v-if="(this.lastPressed === this.index)" id="modal-popup-text" v-model="openModal" hide-footer hide-header no-close-on-backdrop>
+    <b-card>
       <div class="d-block text-center">
         <h5>Edite su texto emergente</h5>
       </div>
@@ -39,16 +39,17 @@
         </b-form-invalid-feedback>
       </b-container>
       <div class="d-flex justify-content-center">
-        <b-button id="button-modal-return" class="mt-1" variant="outline-secondary" block @click="cancel()">Cancelar</b-button>
-        <b-button id="button-modal-accept" class="mt-1" variant="dark" block @click="createButton" :disabled="mainText.length > 1000 || mainText.length < 0 || popupText.length > 1000 || popupText.length < 0">Confirmar</b-button>
+        <b-button variant="outline-secondary" @click="preview = !preview">Previsulizar</b-button>
+        <b-button id="button-modal-accept" class="mt-1" variant="dark" block @click="createButton" v-show="popupText != popupTextAux || mainText != mainTextAux" :disabled="mainText.length > 1000 || mainText.length < 0 || popupText.length > 1000 || popupText.length < 0">Guardar</b-button>
       </div>
-    </b-modal>
-    <div>
-      <span>{{ mainText }}<span @click="openPopupTextModal = !openPopupTextModal" style="cursor: pointer; color: #0a8df4;"> [...]</span></span>
-      <b-modal v-model="openPopupTextModal" hide-footer>
-        <p v-show="openPopupTextModal">{{popupText}}</p>
-      </b-modal>
-    </div>
+      <div v-show="preview">
+        <hr>
+        <span>{{ mainText }}<span @click="openPopupTextModal = !openPopupTextModal" style="cursor: pointer; color: #0a8df4;"> [...]</span></span>
+        <b-modal v-model="openPopupTextModal" hide-footer hide-header>
+          <p v-show="openPopupTextModal">{{popupText}}</p>
+        </b-modal>
+      </div>
+    </b-card>
   </div>
 </template>
 
@@ -59,14 +60,14 @@ export default {
     mainTextAux: String,
     popupTextAux: String,
     index: Number,
-    openModal: Boolean,
     lastPressed: Number
   },
   data () {
     return {
       mainText: this.mainTextAux,
       popupText: this.popupTextAux,
-      openPopupTextModal: false
+      openPopupTextModal: false,
+      preview: false
     }
   },
   watch: {
@@ -87,9 +88,6 @@ export default {
     },
     createButton: async function () {
       this.$emit('html', this.mainText, this.popupText, this.index)
-    },
-    cancel () {
-      this.$emit('cancel')
     }
   }
 }
