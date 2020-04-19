@@ -27,7 +27,7 @@
           v-model="popupText"
           :state="popupText.length <= 1000 && popupText.length > 0"
           aria-describedby="input-live-help input-live-feedback"
-          placeholder="Introduce el texto que se mostrara al expandir..."
+          placeholder="Introduce el texto que se mostrara al emergentemente..."
           rows="3"
           max-rows="6"
         ></b-form-textarea>

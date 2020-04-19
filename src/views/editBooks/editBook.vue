@@ -92,6 +92,13 @@
             <b-icon icon="pencil" class="addGadgetButton" @click="editPopupText()">Añadir</b-icon>
           </div>
         </div>
+        <div class="hyperlinkPanel multimediaPanel">
+          <span style="font-size: 20px;">Hipervínculo</span>
+          <b-icon icon="plus" class="addGadgetButton" @click="addHyperlink()">Añadir</b-icon>
+          <div class="multimediaPanelOptions">
+            <b-icon icon="pencil" class="addGadgetButton" @click="editHyperlink()">Añadir</b-icon>
+          </div>
+        </div>
 
         <div class="sections">
           <span style="font-size: 20px">Siguiente sección</span>
@@ -163,6 +170,14 @@
             :lastPressed="lastPress"
             @cancel="cancelPopupText"
             @html="savePopupText"/>
+          <Hyperlink v-if="text.component=='Hyperlink'"
+            :index="index"
+            :mainTextAux="text.mainText"
+            :hyperlinkTextAux="text.hyperlinkText"
+            :openModal="openModalHyperlink"
+            :lastPressed="lastPress"
+            @cancel="cancelHyperlink"
+            @html="saveHyperlink"/>
 
           <PictureGadget v-if="text.component==='Picture'"
             :bookID="bookID"
@@ -251,6 +266,7 @@ import Header3 from '@/components/gadgets/Header3.vue'
 
 import ExpandableText from '@/components/gadgets/ExpandableText.vue'
 import PopupText from '@/components/gadgets/PopupText.vue'
+import Hyperlink from '@/components/gadgets/Hyperlink.vue'
 
 import PictureGadget from '@/components/gadgets/PictureGadget.vue'
 import VideoGadget from '@/components/gadgets/VideoGadget.vue'
@@ -274,6 +290,7 @@ export default {
 
     ExpandableText,
     PopupText,
+    Hyperlink,
 
     PictureGadget,
     VideoGadget,
@@ -317,7 +334,8 @@ export default {
       openModalPicture: false,
       openModalVideo: false,
       openModalExpandable: false,
-      openModalPopup: false
+      openModalPopup: false,
+      openModalHyperlink: false
     }
   },
   mounted () {
@@ -371,6 +389,7 @@ export default {
 
       else if (this.data[index].component === 'ExpandableText') this.data.splice(index + 1, 0, { mainText: this.data[index].mainText, expandedText: this.data[index].expandedText, component: 'ExpandableText', componentName: 'Texto expandible' })
       else if (this.data[index].component === 'PopupText') this.data.splice(index + 1, 0, { mainText: this.data[index].mainText, popupText: this.data[index].popupText, component: 'PopupText', componentName: 'Texto emergente' })
+      else if (this.data[index].component === 'Hyperlink') this.data.splice(index + 1, 0, { mainText: this.data[index].mainText, hyperlinkText: this.data[index].hyperlinkText, component: 'Hyperlink', componentName: 'Hipervínculo' })
 
       else if (this.data[index].component === 'Picture') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, component: 'Picture', componentName: 'Multimedia' })
       else if (this.data[index].component === 'Video') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, component: 'Video', componentName: 'Multimedia' })
@@ -430,6 +449,9 @@ export default {
     },
     addPopupText () {
       this.data.splice(this.lastPress + 1, 0, { mainText: '', popupText: '', component: 'PopupText', componentName: 'Texto emergente' })
+    },
+    addHyperlink () {
+      this.data.splice(this.lastPress + 1, 0, { mainText: '', hyperlinkText: '', component: 'Hyperlink', componentName: 'Hipervínculo' })
     },
     addFile () {
       this.data.splice(this.lastPress + 1, 0, { htmlText: '', component: 'Multimedia', componentName: 'Multimedia' })
@@ -635,6 +657,9 @@ export default {
     cancelPopupText () {
       this.openModalPopup = false
     },
+    cancelHyperlink () {
+      this.openModalHyperlink = false
+    },
     cancelMultimedia () {
       this.video = false
       this.image = false
@@ -646,6 +671,9 @@ export default {
     },
     editPopupText (value) {
       this.openModalPopup = true
+    },
+    editHyperlink (value) {
+      this.openModalHyperlink = true
     },
     openManagementSectionModal () {
       this.showManagementSectionModal = !this.showManagementSectionModal
@@ -668,6 +696,11 @@ export default {
       this.data[index].mainText = mainText
       this.data[index].popupText = popupText
       this.openModalPopup = false
+    },
+    saveHyperlink (mainText, hyperlinkText, index) {
+      this.data[index].mainText = mainText
+      this.data[index].hyperlinkText = hyperlinkText
+      this.openModalHyperlink = false
     },
     saveHTMLMultimedia (htmlText, index) {
       this.data[index].htmlText = htmlText
