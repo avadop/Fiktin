@@ -78,6 +78,14 @@
           </div>
         </div>
 
+        <div class="multimediaPanel exandableTextPanel">
+          <span style="font-size: 20px;">Texto expandible</span>
+          <b-icon icon="plus" class="addGadgetButton" @click="addExandableText()">Añadir</b-icon>
+          <div class="multimediaPanelOptions">
+            <b-icon icon="pencil" class="addGadgetButton" @click="editExpandableText()">Añadir</b-icon>
+          </div>
+        </div>
+
         <div class="sections">
           <span style="font-size: 20px">Siguiente sección</span>
           <b-icon icon="box-arrow-right" class="addGadgetButton" @click="addSectionChange()">Añadir</b-icon>
@@ -128,6 +136,15 @@
             :plainTextAux="text.plainText"
             :index="index"
             @html="savePlaneAndHTML"/>
+
+          <ExpandableText v-if="text.component=='ExpandableText'"
+            :index="index"
+            :mainTextAux="text.mainText"
+            :expandedTextAux="text.expandedText"
+            :openModal="openModalExpandable"
+            :lastPressed="lastPress"
+            @cancel="cancelExpandableText"
+            @html="saveExpandableText"/>
 
           <PictureGadget v-if="text.component==='Picture'"
             :bookID="bookID"
@@ -203,6 +220,8 @@ import Header1 from '@/components/gadgets/Header1.vue'
 import Header2 from '@/components/gadgets/Header2.vue'
 import Header3 from '@/components/gadgets/Header3.vue'
 
+import ExpandableText from '@/components/gadgets/ExpandableText.vue'
+
 import PictureGadget from '@/components/gadgets/PictureGadget.vue'
 import VideoGadget from '@/components/gadgets/VideoGadget.vue'
 
@@ -221,6 +240,8 @@ export default {
     Header1,
     Header2,
     Header3,
+
+    ExpandableText,
 
     PictureGadget,
     VideoGadget,
@@ -261,7 +282,8 @@ export default {
       picture: false,
       video: false,
       openModalPicture: false,
-      openModalVideo: false
+      openModalVideo: false,
+      openModalExpandable: false
     }
   },
   mounted () {
@@ -313,6 +335,8 @@ export default {
       else if (this.data[index].component === 'Header2') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Header2', componentName: 'Título' })
       else if (this.data[index].component === 'Header3') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Header3', componentName: 'Título' })
 
+      else if (this.data[index].component === 'ExpandableText') this.data.splice(index + 1, 0, { mainText: this.data[index].mainText, expandedText: this.data[index].expandedText, component: 'ExpandableText', componentName: 'Texto expandible' })
+
       else if (this.data[index].component === 'Picture') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, component: 'Picture', componentName: 'Multimedia' })
       else if (this.data[index].component === 'Video') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, component: 'Video', componentName: 'Multimedia' })
 
@@ -354,6 +378,9 @@ export default {
     },
     addTitle () {
       this.data.splice(this.lastPress + 1, 0, { plainText: '', htmlText: '<h1></h1>', component: 'Header1', componentName: 'Título' })
+    },
+    addExandableText () {
+      this.data.splice(this.lastPress + 1, 0, { mainText: '', expandedText: '', component: 'ExpandableText', componentName: 'Texto expandible' })
     },
     addFile () {
       this.data.splice(this.lastPress + 1, 0, { htmlText: '', component: 'Multimedia', componentName: 'Multimedia' })
@@ -548,11 +575,17 @@ export default {
       }
       this.checkStyles()
     },
+    cancelExpandableText () {
+      this.openModalExpandable = false
+    },
     cancelMultimedia () {
       this.video = false
       this.image = false
       this.openModalVideo = false
       this.openModalPicture = false
+    },
+    editExpandableText (value) {
+      this.openModalExpandable = true
     },
     openManagementSectionModal () {
       this.showManagementSectionModal = !this.showManagementSectionModal
@@ -565,6 +598,11 @@ export default {
       } else {
         window.alert('Para guardar una sección, debes darla un nombre primero')
       }
+    },
+    saveExpandableText (mainText, expandedText, index) {
+      this.data[index].mainText = mainText
+      this.data[index].expandedText = expandedText
+      this.openModalExpandable = false
     },
     saveHTMLMultimedia (htmlText, index) {
       this.data[index].htmlText = htmlText
