@@ -33,7 +33,7 @@
       <div class="table" v-for="(element, index) in solution" :key="index">
         <b-row>
           <b-col cols="3"><span>Solución {{ index + 1 }}: </span></b-col>
-          <b-col><b-form-input v-model="element.text" size="sm" :formatter="limit" placeholder="Solución de máximo de 10 caracteres" @blur="save()"/></b-col>
+          <b-col><b-form-input v-model="element.text" size="sm" trim :formatter="limit" placeholder="Solución de máximo de 10 caracteres" @blur="save()"/></b-col>
         </b-row>
       </div>
     </div>
@@ -213,7 +213,8 @@ export default {
       }
     },
     limit (value) {
-      return String(value).substring(0, 10)
+      var aux = String(value).substring(0, 10)
+      return aux.toLowerCase()
     },
     wrong () {
       this.changeSectionWhenWrong = !this.changeSectionWhenWrong
