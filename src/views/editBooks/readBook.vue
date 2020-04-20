@@ -37,9 +37,20 @@
           :upperLimit="text.upperLimit"
           :conditions="text.conditions"
           @change="loadSection"/>
+        <SequenceReading v-if="text.component === 'Sequence'"
+          :numberOfTriesAux="text.numberOfTries"
+          :sequence="text.sequence"
+          :solution="text.solution"
+          :rightSection="text.rightSection"
+          :wrongSection="text.wrongSection"
+          :changeSectionWhenWrong="text.changeSectionWhenWrong"
+          @answered="loadSection"/>
         <ExpandableTextReading v-if="text.component === 'ExpandableText'"
           :mainText="text.mainText"
           :expandedText="text.expandedText"/>
+        <PopupTextReading v-if="text.component === 'PopupText'"
+          :mainText="text.mainText"
+          :popupText="text.popupText"/>
       </div>
     </div>
     <div v-else>
@@ -58,6 +69,8 @@ import DecisionMakingReading from '@/components/readingGadgets/DecisionMakingRea
 import RiddleReading from '@/components/readingGadgets/RiddleReading.vue'
 import RandomNumberReading from '@/components/readingGadgets/RandomNumberReading.vue'
 import ExpandableTextReading from '@/components/readingGadgets/ExpandableTextReading.vue'
+import PopupTextReading from '@/components/readingGadgets/PopupTextReading.vue'
+import SequenceReading from '@/components/readingGadgets/SequenceReading.vue'
 
 export default {
   name: 'readBook',
@@ -68,7 +81,9 @@ export default {
     DecisionMakingReading,
     RiddleReading,
     RandomNumberReading,
-    ExpandableTextReading
+    ExpandableTextReading,
+    PopupTextReading,
+    SequenceReading
   },
   props: {
     book: Object,
@@ -137,7 +152,7 @@ export default {
     },
     // Los que su html se pueda poner directamente se añaden aqui
     basicGadget (value) {
-      return value.componentName === 'Título' || value.componentName === 'Texto normal' || value.componentName === 'Multimedia'
+      return value.componentName === 'Título' || value.componentName === 'Texto normal' || value.componentName === 'Multimedia' || value.component === 'Hyperlink'
     },
     isBookOfLoggedUser () {
       return this.book.userID === store.state.userID

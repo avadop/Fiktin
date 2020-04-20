@@ -371,7 +371,7 @@ export default {
 
       else if (this.data[index].component === 'ExpandableText') this.data.splice(index + 1, 0, { mainText: this.data[index].mainText, expandedText: this.data[index].expandedText, component: 'ExpandableText', componentName: 'Texto expandible' })
       else if (this.data[index].component === 'PopupText') this.data.splice(index + 1, 0, { mainText: this.data[index].mainText, popupText: this.data[index].popupText, component: 'PopupText', componentName: 'Texto emergente' })
-      else if (this.data[index].component === 'Hyperlink') this.data.splice(index + 1, 0, { mainText: this.data[index].mainText, hyperlinkText: this.data[index].hyperlinkText, component: 'Hyperlink', componentName: 'Hipervínculo' })
+      else if (this.data[index].component === 'Hyperlink') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, mainText: this.data[index].mainText, hyperlinkText: this.data[index].hyperlinkText, component: 'Hyperlink', componentName: 'Hipervínculo' })
 
       else if (this.data[index].component === 'Picture') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, component: 'Picture', componentName: 'Multimedia' })
       else if (this.data[index].component === 'Video') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, component: 'Video', componentName: 'Multimedia' })
@@ -433,7 +433,7 @@ export default {
       this.data.splice(this.lastPress + 1, 0, { mainText: '', popupText: '', component: 'PopupText', componentName: 'Texto emergente' })
     },
     addHyperlink () {
-      this.data.splice(this.lastPress + 1, 0, { mainText: '', hyperlinkText: '', component: 'Hyperlink', componentName: 'Hipervínculo' })
+      this.data.splice(this.lastPress + 1, 0, { mainText: '', htmlText: '', hyperlinkText: '', component: 'Hyperlink', componentName: 'Hipervínculo' })
     },
     addFile () {
       this.data.splice(this.lastPress + 1, 0, { htmlText: '', component: 'Multimedia', componentName: 'Multimedia' })
@@ -659,7 +659,8 @@ export default {
       this.data[index].mainText = mainText
       this.data[index].popupText = popupText
     },
-    saveHyperlink (mainText, hyperlinkText, index) {
+    saveHyperlink (htmlText, mainText, hyperlinkText, index) {
+      this.data[index].htmlText = htmlText
       this.data[index].mainText = mainText
       this.data[index].hyperlinkText = hyperlinkText
     },
