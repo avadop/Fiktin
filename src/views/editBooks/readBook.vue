@@ -142,7 +142,7 @@ export default {
     },
     // Los que su html se pueda poner directamente se añaden aqui
     basicGadget (value) {
-      return value.componentName === 'Título' || value.componentName === 'Texto normal' || value.componentName === 'Multimedia'
+      return value.componentName === 'Título' || value.componentName === 'Texto normal' || value.componentName === 'Multimedia' || value.component === 'Hyperlink'
     },
     isBookOfLoggedUser () {
       return this.book.userID === store.state.userID

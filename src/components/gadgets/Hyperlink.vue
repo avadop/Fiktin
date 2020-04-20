@@ -82,7 +82,8 @@ export default {
       this.hyperlinkText = this.hyperlinkTextAux
     },
     createButton: async function () {
-      this.$emit('html', this.mainText, this.hyperlinkText, this.index)
+      var htmlText = '<a href="' + this.hyperlinkText + '" target="_blank">' + this.mainText + '</a>'
+      this.$emit('html', htmlText, this.mainText, this.hyperlinkText, this.index)
     }
   }
 }
