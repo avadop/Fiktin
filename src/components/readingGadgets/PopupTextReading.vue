@@ -1,0 +1,23 @@
+<template>
+  <div>
+    <span>{{ mainText }}<span @click="openPopupTextModal = !openPopupTextModal" style="cursor: pointer; color: #0a8df4;"> [...]</span></span>
+    <b-modal v-model="openPopupTextModal" hide-footer hide-header>
+        <p>{{popupText}}</p>
+    </b-modal>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'popupTextReading',
+  props: {
+    mainText: String,
+    popupText: String
+  },
+  data () {
+    return {
+      openPopupTextModal: false
+    }
+  }
+}
+</script>
