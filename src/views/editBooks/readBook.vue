@@ -37,6 +37,14 @@
           :upperLimit="text.upperLimit"
           :conditions="text.conditions"
           @change="loadSection"/>
+        <SequenceReading v-if="text.component === 'Sequence'"
+          :numberOfTriesAux="text.numberOfTries"
+          :sequence="text.sequence"
+          :solution="text.solution"
+          :rightSection="text.rightSection"
+          :wrongSection="text.wrongSection"
+          :changeSectionWhenWrong="text.changeSectionWhenWrong"
+          @answered="loadSection"/>
         <ExpandableTextReading v-if="text.component === 'ExpandableText'"
           :mainText="text.mainText"
           :expandedText="text.expandedText"/>
@@ -62,6 +70,7 @@ import RiddleReading from '@/components/readingGadgets/RiddleReading.vue'
 import RandomNumberReading from '@/components/readingGadgets/RandomNumberReading.vue'
 import ExpandableTextReading from '@/components/readingGadgets/ExpandableTextReading.vue'
 import PopupTextReading from '@/components/readingGadgets/PopupTextReading.vue'
+import SequenceReading from '@/components/readingGadgets/SequenceReading.vue'
 
 export default {
   name: 'readBook',
@@ -73,7 +82,8 @@ export default {
     RiddleReading,
     RandomNumberReading,
     ExpandableTextReading,
-    PopupTextReading
+    PopupTextReading,
+    SequenceReading
   },
   props: {
     book: Object,
