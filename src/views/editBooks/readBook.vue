@@ -15,26 +15,31 @@
       <div v-for="(text, index) in sectionGadgets" :key="index">
         <span v-if="basicGadget(text)" v-html="text.htmlText"/>
         <ChangeSectionReading v-if="text.component === 'ChangeSection'"
-        :htmlText="text.htmlText"
-        :next="text.next"
-        @change="loadSection"/>
+          :htmlText="text.htmlText"
+          :next="text.next"
+          @change="loadSection"/>
         <RepeatSectionReading v-if="text.component === 'RepeatSection'"
-        :htmlText="text.htmlText"
-        :actual="currentSectionID"
-        @change="loadSection"/>
+          :htmlText="text.htmlText"
+          :actual="currentSectionID"
+          @change="loadSection"/>
         <DecisionMakingReading v-if="text.component === 'DecisionMaking'"
-        :choices="text.choices"
-        @chose="loadSection"/>
+          :choices="text.choices"
+          @chose="loadSection"/>
         <RiddleReading v-if="text.component === 'Riddle'"
-         :numberOfTriesAux="text.numberOfTries"
-         :riddleText="text.riddleText"
-         :answerText="text.answerText"
-         :wrongSection="text.wrongSection"
-         :rightSection="text.rightSection"
-         @answered="loadSection"/>
-         <ExpandableTextReading v-if="text.component === 'ExpandableText'"
-         :mainText="text.mainText"
-         :expandedText="text.expandedText"/>
+          :numberOfTriesAux="text.numberOfTries"
+          :riddleText="text.riddleText"
+          :answerText="text.answerText"
+          :wrongSection="text.wrongSection"
+          :rightSection="text.rightSection"
+          @answered="loadSection"/>
+        <RandomNumberReading v-if="text.component === 'RandomNumber'"
+          :lowerLimit="text.lowerLimit"
+          :upperLimit="text.upperLimit"
+          :conditions="text.conditions"
+          @change="loadSection"/>
+        <ExpandableTextReading v-if="text.component === 'ExpandableText'"
+          :mainText="text.mainText"
+          :expandedText="text.expandedText"/>
       </div>
     </div>
     <div v-else>
@@ -51,6 +56,7 @@ import ChangeSectionReading from '@/components/readingGadgets/ChangeSectionReadi
 import RepeatSectionReading from '@/components/readingGadgets/RepeatSectionReading.vue'
 import DecisionMakingReading from '@/components/readingGadgets/DecisionMakingReading.vue'
 import RiddleReading from '@/components/readingGadgets/RiddleReading.vue'
+import RandomNumberReading from '@/components/readingGadgets/RandomNumberReading.vue'
 import ExpandableTextReading from '@/components/readingGadgets/ExpandableTextReading.vue'
 
 export default {
@@ -61,6 +67,7 @@ export default {
     RepeatSectionReading,
     DecisionMakingReading,
     RiddleReading,
+    RandomNumberReading,
     ExpandableTextReading
   },
   props: {
@@ -103,6 +110,8 @@ export default {
     async loadSection (sectionID) {
       this.loading = true
       this.currentSectionID = sectionID
+      this.sectionGadgets = []
+      this.sectionName = ''
       await sectionsCollection.doc(sectionID).get().then(doc => {
         if (doc.exists) {
           this.sectionExists = true

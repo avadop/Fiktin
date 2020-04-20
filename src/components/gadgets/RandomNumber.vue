@@ -21,6 +21,7 @@
         <b-form-input v-else disabled v-model="numberOfConditions" type="range" min="0" max="4" @change="modify(), save()"/>
       </b-col>
     </b-row>
+    <span style="color: orange;" v-if="numberOfConditions > 0">Aviso, la lectura de condiciones se realiza en orden. Si en la lectura se cumple la primera condición, no se comprueba el resto.</span>
     <div class="table" v-for="(element, index) in conditions" :key="index">
       <b-row>
         <b-col cols="3"><span>Si el resultado es </span></b-col>
@@ -92,7 +93,9 @@ export default {
       this.conditions = []
       this.numberOfConditions = this.auxNumberOfConditions
       this.lowerLimit = this.auxLowerLimit
+      this.lowerLimit = parseInt(this.lowerLimit, 10)
       this.upperLimit = this.auxUpperLimit
+      this.upperLimit = parseInt(this.upperLimit, 10)
       this.valid = false
       // Es necesario hacer el deep clone en cada refresh
       this.deepClone()
@@ -189,6 +192,8 @@ export default {
       }
     },
     save () {
+      this.lowerLimit = parseInt(this.lowerLimit, 10)
+      this.upperLimit = parseInt(this.upperLimit, 10)
       this.numberOfConditions = parseInt(this.numberOfConditions, 10)
       this.$emit('random', this.conditions, this.numberOfConditions, this.lowerLimit, this.upperLimit, this.index)
     }
