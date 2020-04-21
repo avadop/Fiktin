@@ -93,9 +93,11 @@ export default {
       this.numberOfCardsFlipped = 0
     },
     checkAnswer () {
-      if (this.solved === true) this.$emit('answered', this.sectionSolved)
-      else {
-        if (this.changeSectionWhenWrong === true) this.$emit('answered', this.sectionNoMoreMoves)
+      if (this.sectionSolved !== '') {
+        if (this.solved === true) this.$emit('answered', this.sectionSolved)
+        else {
+          if (this.changeSectionWhenWrong === true) this.$emit('answered', this.sectionNoMoreMoves)
+        }
       }
     }
   }
