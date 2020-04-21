@@ -11,7 +11,7 @@
     <b-row style="padding-bottom: 10px;">
       <b-col cols="4"><span>Número de movimientos disponibles: {{ maxNumberOfMoves }}</span></b-col>
       <b-col>
-        <b-form-input v-model="maxNumberOfMoves" type="range" :min="numberOfPairs * 2" max="100" @change="save()"/>
+        <b-form-input v-model="maxNumberOfMoves" type="range" :step="2" :min="numberOfPairs * 2" max="100" @change="save()"/>
       </b-col>
     </b-row>
     <b-row>

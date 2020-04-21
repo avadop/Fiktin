@@ -11,6 +11,7 @@
     <p v-if="numberOfMoves === maxNumberOfMoves && this.numberOfPairsMissing > 0" style="color: red;">Te has quedado sin movimientos :(</p>
     <p v-else>Llevas {{ numberOfMoves }} movimientos de {{ maxNumberOfMoves }} disponibles! Te quedan {{ maxNumberOfMoves - numberOfMoves }}!! </p>
     <p v-if="solved === true" style="color: green;">¡Has resuelto el puzzle!</p>
+    <b v-if="numberOfMoves === maxNumberOfMoves && this.numberOfPairsMissing > 0 && changeSectionWhenWrong === false">¡Sigue leyendo!</b>
   </div>
 </template>
 
@@ -73,9 +74,9 @@ export default {
       if (this.numberOfCardsFlipped === 2 && (this.cards[index].image === this.cards[this.cardClickedBefore].image)) {
         this.numberOfCardsFlipped = 0
         this.numberOfPairsMissing--
+        if (this.numberOfPairsMissing === 0) this.solved = true
         setTimeout(() => {
           if (this.numberOfPairsMissing === 0) {
-            this.solved = true
             this.checkAnswer()
           }
         }, 700)
