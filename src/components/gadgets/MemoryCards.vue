@@ -27,6 +27,26 @@
       <span @click="changeSectionWhenWrong = true, save()" style="color: darkblue; font-weight: bold; cursor: pointer;"> Agregar salto de seccion al quedarse sin movimientos</span>
       <span style="font-size: 13px;"> (En caso de no activar esta opción, si el lector se queda sin movimientos se quedará en la página que está)</span>
     </div>
+    <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="show = true, shufflePreview()">Preview</b-button>
+
+    <b-modal v-model="show" hide-footer hide-header centered>
+      <div class="d-block text-left">
+        <h5>Tarjetas de memoria</h5>
+        <p>¡Intenta emparejar todas las tarjetas!</p>
+      </div>
+      <b-row style="margin-left: 15px;">
+        <div v-for="(card, index) in cards" :key="index">
+          <b-button v-if="card.flipped === false" :disabled="numberOfCardsFlipped === 2 || (numberOfMovesPreview === maxNumberOfMoves)" style="height: 75px; width: 75px; margin: 10px; margin-top: 0px;" @click="flipCardPreview(index)"></b-button>
+          <b-button v-else :variant="card.image" style="height: 75px; width: 75px; margin: 10px; margin-top: 0px;"></b-button>
+        </div>
+      </b-row>
+      <p v-if="numberOfMovesPreview === maxNumberOfMoves && this.pairsMissing > 0" style="color: red;">Te has quedado sin movimientos :(</p>
+      <p v-else>Llevas {{ numberOfMovesPreview }} movimientos de {{ maxNumberOfMoves }} disponibles! Te quedan {{ maxNumberOfMoves - numberOfMovesPreview }}!! </p>
+      <p v-if="solved === true" style="color: green;">¡Has resuelto el puzzle!</p>
+      <div class="d-flex justify-content-center">
+        <b-button id="button-modal-ok" class="mt-1" variant="secondary" block @click="show = false">Ok</b-button>
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -51,7 +71,27 @@ export default {
       maxNumberOfMoves: this.maxNumberOfMovesAux,
       sectionNoMoreMoves: this.sectionNoMoreMovesAux,
       sectionSolved: this.sectionSolvedAux,
-      changeSectionWhenWrong: this.changeSectionWhenWrongAux
+      changeSectionWhenWrong: this.changeSectionWhenWrongAux,
+
+      show: false,
+      numberOfMovesPreview: 0,
+      pairsMissing: this.numberOfPairs,
+      cardTypes: [{ image: 'primary' },
+        { image: 'danger' },
+        { image: 'success' },
+        { image: 'warning' },
+        { image: 'dark' },
+        { image: 'info' },
+        { image: 'secondary' },
+        { image: 'outline-success' },
+        { image: 'outline-warning' },
+        { image: 'outline-danger' },
+        { image: 'outline-primary' },
+        { image: 'outline-dark' }],
+      cards: [],
+      numberOfCardsFlipped: 0,
+      cardClickedBefore: '',
+      solved: false
     }
   },
   watch: {
@@ -150,7 +190,57 @@ export default {
       this.changeSectionWhenWrong = false
       this.sectionNoMoreMoves = ''
       this.save()
+    },
+    shufflePreview () {
+      this.pairsMissing = this.numberOfPairs
+      this.solved = false
+      this.numberOfMovesPreview = 0
+      this.numberOfCardsFlipped = 0
+      this.cards = []
+
+      for (var i = 0; i < this.numberOfPairs * 2; ++i) this.cards.push({ image: '', flipped: Boolean })
+      var value = 1
+      var j = 0
+      while (j < this.numberOfPairs * 2) {
+        var index = Math.floor(Math.random() * (this.numberOfPairs * 2))
+        if (this.cards[index].image === '') {
+          this.cards[index].image = this.cardTypes[value - 1].image
+          this.cards[index].flipped = false
+          j++
+          if (j % 2 === 0) value++
+        }
+      }
+    },
+    flipCardPreview (index) {
+      this.numberOfCardsFlipped++
+      this.cards[index].flipped = !this.cards[index].flipped
+      this.numberOfMovesPreview++
+
+      if (this.numberOfCardsFlipped === 1) this.cardClickedBefore = index
+      if (this.numberOfCardsFlipped === 2 && (this.cards[index].image === this.cards[this.cardClickedBefore].image)) {
+        this.numberOfCardsFlipped = 0
+        this.pairsMissing--
+        if (this.pairsMissing === 0) this.solved = true
+      }
+      if (this.numberOfCardsFlipped === 2 && (this.cards[index].image !== this.cards[this.cardClickedBefore].image)) {
+        setTimeout(() => { this.refreshPreview(index) }, 1000)
+      }
+    },
+    refreshPreview (index) {
+      this.cards[index].flipped = false
+      this.cards[this.cardClickedBefore].flipped = false
+      this.numberOfCardsFlipped = 0
     }
   }
 }
 </script>
+
+<style scoped>
+.border {
+  padding: 10px;
+  padding-bottom: 54px;
+}
+.title {
+  font-weight: bold;
+}
+</style>
