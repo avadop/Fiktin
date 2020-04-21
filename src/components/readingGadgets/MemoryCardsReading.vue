@@ -4,7 +4,7 @@
     <p>¡Intenta emparejar todas las tarjetas!</p>
     <b-row style="margin-left: 15px;">
       <div v-for="(card, index) in cards" :key="index">
-          <b-button v-if="card.flipped === false" :disabled="numberOfCardsFlipped === 2" style="height: 75px; width: 75px; margin: 10px; margin-top: 0px;" @click="flipCard(index)"></b-button>
+          <b-button v-if="card.flipped === false" :disabled="numberOfCardsFlipped === 2 || (numberOfMoves === maxNumberOfMoves)" style="height: 75px; width: 75px; margin: 10px; margin-top: 0px;" @click="flipCard(index)"></b-button>
           <b-button v-else :variant="card.image" style="height: 75px; width: 75px; margin: 10px; margin-top: 0px;"></b-button>
       </div>
     </b-row>
