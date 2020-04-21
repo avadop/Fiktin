@@ -108,6 +108,8 @@
           <div/>
           <span style="font-size: 20px">Secuencia</span>
           <b-icon icon="three-dots" class="addGadgetButton" @click="addSequence()">Añadir</b-icon>
+          <span style="font-size: 20px">Tarjetas de memoria</span>
+          <b-icon icon="grid-fill" class="addGadgetButton" @click="addMemoryCards()">Añadir</b-icon>
         </div>
 
         <div class="randoms">
@@ -234,6 +236,16 @@
             :auxUpperLimit="text.upperLimit"
             :index="index"
             @random="saveRandomNumbers"/>
+          <MemoryCards v-if="text.component === 'MemoryCards'"
+            :actualSection="sectionID"
+            :sectionsDataAux="sectionsData"
+            :numberOfPairsAux="text.numberOfPairs"
+            :maxNumberOfMovesAux="text.maxNumberOfMoves"
+            :sectionNoMoreMovesAux="text.sectionNoMoreMoves"
+            :sectionSolvedAux="text.sectionSolved"
+            :changeSectionWhenWrongAux="text.changeSectionWhenWrong"
+            :index="index"
+            @save="saveMemoryCards"/>
         </div>
       </div>
     </div>
@@ -262,6 +274,7 @@ import DecisionMaking from '@/components/gadgets/DecisionMaking.vue'
 import Riddle from '@/components/gadgets/Riddle.vue'
 import Sequence from '@/components/gadgets/Sequence.vue'
 import RandomNumber from '@/components/gadgets/RandomNumber.vue'
+import MemoryCards from '@/components/gadgets/MemoryCards.vue'
 
 export default {
   name: 'editBook',
@@ -285,7 +298,8 @@ export default {
     DecisionMaking,
     Riddle,
     Sequence,
-    RandomNumber
+    RandomNumber,
+    MemoryCards
 
   },
   props: {
@@ -412,6 +426,14 @@ export default {
           d.push({ text: this.data[index].solution[k].text })
         }
         this.data.splice(index + 1, 0, { numberOfTries: this.data[index].numberOfTries, sequence: c, solution: d, changeSectionWhenWrong: this.data[index].changeSectionWhenWrong, wrongSection: this.data[index].wrongSection, rightSection: this.data[index].rightSection, component: 'Sequence', componentName: 'Secuencia' })
+      } else if (this.data[index].component === 'MemoryCards') {
+        this.data.splice(this.lastPress + 1, 0, { numberOfPairs: this.data[index].numberOfPairs,
+          maxNumberOfMoves: this.data[index].maxNumberOfMoves,
+          sectionNoMoreMoves: this.data[index].sectionNoMoreMoves,
+          sectionSolved: this.data[index].sectionSolved,
+          changeSectionWhenWrong: this.data[index].changeSectionWhenWrong,
+          component: 'MemoryCards',
+          componentName: 'Tarjetas de memoria' })
       }
     },
     async updateBookSections (newSections) {
@@ -475,6 +497,9 @@ export default {
     },
     addRandomNumber () {
       this.data.splice(this.lastPress + 1, 0, { lowerLimit: 0, upperLimit: 10, conditions: [], numberOfConditions: 0, component: 'RandomNumber', componentName: 'Número aleatorio' })
+    },
+    addMemoryCards () {
+      this.data.splice(this.lastPress + 1, 0, { numberOfPairs: 2, maxNumberOfMoves: 6, sectionNoMoreMoves: '', sectionSolved: '', changeSectionWhenWrong: false, component: 'MemoryCards', componentName: 'Tarjetas de memoria' })
     },
     checkStyles () {
       // En caso de acceder sin ningún componente (medida de seguridad. La ejecución no debería entrar aquí)
@@ -708,6 +733,13 @@ export default {
       this.data[index].numberOfConditions = numberOfConditions
       this.data[index].lowerLimit = lowerLimit
       this.data[index].upperLimit = upperLimit
+    },
+    saveMemoryCards (numberOfPairs, maxNumberOfMoves, sectionNoMoreMoves, sectionSolved, changeSectionWhenWrong, index) {
+      this.data[index].numberOfPairs = numberOfPairs
+      this.data[index].maxNumberOfMoves = maxNumberOfMoves
+      this.data[index].sectionNoMoreMoves = sectionNoMoreMoves
+      this.data[index].sectionSolved = sectionSolved
+      this.data[index].changeSectionWhenWrong = changeSectionWhenWrong
     },
     goBack () {
       this.$router.replace({ name: 'readBook', params: { book: this.book } })

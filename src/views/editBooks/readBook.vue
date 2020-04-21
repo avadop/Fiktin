@@ -51,6 +51,13 @@
         <PopupTextReading v-if="text.component === 'PopupText'"
           :mainText="text.mainText"
           :popupText="text.popupText"/>
+        <MemoryCardsReading v-if="text.component === 'MemoryCards'"
+          :numberOfPairs="text.numberOfPairs"
+          :maxNumberOfMoves="text.maxNumberOfMoves"
+          :sectionNoMoreMoves="text.sectionNoMoreMoves"
+          :sectionSolved="text.sectionSolved"
+          :changeSectionWhenWrong="text.changeSectionWhenWrong"
+          @answered="loadSection"/>
       </div>
     </div>
     <div v-else>
@@ -71,6 +78,7 @@ import RandomNumberReading from '@/components/readingGadgets/RandomNumberReading
 import ExpandableTextReading from '@/components/readingGadgets/ExpandableTextReading.vue'
 import PopupTextReading from '@/components/readingGadgets/PopupTextReading.vue'
 import SequenceReading from '@/components/readingGadgets/SequenceReading.vue'
+import MemoryCardsReading from '@/components/readingGadgets/MemoryCardsReading.vue'
 
 export default {
   name: 'readBook',
@@ -83,7 +91,8 @@ export default {
     RandomNumberReading,
     ExpandableTextReading,
     PopupTextReading,
-    SequenceReading
+    SequenceReading,
+    MemoryCardsReading
   },
   props: {
     book: Object,
