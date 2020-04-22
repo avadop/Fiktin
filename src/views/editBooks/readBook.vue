@@ -2,14 +2,17 @@
   <div>
     <LoadingModal v-if="loading"/>
     <div class="buttons">
-      <button class="buttonBack" @click="goBack()">Atrás</button>
-      <button class="buttonEdit" v-if="isBookOfLoggedUser() && book.published===false" @click="goEdit()">Editar</button>
-      <button class="buttonEditDisabled" v-else-if="isBookOfLoggedUser()" :disabled="book.published===true">Editar</button>
-      <span style="color: red; padding-left: 10px;" v-if="isBookOfLoggedUser() && book.published===true">No se puede editar un libro si este se encuentra publicado</span>
-      <b-row>
-        <b-col cols="3"><h5>Sección: {{ sectionName }}</h5></b-col>
-        <b-col cols="3"><b-form-select size="sm" v-model="currentSectionID" :options="sectionsData" @change="loadSection(currentSectionID)"></b-form-select></b-col>
-      </b-row>
+      <div class="row d-flex justify-content-between">
+        <b-button variant="light" @click="goBack()"><b-icon icon="chevron-left"></b-icon></b-button>
+        <div class="col" style="max-width: 300px;">
+          <h3>{{ book.title }}</h3>
+          <span style="color: red; padding-left: 10px;" v-if="isBookOfLoggedUser() && book.published===true">No se puede editar un libro si este se encuentra publicado</span>
+        </div>
+        <div class="col">
+          <b-form-select v-model="currentSectionID" :options="sectionsData" style="max-width: 500px;" @change="loadSection(currentSectionID)"></b-form-select>
+        </div>
+        <b-button v-if="isBookOfLoggedUser()" variant="dark" @click="goEdit()"  :disabled="book.published===true">Editar</b-button>
+      </div>
     </div>
     <div class="readBook" v-if="sectionExists">
       <div v-for="(text, index) in sectionGadgets" :key="index">
@@ -177,6 +180,10 @@ export default {
 </script>
 
 <style scoped>
+.row {
+  margin-right: 0px!important;
+  margin-left: 0px!important;
+}
 .buttons {
   text-align: justify;
   margin-top: 10px;
@@ -190,21 +197,5 @@ export default {
   width: 60%;
   border: 1px solid;
   padding: 20px;
-}
-.buttonBack {
-  cursor: pointer;
-  background-color: lightgreen;
-  border: 1px solid darkgreen;
-}
-.buttonEdit {
-  cursor: pointer;
-  margin-left: 5px;
-  background-color: lightgreen;
-  border: 1px solid darkgreen;
-}
-.buttonEditDisabled {
-  margin-left: 5px;
-  background-color: lightgreen;
-  border: 1px solid darkgreen;
 }
 </style>

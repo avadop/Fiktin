@@ -3,19 +3,20 @@
     <LoadingModal v-if="loading"/>
     <div class="buttons">
       <div class="row d-flex justify-content-end">
-        <b-button variant="light" @click="goBack()"><b-icon icon="chevron-left"></b-icon></b-button>
+        <b-button v-b-tooltip.hover title="Salir sin guardar" variant="light" @click="goBack()"><b-icon icon="chevron-left"></b-icon></b-button>
         <div class="col">
           <h3 class="mr-auto">{{ book.title }}</h3>
         </div>
         <div class="col">
-          <b-form-select size="sm" v-model="nextSectionID" :options="sectionsData" @change="save(), refresh(nextSectionID)"></b-form-select>
+          <b-form-select v-model="nextSectionID" :options="sectionsData" @change="save(), refresh(nextSectionID)"></b-form-select>
         </div>
         <div class="col">
           <b-button variant="outline-secondary" size="sm" @click="openManagementSectionModal()"><b-icon icon="gear"/></b-button>
         </div>
         <SectionManagementModal v-if="showManagementSectionModal" :name="sectionName" :id="sectionID" :book_title="book.title" :book_author_ID="book.userID" :sectionsList="book.sections" @update="updateBookSections" @load="refresh" @saveActual="save" @cancel="openManagementSectionModal"/>
-        <b-button><b-icon icon="cloud-upload" @mouseup="save()">Save</b-icon></b-button>
-        <b-button @click="goBackAndSave()">Guardar y salir</b-button>
+        <b-button variant="outline-dark" v-b-tooltip.hover title="Descargar"><b-icon icon="cloud-download" @mouseup="save()"></b-icon></b-button>
+        <b-button variant="outline-dark" v-b-tooltip.hover title="Guardar" @click="save()"><b-icon icon="cloud-upload"></b-icon></b-button>
+        <b-button variant="dark" @click="goBackAndSave()">Guardar y salir</b-button>
       </div>
     </div>
     <div class="row flex-xl-nowrap2">
@@ -25,7 +26,7 @@
           <span style="color: red;" v-if="data.length==0">No hay gadgets creados. Para editar el documento, agrega uno primero</span>
           <div v-for="(text, index) in data" :key="index">
             <div class="sidebarBlock" v-if="lastPress!==index" @click="lastElementPressed(index)">
-              <span>Tipo: {{ text.componentName }}</span>
+              <span>{{ text.componentName }}</span>
               <div class="h5 lg, verticalLine">
                 <b-icon icon="chevron-up" class="marginLeftButton" @click.stop @mouseup="itemUp(index)">Subir gadget</b-icon>
                 <b-icon icon="chevron-down" class="marginLeftButton" @click.stop @mouseup="itemDown(index)">Bajar gadget</b-icon>
@@ -34,7 +35,7 @@
               </div>
             </div>
             <div class="sidebarBlockSelected" v-else @click="lastElementPressed(index)">
-              <span>Tipo: {{ text.componentName }}</span>
+              <span>{{ text.componentName }}</span>
               <div class="h5 lg, verticalLine">
                 <b-icon icon="chevron-up" class="marginLeftButtonSelected" @click.stop @mouseup="itemUp(index)">Subir gadget</b-icon>
                 <b-icon icon="chevron-down" class="marginLeftButtonSelected" @click.stop @mouseup="itemDown(index)">Bajar gadget</b-icon>
@@ -45,7 +46,7 @@
           </div>
         </div>
       </div>
-      <div class="bd-content col-md-9 col-xl-8 col-12 pb-md-3 pl-md-5">
+      <div class="bd-content col-md-9 col-xl-8 col-12 pl-md-5">
         <!--Poniendo el contenteditable, keyup y click aquí, podemos controlar las flechas de una forma muy sencilla-->
         <div class="document" @keyup="checkStyles" @keydown.tab.prevent>
           <div class="editable" v-for="(text, index) in data" :key="index" @click="lastElementPressed(index), checkStyles()">
@@ -180,76 +181,60 @@
       <div class="bd-toc col-xl-2 d-none d-xl-block">
         <h4>Añadir gadgets</h4>
         <hr>
-        <div class="normalPanel">
-          <span class="clickable" @click="addNormal()">Texto normal</span>
-          <div class="normalPanelOptions">
-            <b-icon icon="type-bold" class="buttonNormal" v-if="boldActive!=1" @mousedown="onLiveEditComponent($event, 'Bold')">Bold</b-icon>
-            <b-icon icon="type-bold" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Bold')">Bold</b-icon>
-            <b-icon icon="type-italic" class="buttonNormal" v-if="italicActive!=1" @mousedown="onLiveEditComponent($event, 'Italic')">Italic</b-icon>
-            <b-icon icon="type-italic" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Italic')">Italic</b-icon>
-            <b-icon icon="type-underline" class="buttonNormal" v-if="underlineActive!=1" @mousedown="onLiveEditComponent($event, 'Underline')">Underline</b-icon>
-            <b-icon icon="type-underline" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Underline')">Underline</b-icon>
-            <b-icon icon="type-strikethrough" class="buttonNormalRightBorder" v-if="strikeThroughActive!=1" @mousedown="onLiveEditComponent($event, 'StrikeThrough')">strikeThrough</b-icon>
-            <b-icon icon="type-strikethrough" class="buttonPressedRightBorder" v-else @mousedown="onLiveEditComponent($event, 'StrikeThrough')">strikeThrough</b-icon>
-          </div>
+        <span class="clickable" @click="addNormal()">Texto normal</span>
+        <div class="normalPanelOptions">
+          <b-icon icon="type-bold" class="buttonNormal" v-if="boldActive!=1" @mousedown="onLiveEditComponent($event, 'Bold')">Bold</b-icon>
+          <b-icon icon="type-bold" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Bold')">Bold</b-icon>
+          <b-icon icon="type-italic" class="buttonNormal" v-if="italicActive!=1" @mousedown="onLiveEditComponent($event, 'Italic')">Italic</b-icon>
+          <b-icon icon="type-italic" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Italic')">Italic</b-icon>
+          <b-icon icon="type-underline" class="buttonNormal" v-if="underlineActive!=1" @mousedown="onLiveEditComponent($event, 'Underline')">Underline</b-icon>
+          <b-icon icon="type-underline" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Underline')">Underline</b-icon>
+          <b-icon icon="type-strikethrough" class="buttonNormalRightBorder" v-if="strikeThroughActive!=1" @mousedown="onLiveEditComponent($event, 'StrikeThrough')">strikeThrough</b-icon>
+          <b-icon icon="type-strikethrough" class="buttonPressedRightBorder" v-else @mousedown="onLiveEditComponent($event, 'StrikeThrough')">strikeThrough</b-icon>
         </div>
         <hr>
 
-        <div class="headerPanel">
-          <span class="clickable" @click="addTitle()">Título</span>
-          <div class="headerPanelOptions">
-            <b-icon icon="type-h1" class="buttonNormal" v-if="header1Active!=1" @mousedown="onLiveEditComponent($event, 'Header1')">Añadir título 1</b-icon>
-            <b-icon icon="type-h1" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Header1')">Añadir título 1</b-icon>
-            <b-icon icon="type-h2" class="buttonNormal" v-if="header2Active!=1" @mousedown="onLiveEditComponent($event, 'Header2')">Añadir título 2</b-icon>
-            <b-icon icon="type-h2" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Header2')">Añadir título 2</b-icon>
-            <b-icon icon="type-h3" class="buttonNormalRightBorder" v-if="header3Active!=1" @mousedown="onLiveEditComponent($event, 'Header3')">Añadir título 3</b-icon>
-            <b-icon icon="type-h3" class="buttonPressedRightBorder" v-else @mousedown="onLiveEditComponent($event, 'Header3')">Añadir título 3</b-icon>
-          </div>
+        <span class="clickable" @click="addTitle()">Título</span>
+        <div class="headerPanelOptions">
+          <b-icon icon="type-h1" class="buttonNormal" v-if="header1Active!=1" @mousedown="onLiveEditComponent($event, 'Header1')">Añadir título 1</b-icon>
+          <b-icon icon="type-h1" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Header1')">Añadir título 1</b-icon>
+          <b-icon icon="type-h2" class="buttonNormal" v-if="header2Active!=1" @mousedown="onLiveEditComponent($event, 'Header2')">Añadir título 2</b-icon>
+          <b-icon icon="type-h2" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Header2')">Añadir título 2</b-icon>
+          <b-icon icon="type-h3" class="buttonNormalRightBorder" v-if="header3Active!=1" @mousedown="onLiveEditComponent($event, 'Header3')">Añadir título 3</b-icon>
+          <b-icon icon="type-h3" class="buttonPressedRightBorder" v-else @mousedown="onLiveEditComponent($event, 'Header3')">Añadir título 3</b-icon>
         </div>
         <hr>
 
-        <div class="multimediaPanel">
-          <span class="clickable" @click="addFile()">Multimedia</span>
-          <div class="multimediaPanelOptions">
-            <b-icon icon="image-fill" class="addGadgetButton" @click="changeFileType('picture')">Añadir</b-icon>
-            <b-icon icon="camera-video-fill" class="addGadgetButton" @click="changeFileType('video')">Añadir</b-icon>
-          </div>
+        <span class="clickable" @click="addFile()">Multimedia</span>
+        <div class="multimediaPanelOptions">
+          <b-icon icon="image-fill" class="addGadgetButton" @click="changeFileType('picture')">Añadir</b-icon>
+          <b-icon icon="camera-video-fill" class="addGadgetButton" @click="changeFileType('video')">Añadir</b-icon>
         </div>
         <hr>
 
-        <div class="exandableTextPanel multimediaPanel">
-          <span class="clickable" @click="addExandableText()">Texto expandible</span>
-        </div>
-        <div class="popupTextPanel multimediaPanel">
-          <span class="clickable" @click="addPopupText()">Texto emergente</span>
-        </div>
-        <div class="hyperlinkPanel multimediaPanel">
-          <span class="clickable" @click="addHyperlink()">Hipervínculo</span>
-        </div>
+        <span class="clickable" @click="addExandableText()">Texto expandible</span>
+        <div/>
+        <span class="clickable" @click="addPopupText()">Texto emergente</span>
+        <div/>
+        <span class="clickable" @click="addHyperlink()">Hipervínculo</span>
         <hr>
 
-        <div class="sections">
-          <span class="clickable" @click="addSectionChange()">Siguiente sección</span>
-          <b-icon icon="box-arrow-right" class="addGadgetButton" @click="addSectionChange()">Añadir</b-icon>
-          <div/>
-          <span class="clickable" @click="addSectionRepeat()">Repetir sección</span>
-          <div/>
-          <span class="clickable" @click="addDecisionMaking()">Decisiones</span>
-        </div>
+        <span class="clickable" @click="addSectionChange()">Siguiente sección</span>
+        <b-icon icon="box-arrow-right" class="addGadgetButton" @click="addSectionChange()">Añadir</b-icon>
+        <div/>
+        <span class="clickable" @click="addSectionRepeat()">Repetir sección</span>
+        <div/>
+        <span class="clickable" @click="addDecisionMaking()">Decisiones</span>
         <hr>
 
-        <div class="games">
-          <span class="clickable" @click="addRiddle()">Adivinanzas</span>
-          <div/>
-          <span class="clickable" @click="addSequence()">Secuencia</span>
-          <div/>
-          <span class="clickable" @click="addMemoryCards()">Tarjetas de memoria</span>
-        </div>
+        <span class="clickable" @click="addRiddle()">Adivinanzas</span>
+        <div/>
+        <span class="clickable" @click="addSequence()">Secuencia</span>
+        <div/>
+        <span class="clickable" @click="addMemoryCards()">Tarjetas de memoria</span>
         <hr>
 
-        <div class="randoms">
-          <span class="clickable" @click="addRandomNumber()">Número<br>aleatorio</span>
-        </div>
+        <span class="clickable" @click="addRandomNumber()">Número<br>aleatorio</span>
       </div>
     </div>
   </div>
@@ -773,31 +758,20 @@ export default {
   margin-bottom: 10px;
   margin-left: 30px;
 }
-.buttonBack {
-  cursor: pointer;
-  background-color: lightgreen;
-  border: 1px solid darkgreen;
-}
-.buttonBackAndSave {
-  cursor: pointer;
-  background-color: lightgreen;
-  border: 1px solid darkgreen;
-  margin-left: 5px;
-}
-.title {
-  vertical-align: top;
-  margin-left: 20px;
-  display: inline-block;
-}
 /* Barra lateral izquierda */
 .sidebarBlock {
+  text-align: justify;
+  padding-left: 5px;
   border: 1px solid rgb(129, 129, 129);
   margin-bottom: 5px;
   cursor: pointer;
 }
 .sidebarBlockSelected {
+  text-align: justify;
+  padding-left: 5px;
   border: 1px solid rgb(87, 87, 87);
-  background-color: lightgray;
+  box-shadow: 1px 1px 2px #000000;
+  background-color: #eee;
   margin-bottom: 5px;
   cursor: pointer;
 }
@@ -866,49 +840,48 @@ export default {
   width: 210mm;
   height: 297mm;
   padding: 20mm;
-  margin-top: 10px;
-  margin-bottom: 10px;
   border: 1px rgb(168, 168, 168) solid;
   background: white;
   overflow-y: auto;
   text-align: left;
+  height: calc(100vh - 4rem);
 }
 /* Right sidebar*/
 .bd-toc {
-    border-left: 1px solid rgba(0,0,0,.1);
-    position: sticky;
-    top: 4rem;
-    height: calc(100vh - 4rem);
-    overflow-y: auto;
-    order: 2;
-    padding-bottom: 15rem;
-    font-size: .875rem;
+  border-left: 1px solid rgba(0,0,0,.1);
+  position: sticky;
+  top: 4rem;
+  height: calc(100vh - 4rem);
+  overflow-y: auto;
+  order: 2;
+  padding-bottom: 15rem;
+  font-size: .875rem;
 }
 .d-xl-block {
-    display: block !important;
+  display: block !important;
 }
 .col-xl-2 {
-    width: 100%;
-    padding-right: 15px;
-    padding-left: 15px;
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
 }
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 /* left sidebar*/
 .bd-sidebar {
-    border-right: 1px solid rgba(0,0,0,.1);
-    position: sticky;
-    top: 4rem;
-    height: calc(100vh - 4rem);
-    overflow-y: auto;
-    order: 0;
+  border-right: 1px solid rgba(0,0,0,.1);
+  position: sticky;
+  top: 4rem;
+  height: calc(100vh - 4rem);
+  overflow-y: auto;
+  order: 0;
 }
 .border-bottom-0 {
-    border-bottom: 0 !important;
+  border-bottom: 0 !important;
 }
 .col-xl-2 {
-    flex: 0 0 16.666667%;
-    max-width: 16.666667%;
+  flex: 0 0 16.666667%;
+  max-width: 16.666667%;
 }
 </style>
