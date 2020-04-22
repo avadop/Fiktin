@@ -99,7 +99,7 @@
 </template>
 
 <script>
-import { librariesCollection, booksCollection, connectedRef } from '../firebase.js'
+import { librariesCollection, booksCollection, userCollection, connectedRef } from '../firebase.js'
 import { store } from '../store/index.js'
 
 export default {
@@ -266,13 +266,32 @@ export default {
     },
 
     /**
-     * @param {Object} book: Libro con todos sus datos
+     * @param {Object} book: Libro con algunos datos
      * @param {int} idx: Índice en la lista de libros del libro "book"
      * Cada vez que se pulsa sobre un libro, si este existe, se debe acceder a él.
      * Este método se encarga de abrir la vista de leer libros si existe.
+     * Para ello, recoge sus datos de firebase y después hace push a leer libro
      */
-    openBook (book, idx) {
-      this.$router.push({ name: 'readBook', params: { book: book, bookID: this.referencesList[idx] } })
+    async openBook (book, idx) {
+      var bookAux
+      var a
+      await booksCollection.doc(this.referencesList[idx]).get().then(doc1 => {
+        a = doc1.data().user_id
+        bookAux = {
+          author: doc1.data().author,
+          title: doc1.data().title,
+          description: doc1.data().description,
+          cover: doc1.data().cover,
+          tags: doc1.data().tags,
+          userID: doc1.data().user_id,
+          sections: doc1.data().sections
+        }
+      })
+      await userCollection.doc(a).get().then(doc2 => {
+        bookAux.nick = doc2.data().nick
+        bookAux.name = doc2.data().name
+      })
+      this.$router.push({ name: 'readBook', params: { book: bookAux, bookID: this.referencesList[idx] } })
     },
 
     upperCase (title) {
