@@ -5,13 +5,15 @@
       <div class="row d-flex justify-content-between">
         <b-button variant="light" @click="goBack()"><b-icon icon="chevron-left"></b-icon></b-button>
         <div class="col" style="max-width: 300px;">
-          <h3>{{ book.title }}</h3>
+          <h3>
+            {{ book.title }}
+            <b-button v-if="isBookOfLoggedUser()" variant="light" @click="goEdit()"  :disabled="book.published===true"><b-icon icon="pencil"/></b-button>
+          </h3>
           <span style="color: red; padding-left: 10px;" v-if="isBookOfLoggedUser() && book.published===true">No se puede editar un libro si este se encuentra publicado</span>
         </div>
         <div class="col">
           <b-form-select v-model="currentSectionID" :options="sectionsData" style="max-width: 500px;" @change="loadSection(currentSectionID)"></b-form-select>
         </div>
-        <b-button v-if="isBookOfLoggedUser()" variant="dark" @click="goEdit()"  :disabled="book.published===true">Editar</b-button>
       </div>
     </div>
     <div class="readBook" v-if="sectionExists">

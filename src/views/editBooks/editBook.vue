@@ -22,6 +22,7 @@
     <div class="row flex-xl-nowrap2">
       <div class="bd-sidebar border-bottom-0 col-md-3 col-xl-2 col-12">
         <h4>Gadgets</h4>
+        <hr>
         <div>
           <span style="color: red;" v-if="data.length==0">No hay gadgets creados. Para editar el documento, agrega uno primero</span>
           <div v-for="(text, index) in data" :key="index">
@@ -44,6 +45,7 @@
               </div>
             </div>
           </div>
+          <hr>
         </div>
       </div>
       <div class="bd-content col-md-9 col-xl-8 col-12 pl-md-5">
@@ -181,8 +183,8 @@
       <div class="bd-toc col-xl-2 d-none d-xl-block">
         <h4>Añadir gadgets</h4>
         <hr>
-        <span class="clickable" @click="addNormal()">Texto normal</span>
-        <div class="normalPanelOptions">
+        <span class="clickable" @click="addNormal()"><b-icon icon="fonts"/> Texto normal </span>
+        <h5>
           <b-icon icon="type-bold" class="buttonNormal" v-if="boldActive!=1" @mousedown="onLiveEditComponent($event, 'Bold')">Bold</b-icon>
           <b-icon icon="type-bold" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Bold')">Bold</b-icon>
           <b-icon icon="type-italic" class="buttonNormal" v-if="italicActive!=1" @mousedown="onLiveEditComponent($event, 'Italic')">Italic</b-icon>
@@ -191,50 +193,50 @@
           <b-icon icon="type-underline" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Underline')">Underline</b-icon>
           <b-icon icon="type-strikethrough" class="buttonNormalRightBorder" v-if="strikeThroughActive!=1" @mousedown="onLiveEditComponent($event, 'StrikeThrough')">strikeThrough</b-icon>
           <b-icon icon="type-strikethrough" class="buttonPressedRightBorder" v-else @mousedown="onLiveEditComponent($event, 'StrikeThrough')">strikeThrough</b-icon>
-        </div>
+        </h5>
         <hr>
 
-        <span class="clickable" @click="addTitle()">Título</span>
-        <div class="headerPanelOptions">
+        <span class="clickable" @click="addTitle()"><b-icon icon="plus"/> Título </span>
+        <h5>
           <b-icon icon="type-h1" class="buttonNormal" v-if="header1Active!=1" @mousedown="onLiveEditComponent($event, 'Header1')">Añadir título 1</b-icon>
           <b-icon icon="type-h1" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Header1')">Añadir título 1</b-icon>
           <b-icon icon="type-h2" class="buttonNormal" v-if="header2Active!=1" @mousedown="onLiveEditComponent($event, 'Header2')">Añadir título 2</b-icon>
           <b-icon icon="type-h2" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Header2')">Añadir título 2</b-icon>
           <b-icon icon="type-h3" class="buttonNormalRightBorder" v-if="header3Active!=1" @mousedown="onLiveEditComponent($event, 'Header3')">Añadir título 3</b-icon>
           <b-icon icon="type-h3" class="buttonPressedRightBorder" v-else @mousedown="onLiveEditComponent($event, 'Header3')">Añadir título 3</b-icon>
-        </div>
+        </h5>
         <hr>
 
-        <span class="clickable" @click="addFile()">Multimedia</span>
-        <div class="multimediaPanelOptions">
-          <b-icon icon="image-fill" class="addGadgetButton" @click="changeFileType('picture')">Añadir</b-icon>
-          <b-icon icon="camera-video-fill" class="addGadgetButton" @click="changeFileType('video')">Añadir</b-icon>
-        </div>
+        <span class="clickable" @click="addFile()"><b-icon icon="plus"/> Multimedia </span>
+        <h5>
+          <b-icon icon="image-fill" class="buttonNormal" @click="changeFileType('picture')">Añadir</b-icon>
+          <b-icon icon="camera-video-fill" class="buttonNormal" @click="changeFileType('video')">Añadir</b-icon>
+        </h5>
         <hr>
 
-        <span class="clickable" @click="addExandableText()">Texto expandible</span>
+        <span class="clickable" @click="addExandableText()"><b-icon icon="plus"/> Texto expandible</span>
         <div/>
-        <span class="clickable" @click="addPopupText()">Texto emergente</span>
+        <span class="clickable" @click="addPopupText()"><b-icon icon="plus"/> Texto emergente</span>
         <div/>
-        <span class="clickable" @click="addHyperlink()">Hipervínculo</span>
+        <span class="clickable" @click="addHyperlink()"><b-icon icon="link"/> Hipervínculo</span>
         <hr>
 
-        <span class="clickable" @click="addSectionChange()">Siguiente sección</span>
-        <b-icon icon="box-arrow-right" class="addGadgetButton" @click="addSectionChange()">Añadir</b-icon>
+        <span class="clickable" @click="addSectionChange()"><b-icon icon="box-arrow-right"/> Siguiente sección</span>
         <div/>
-        <span class="clickable" @click="addSectionRepeat()">Repetir sección</span>
+        <span class="clickable" @click="addSectionRepeat()"><b-icon icon="arrow-repeat"/> Repetir sección</span>
         <div/>
-        <span class="clickable" @click="addDecisionMaking()">Decisiones</span>
+        <span class="clickable" @click="addDecisionMaking()"><b-icon icon="list-task"/> Decisiones</span>
         <hr>
 
-        <span class="clickable" @click="addRiddle()">Adivinanzas</span>
+        <span class="clickable" @click="addRiddle()"><b-icon icon="question"/> Adivinanzas</span>
         <div/>
-        <span class="clickable" @click="addSequence()">Secuencia</span>
+        <span class="clickable" @click="addSequence()"><b-icon icon="three-dots"/> Secuencia</span>
         <div/>
-        <span class="clickable" @click="addMemoryCards()">Tarjetas de memoria</span>
+        <span class="clickable" @click="addMemoryCards()"><b-icon icon="grid-fill"/> Tarjetas de memoria</span>
         <hr>
 
-        <span class="clickable" @click="addRandomNumber()">Número<br>aleatorio</span>
+        <span class="clickable" @click="addRandomNumber()"><b-icon icon="hash"/> Número aleatorio</span>
+        <hr>
       </div>
     </div>
   </div>
@@ -854,8 +856,9 @@ export default {
   height: calc(100vh - 4rem);
   overflow-y: auto;
   order: 2;
-  padding-bottom: 15rem;
+  padding-bottom: 1.5rem;
   font-size: .875rem;
+  text-align: left;
 }
 .d-xl-block {
   display: block !important;
@@ -876,6 +879,7 @@ export default {
   height: calc(100vh - 4rem);
   overflow-y: auto;
   order: 0;
+  padding-bottom: 1.5rem;
 }
 .border-bottom-0 {
   border-bottom: 0 !important;
