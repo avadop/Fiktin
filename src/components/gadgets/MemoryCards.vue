@@ -82,7 +82,7 @@ export default {
         { image: 'warning' },
         { image: 'dark' },
         { image: 'info' },
-        { image: 'secondary' },
+        { image: 'light' },
         { image: 'outline-success' },
         { image: 'outline-warning' },
         { image: 'outline-danger' },
