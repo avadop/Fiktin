@@ -2,25 +2,30 @@
   <div>
     <LoadingModal v-if="loading"/>
     <div class="buttons">
-      <button class="buttonBack" @click="goBack()">Salir sin guardar</button>
-      <button class="buttonBackAndSave" @click="goBackAndSave()">Guardar y salir</button>
-      <h3 class="title">{{ book.title }}</h3>
-      <br>
-      <b-row>
-        <b-col cols="3"><h5>Sección: {{ sectionName }}</h5></b-col>
-        <b-col cols="1"><b-button variant="outline-secondary" size="sm" @click="openManagementSectionModal()"><b-icon icon="gear"/></b-button>
-        <SectionManagementModal v-if="showManagementSectionModal" :name="sectionName" :id="sectionID" :book_title="book.title" :book_author_ID="book.userID" :sectionsList="book.sections" @update="updateBookSections" @load="refresh" @saveActual="save" @cancel="openManagementSectionModal"/></b-col>
-        <b-col cols="3"><b-form-select size="sm" v-model="nextSectionID" :options="sectionsData" @change="save(), refresh(nextSectionID)"></b-form-select></b-col>
-      </b-row>
+      <div class="row d-flex justify-content-end">
+        <b-button variant="light" @click="goBack()"><b-icon icon="chevron-left"></b-icon></b-button>
+        <div class="col">
+          <h3 class="mr-auto">{{ book.title }}</h3>
+        </div>
+        <div class="col">
+          <b-form-select size="sm" v-model="nextSectionID" :options="sectionsData" @change="save(), refresh(nextSectionID)"></b-form-select>
+        </div>
+        <div class="col">
+          <b-button variant="outline-secondary" size="sm" @click="openManagementSectionModal()"><b-icon icon="gear"/></b-button>
+        </div>
+        <SectionManagementModal v-if="showManagementSectionModal" :name="sectionName" :id="sectionID" :book_title="book.title" :book_author_ID="book.userID" :sectionsList="book.sections" @update="updateBookSections" @load="refresh" @saveActual="save" @cancel="openManagementSectionModal"/>
+        <b-button><b-icon icon="cloud-upload" @mouseup="save()">Save</b-icon></b-button>
+        <b-button @click="goBackAndSave()">Guardar y salir</b-button>
+      </div>
     </div>
-    <div class="editBook">
-      <div class="sidebar">
+    <div class="row flex-xl-nowrap2">
+      <div class="bd-sidebar border-bottom-0 col-md-3 col-xl-2 col-12">
         <h4>Gadgets</h4>
-        <div class="sidebarHeight">
+        <div>
           <span style="color: red;" v-if="data.length==0">No hay gadgets creados. Para editar el documento, agrega uno primero</span>
           <div v-for="(text, index) in data" :key="index">
             <div class="sidebarBlock" v-if="lastPress!==index" @click="lastElementPressed(index)">
-              <span class="marginLeft">Tipo: {{ text.componentName }}</span>
+              <span>Tipo: {{ text.componentName }}</span>
               <div class="h5 lg, verticalLine">
                 <b-icon icon="chevron-up" class="marginLeftButton" @click.stop @mouseup="itemUp(index)">Subir gadget</b-icon>
                 <b-icon icon="chevron-down" class="marginLeftButton" @click.stop @mouseup="itemDown(index)">Bajar gadget</b-icon>
@@ -29,7 +34,7 @@
               </div>
             </div>
             <div class="sidebarBlockSelected" v-else @click="lastElementPressed(index)">
-              <span class="marginLeft">Tipo: {{ text.componentName }}</span>
+              <span>Tipo: {{ text.componentName }}</span>
               <div class="h5 lg, verticalLine">
                 <b-icon icon="chevron-up" class="marginLeftButtonSelected" @click.stop @mouseup="itemUp(index)">Subir gadget</b-icon>
                 <b-icon icon="chevron-down" class="marginLeftButtonSelected" @click.stop @mouseup="itemDown(index)">Bajar gadget</b-icon>
@@ -40,10 +45,143 @@
           </div>
         </div>
       </div>
-      <div class="h3 mb-2, options">
+      <div class="bd-content col-md-9 col-xl-8 col-12 pb-md-3 pl-md-5">
+        <!--Poniendo el contenteditable, keyup y click aquí, podemos controlar las flechas de una forma muy sencilla-->
+        <div class="document" @keyup="checkStyles" @keydown.tab.prevent>
+          <div class="editable" v-for="(text, index) in data" :key="index" @click="lastElementPressed(index), checkStyles()">
+            <Normal v-if="text.component=='Normal'"
+              :htmlTextAux="text.htmlText"
+              :index="index"
+              :boldUse="boldUse"
+              :italicUse="italicUse"
+              :underlineUse="underlineUse"
+              :strikeThroughUse="strikeThroughUse"
+              :lastPress="lastPress"
+              @html="saveHTML"
+              @delete="checkDelete"/>
+            <Header1 v-if="text.component=='Header1'"
+              :htmlTextAux="text.htmlText"
+              :plainTextAux="text.plainText"
+              :index="index"
+              @html="savePlaneAndHTML"/>
+            <Header2 v-if="text.component=='Header2'"
+              :htmlTextAux="text.htmlText"
+              :plainTextAux="text.plainText"
+              :index="index"
+              @html="savePlaneAndHTML"/>
+            <Header3 v-if="text.component=='Header3'"
+              :htmlTextAux="text.htmlText"
+              :plainTextAux="text.plainText"
+              :index="index"
+              @html="savePlaneAndHTML"/>
+
+            <ExpandableText v-if="text.component=='ExpandableText'"
+              :index="index"
+              :mainTextAux="text.mainText"
+              :expandedTextAux="text.expandedText"
+              :lastPressed="lastPress"
+              @html="saveExpandableText"/>
+            <PopupText v-if="text.component=='PopupText'"
+              :index="index"
+              :mainTextAux="text.mainText"
+              :popupTextAux="text.popupText"
+              :lastPressed="lastPress"
+              @html="savePopupText"/>
+            <Hyperlink v-if="text.component=='Hyperlink'"
+              :index="index"
+              :mainTextAux="text.mainText"
+              :hyperlinkTextAux="text.hyperlinkText"
+              :lastPressed="lastPress"
+              @html="saveHyperlink"/>
+
+            <PictureGadget v-if="text.component==='Picture'"
+              :bookID="bookID"
+              :htmlTextAux="text.htmlText"
+              :index="index"
+              :openModal="openModalPicture"
+              :lastPressed="lastPress"
+              @cancel-picture="cancelMultimedia"
+              @html="saveHTMLMultimedia"/>
+            <VideoGadget v-if="text.component==='Video'"
+              :index="index"
+              :htmlTextAux="text.htmlText"
+              :bookID="bookID"
+              :openModal="openModalVideo"
+              :lastPressed="lastPress"
+              @cancel-video="cancelMultimedia"
+              @html="saveHTMLMultimedia"/>
+
+            <ChangeSection v-if="text.component=='ChangeSection'"
+              :actualSection="sectionID"
+              :auxSectionsData="sectionsData"
+              :selectedSection="text.next"
+              :textAux="text.plainText"
+              :index="index"
+              @section="saveHTMLAndSection"
+              @save="save"/>
+            <RepeatSection v-if="text.component=='RepeatSection'"
+              :actualSection="sectionID"
+              :sectionName="sectionName"
+              :textAux="text.plainText"
+              :index="index"
+              @html="savePlaneAndHTML"/>
+            <DecisionMaking v-if="text.component=='DecisionMaking'"
+              :actualSection="sectionID"
+              :auxSectionsData="sectionsData"
+              :auxDecisions="text.choices"
+              :auxNumberOfOptions="text.numberOfOptions"
+              :index="index"
+              @section="saveChoices"/>
+
+            <Riddle v-if="text.component=='Riddle'"
+              :actualSection="sectionID"
+              :auxSectionsData="sectionsData"
+              :wrongSectionAux="text.wrongSection"
+              :rightSectionAux="text.rightSection"
+              :riddleTextAux="text.riddleText"
+              :answerTextAux="text.answerText"
+              :numberOfTriesAux="text.numberOfTries"
+              :changeSectionWhenWrongAux="text.changeSectionWhenWrong"
+              :index="index"
+              @section="saveHTMLRiddle"/>
+            <Sequence v-if="text.component=='Sequence'"
+              :actualSection="sectionID"
+              :auxSectionsData="sectionsData"
+              :auxSequence="text.sequence"
+              :auxSolution="text.solution"
+              :auxChangeSectionWhenWrong="text.changeSectionWhenWrong"
+              :auxWrongSection="text.wrongSection"
+              :auxRightSection="text.rightSection"
+              :auxNumberOfTries="text.numberOfTries"
+              :index="index"
+              @section="saveSequence"/>
+            <RandomNumber v-if="text.component=='RandomNumber'"
+              :actualSection="sectionID"
+              :auxSectionsData="sectionsData"
+              :auxConditions="text.conditions"
+              :auxNumberOfConditions="text.numberOfConditions"
+              :auxLowerLimit="text.lowerLimit"
+              :auxUpperLimit="text.upperLimit"
+              :index="index"
+              @random="saveRandomNumbers"/>
+            <MemoryCards v-if="text.component === 'MemoryCards'"
+              :actualSection="sectionID"
+              :sectionsDataAux="sectionsData"
+              :numberOfPairsAux="text.numberOfPairs"
+              :maxNumberOfMovesAux="text.maxNumberOfMoves"
+              :sectionNoMoreMovesAux="text.sectionNoMoreMoves"
+              :sectionSolvedAux="text.sectionSolved"
+              :changeSectionWhenWrongAux="text.changeSectionWhenWrong"
+              :index="index"
+              @save="saveMemoryCards"/>
+          </div>
+        </div>
+      </div>
+      <div class="bd-toc col-xl-2 d-none d-xl-block">
+        <h4>Añadir gadgets</h4>
+        <hr>
         <div class="normalPanel">
-          <span style="font-size: 20px;">Texto normal</span>
-          <b-icon icon="fonts" class="addGadgetButton" @click="addNormal()">Añadir</b-icon>
+          <span class="clickable" @click="addNormal()">Texto normal</span>
           <div class="normalPanelOptions">
             <b-icon icon="type-bold" class="buttonNormal" v-if="boldActive!=1" @mousedown="onLiveEditComponent($event, 'Bold')">Bold</b-icon>
             <b-icon icon="type-bold" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Bold')">Bold</b-icon>
@@ -55,10 +193,10 @@
             <b-icon icon="type-strikethrough" class="buttonPressedRightBorder" v-else @mousedown="onLiveEditComponent($event, 'StrikeThrough')">strikeThrough</b-icon>
           </div>
         </div>
+        <hr>
 
         <div class="headerPanel">
-          <span style="font-size: 20px;">Título</span>
-          <b-icon icon="plus" class="addGadgetButton" @click="addTitle()">Añadir</b-icon>
+          <span class="clickable" @click="addTitle()">Título</span>
           <div class="headerPanelOptions">
             <b-icon icon="type-h1" class="buttonNormal" v-if="header1Active!=1" @mousedown="onLiveEditComponent($event, 'Header1')">Añadir título 1</b-icon>
             <b-icon icon="type-h1" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Header1')">Añadir título 1</b-icon>
@@ -68,184 +206,49 @@
             <b-icon icon="type-h3" class="buttonPressedRightBorder" v-else @mousedown="onLiveEditComponent($event, 'Header3')">Añadir título 3</b-icon>
           </div>
         </div>
+        <hr>
 
         <div class="multimediaPanel">
-          <span style="font-size: 20px;">Multimedia</span>
-          <b-icon icon="plus" class="addGadgetButton" @click="addFile()">Añadir</b-icon>
+          <span class="clickable" @click="addFile()">Multimedia</span>
           <div class="multimediaPanelOptions">
             <b-icon icon="image-fill" class="addGadgetButton" @click="changeFileType('picture')">Añadir</b-icon>
             <b-icon icon="camera-video-fill" class="addGadgetButton" @click="changeFileType('video')">Añadir</b-icon>
           </div>
         </div>
+        <hr>
 
         <div class="exandableTextPanel multimediaPanel">
-          <span style="font-size: 20px;">Texto expandible</span>
-          <b-icon icon="plus" class="addGadgetButton" @click="addExandableText()">Añadir</b-icon>
+          <span class="clickable" @click="addExandableText()">Texto expandible</span>
         </div>
         <div class="popupTextPanel multimediaPanel">
-          <span style="font-size: 20px;">Texto emergente</span>
-          <b-icon icon="plus" class="addGadgetButton" @click="addPopupText()">Añadir</b-icon>
+          <span class="clickable" @click="addPopupText()">Texto emergente</span>
         </div>
         <div class="hyperlinkPanel multimediaPanel">
-          <span style="font-size: 20px;">Hipervínculo</span>
-          <b-icon icon="link" class="addGadgetButton" @click="addHyperlink()">Añadir</b-icon>
+          <span class="clickable" @click="addHyperlink()">Hipervínculo</span>
         </div>
+        <hr>
 
         <div class="sections">
-          <span style="font-size: 20px">Siguiente sección</span>
+          <span class="clickable" @click="addSectionChange()">Siguiente sección</span>
           <b-icon icon="box-arrow-right" class="addGadgetButton" @click="addSectionChange()">Añadir</b-icon>
           <div/>
-          <span style="font-size: 20px">Repetir sección</span>
-          <b-icon icon="arrow-repeat" class="addGadgetButton" @click="addSectionRepeat()">Añadir</b-icon>
+          <span class="clickable" @click="addSectionRepeat()">Repetir sección</span>
           <div/>
-          <span style="font-size: 20px">Decisiones</span>
-          <b-icon icon="list-task" class="addGadgetButton" @click="addDecisionMaking()">Añadir</b-icon>
+          <span class="clickable" @click="addDecisionMaking()">Decisiones</span>
         </div>
+        <hr>
 
         <div class="games">
-          <span style="font-size: 20px">Adivinanzas</span>
-          <b-icon icon="question" class="addGadgetButton" @click="addRiddle()">Añadir</b-icon>
+          <span class="clickable" @click="addRiddle()">Adivinanzas</span>
           <div/>
-          <span style="font-size: 20px">Secuencia</span>
-          <b-icon icon="three-dots" class="addGadgetButton" @click="addSequence()">Añadir</b-icon>
-          <span style="font-size: 20px">Tarjetas de memoria</span>
-          <b-icon icon="grid-fill" class="addGadgetButton" @click="addMemoryCards()">Añadir</b-icon>
+          <span class="clickable" @click="addSequence()">Secuencia</span>
+          <div/>
+          <span class="clickable" @click="addMemoryCards()">Tarjetas de memoria</span>
         </div>
+        <hr>
 
         <div class="randoms">
-          <span style="font-size: 20px">Número<br>aleatorio</span>
-          <b-icon icon="hash" class="addGadgetButton" @click="addRandomNumber()">Añadir</b-icon>
-        </div>
-        <b-icon icon="cloud-upload" class="buttonNormalRightBorder" @mouseup="save()">Save</b-icon>
-      </div>
-      <!--Poniendo el contenteditable, keyup y click aquí, podemos controlar las flechas de una forma muy sencilla-->
-      <div class="document" @keyup="checkStyles" @keydown.tab.prevent>
-        <div class="editable" v-for="(text, index) in data" :key="index" @click="lastElementPressed(index), checkStyles()">
-          <Normal v-if="text.component=='Normal'"
-            :htmlTextAux="text.htmlText"
-            :index="index"
-            :boldUse="boldUse"
-            :italicUse="italicUse"
-            :underlineUse="underlineUse"
-            :strikeThroughUse="strikeThroughUse"
-            :lastPress="lastPress"
-            @html="saveHTML"
-            @delete="checkDelete"/>
-          <Header1 v-if="text.component=='Header1'"
-            :htmlTextAux="text.htmlText"
-            :plainTextAux="text.plainText"
-            :index="index"
-            @html="savePlaneAndHTML"/>
-          <Header2 v-if="text.component=='Header2'"
-            :htmlTextAux="text.htmlText"
-            :plainTextAux="text.plainText"
-            :index="index"
-            @html="savePlaneAndHTML"/>
-          <Header3 v-if="text.component=='Header3'"
-            :htmlTextAux="text.htmlText"
-            :plainTextAux="text.plainText"
-            :index="index"
-            @html="savePlaneAndHTML"/>
-
-          <ExpandableText v-if="text.component=='ExpandableText'"
-            :index="index"
-            :mainTextAux="text.mainText"
-            :expandedTextAux="text.expandedText"
-            :lastPressed="lastPress"
-            @html="saveExpandableText"/>
-          <PopupText v-if="text.component=='PopupText'"
-            :index="index"
-            :mainTextAux="text.mainText"
-            :popupTextAux="text.popupText"
-            :lastPressed="lastPress"
-            @html="savePopupText"/>
-          <Hyperlink v-if="text.component=='Hyperlink'"
-            :index="index"
-            :mainTextAux="text.mainText"
-            :hyperlinkTextAux="text.hyperlinkText"
-            :lastPressed="lastPress"
-            @html="saveHyperlink"/>
-
-          <PictureGadget v-if="text.component==='Picture'"
-            :bookID="bookID"
-            :htmlTextAux="text.htmlText"
-            :index="index"
-            :openModal="openModalPicture"
-            :lastPressed="lastPress"
-            @cancel-picture="cancelMultimedia"
-            @html="saveHTMLMultimedia"/>
-          <VideoGadget v-if="text.component==='Video'"
-            :index="index"
-            :htmlTextAux="text.htmlText"
-            :bookID="bookID"
-            :openModal="openModalVideo"
-            :lastPressed="lastPress"
-            @cancel-video="cancelMultimedia"
-            @html="saveHTMLMultimedia"/>
-
-          <ChangeSection v-if="text.component=='ChangeSection'"
-            :actualSection="sectionID"
-            :auxSectionsData="sectionsData"
-            :selectedSection="text.next"
-            :textAux="text.plainText"
-            :index="index"
-            @section="saveHTMLAndSection"
-            @save="save"/>
-          <RepeatSection v-if="text.component=='RepeatSection'"
-            :actualSection="sectionID"
-            :sectionName="sectionName"
-            :textAux="text.plainText"
-            :index="index"
-            @html="savePlaneAndHTML"/>
-          <DecisionMaking v-if="text.component=='DecisionMaking'"
-            :actualSection="sectionID"
-            :auxSectionsData="sectionsData"
-            :auxDecisions="text.choices"
-            :auxNumberOfOptions="text.numberOfOptions"
-            :index="index"
-            @section="saveChoices"/>
-
-          <Riddle v-if="text.component=='Riddle'"
-            :actualSection="sectionID"
-            :auxSectionsData="sectionsData"
-            :wrongSectionAux="text.wrongSection"
-            :rightSectionAux="text.rightSection"
-            :riddleTextAux="text.riddleText"
-            :answerTextAux="text.answerText"
-            :numberOfTriesAux="text.numberOfTries"
-            :changeSectionWhenWrongAux="text.changeSectionWhenWrong"
-            :index="index"
-            @section="saveHTMLRiddle"/>
-          <Sequence v-if="text.component=='Sequence'"
-            :actualSection="sectionID"
-            :auxSectionsData="sectionsData"
-            :auxSequence="text.sequence"
-            :auxSolution="text.solution"
-            :auxChangeSectionWhenWrong="text.changeSectionWhenWrong"
-            :auxWrongSection="text.wrongSection"
-            :auxRightSection="text.rightSection"
-            :auxNumberOfTries="text.numberOfTries"
-            :index="index"
-            @section="saveSequence"/>
-          <RandomNumber v-if="text.component=='RandomNumber'"
-            :actualSection="sectionID"
-            :auxSectionsData="sectionsData"
-            :auxConditions="text.conditions"
-            :auxNumberOfConditions="text.numberOfConditions"
-            :auxLowerLimit="text.lowerLimit"
-            :auxUpperLimit="text.upperLimit"
-            :index="index"
-            @random="saveRandomNumbers"/>
-          <MemoryCards v-if="text.component === 'MemoryCards'"
-            :actualSection="sectionID"
-            :sectionsDataAux="sectionsData"
-            :numberOfPairsAux="text.numberOfPairs"
-            :maxNumberOfMovesAux="text.maxNumberOfMoves"
-            :sectionNoMoreMovesAux="text.sectionNoMoreMoves"
-            :sectionSolvedAux="text.sectionSolved"
-            :changeSectionWhenWrongAux="text.changeSectionWhenWrong"
-            :index="index"
-            @save="saveMemoryCards"/>
+          <span class="clickable" @click="addRandomNumber()">Número<br>aleatorio</span>
         </div>
       </div>
     </div>
@@ -753,6 +756,16 @@ export default {
 </script>
 
 <style scoped>
+.row {
+  margin-right: 0px!important;
+  margin-left: 0px!important;
+}
+.clickable {
+  cursor: pointer;
+}
+.clickable:hover {
+  text-decoration: underline;
+}
 /* Botones de la aplicación y no del editor de texto */
 .buttons {
   text-align: justify;
@@ -776,31 +789,7 @@ export default {
   margin-left: 20px;
   display: inline-block;
 }
-/* Características principales de la vista */
-.editBook {
-  text-align: justify;
-  margin-left: 30px;
-  padding-bottom: 30px;
-  background-color: rgb(226, 250, 227);
-}
 /* Barra lateral izquierda */
-.sidebar {
-  margin: 0;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  padding-left: 10px;
-  padding-right: 10px;
-  width: 250px;
-  height: 61%;
-  background-color: rgb(227, 229, 241);
-  border: 1px solid rgb(129, 129, 129);
-  position: fixed;
-}
-.sidebarHeight {
-  height: 90%;
-  padding-top: 5px;
-  overflow-y: auto;
-}
 .sidebarBlock {
   border: 1px solid rgb(129, 129, 129);
   margin-bottom: 5px;
@@ -816,9 +805,6 @@ export default {
   border-top: 1px solid gray;
   text-align: justify;
   margin-bottom: 0px;
-}
-.marginLeft {
-  margin-left: 5px;
 }
 .marginLeftButton {
   margin-left: 5px;
@@ -841,70 +827,6 @@ export default {
   margin-bottom: 15px;
 }
 /* Cinta de opciones del editor */
-.normalPanel {
-  display: inline-block;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-right: 1px solid darkgray;
-  border-left: 1px solid darkgray;
-}
-.normalPanelOptions {
-  margin-top: 5px;
-  justify-content: center;
-  display: flex;
-}
-.headerPanel {
-  display: inline-block;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-right: 1px solid darkgray;
-}
-.headerPanelOptions {
-  margin-top: 5px;
-  justify-content: center;
-  display: flex;
-}
-.multimediaPanel {
-  display: inline-block;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-right: 1px solid darkgray;
-}
-.multimediaPanelOptions {
-  margin-top: 5px;
-  display: flex;
-}
-.sections {
-  display: inline-block;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-right: 1px solid darkgray;
-}
-.games {
-  display: inline-block;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-right: 1px solid darkgray;
-}
-.randoms {
-  display: inline-block;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-right: 1px solid darkgray;
-}
-.addGadgetButton {
-  background-color: rgb(227, 229, 241);
-  border: 1px solid rgb(189, 189, 189);
-  padding: 2px;
-  margin-left: 25px;
-}
-.addGadgetButton:hover {
-  background-color: rgb(213, 215, 228);
-}
-.options {
-  margin-left: 280px;
-  padding-top: 20px;
-}
 .buttonNormal {
   background-color: rgb(227, 229, 241);
   border-top: 1px solid rgb(189, 189, 189);
@@ -944,11 +866,49 @@ export default {
   width: 210mm;
   height: 297mm;
   padding: 20mm;
-  margin-left: 280px;
   margin-top: 10px;
   margin-bottom: 10px;
   border: 1px rgb(168, 168, 168) solid;
   background: white;
   overflow-y: auto;
+  text-align: left;
+}
+/* Right sidebar*/
+.bd-toc {
+    border-left: 1px solid rgba(0,0,0,.1);
+    position: sticky;
+    top: 4rem;
+    height: calc(100vh - 4rem);
+    overflow-y: auto;
+    order: 2;
+    padding-bottom: 15rem;
+    font-size: .875rem;
+}
+.d-xl-block {
+    display: block !important;
+}
+.col-xl-2 {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+* {
+    box-sizing: border-box;
+}
+/* left sidebar*/
+.bd-sidebar {
+    border-right: 1px solid rgba(0,0,0,.1);
+    position: sticky;
+    top: 4rem;
+    height: calc(100vh - 4rem);
+    overflow-y: auto;
+    order: 0;
+}
+.border-bottom-0 {
+    border-bottom: 0 !important;
+}
+.col-xl-2 {
+    flex: 0 0 16.666667%;
+    max-width: 16.666667%;
 }
 </style>
