@@ -58,6 +58,15 @@
           :sectionSolved="text.sectionSolved"
           :changeSectionWhenWrong="text.changeSectionWhenWrong"
           @answered="loadSection"/>
+        <SpoilerReading v-if="text.component === 'Spoiler'"
+          :htmlTextAux="text.htmlText"/>
+        <CompleteCluesReading v-if="text.component === 'CompleteClues'"
+          :clues="text.clues"
+          :answers="text.answers"
+          :changeSectionWhenWrong="text.changeSectionWhenWrong"
+          :onGuess="text.onGuess"
+          :onWrong="text.onWrong"
+          @answered="loadSection"/>
       </div>
     </div>
     <div v-else>
@@ -79,6 +88,8 @@ import ExpandableTextReading from '@/components/readingGadgets/ExpandableTextRea
 import PopupTextReading from '@/components/readingGadgets/PopupTextReading.vue'
 import SequenceReading from '@/components/readingGadgets/SequenceReading.vue'
 import MemoryCardsReading from '@/components/readingGadgets/MemoryCardsReading.vue'
+import SpoilerReading from '@/components/readingGadgets/SpoilerReading.vue'
+import CompleteCluesReading from '@/components/readingGadgets/CompleteCluesReading.vue'
 
 export default {
   name: 'readBook',
@@ -92,7 +103,9 @@ export default {
     ExpandableTextReading,
     PopupTextReading,
     SequenceReading,
-    MemoryCardsReading
+    MemoryCardsReading,
+    SpoilerReading,
+    CompleteCluesReading
   },
   props: {
     book: Object,

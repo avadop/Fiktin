@@ -90,6 +90,10 @@
           <span style="font-size: 20px;">Hipervínculo</span>
           <b-icon icon="link" class="addGadgetButton" @click="addHyperlink()">Añadir</b-icon>
         </div>
+        <div class="spoilerPanel">
+          <span style="font-size: 20px;">Spoiler</span>
+          <b-icon icon="Square-fill" class="addGadgetButton" @click="addSpoiler()">Añadir</b-icon>
+        </div>
 
         <div class="sections">
           <span style="font-size: 20px">Siguiente sección</span>
@@ -108,8 +112,12 @@
           <div/>
           <span style="font-size: 20px">Secuencia</span>
           <b-icon icon="three-dots" class="addGadgetButton" @click="addSequence()">Añadir</b-icon>
+          <div/>
           <span style="font-size: 20px">Tarjetas de memoria</span>
           <b-icon icon="grid-fill" class="addGadgetButton" @click="addMemoryCards()">Añadir</b-icon>
+          <div/>
+          <span style="font-size: 20px;">Pistas</span>
+          <b-icon icon="puzzle-fill" class="addGadgetButton" @click="addClues()">Añadir</b-icon>
         </div>
 
         <div class="randoms">
@@ -165,6 +173,11 @@
             :hyperlinkTextAux="text.hyperlinkText"
             :lastPressed="lastPress"
             @html="saveHyperlink"/>
+          <Spoiler v-if="text.component=='Spoiler'"
+            :htmlTextAux="text.htmlText"
+            :plainTextAux="text.plainText"
+            :index="index"
+            @html="savePlaneAndHTML"/>
 
           <PictureGadget v-if="text.component==='Picture'"
             :bookID="bookID"
@@ -246,6 +259,18 @@
             :changeSectionWhenWrongAux="text.changeSectionWhenWrong"
             :index="index"
             @save="saveMemoryCards"/>
+          <CompleteClues v-if="text.component === 'CompleteClues'"
+            :actualSection="sectionID"
+            :auxSectionsData="sectionsData"
+            :auxAnswersNumber="text.answersNumber"
+            :auxAnswers="text.answers"
+            :auxCluesNumber="text.cluesNumber"
+            :auxClues="text.clues"
+            :auxOnGuess="text.onGuess"
+            :auxChangeSectionWhenWrong="text.changeSectionWhenWrong"
+            :auxOnWrong="text.onWrong"
+            :index="index"
+            @clues="saveClues"/>
         </div>
       </div>
     </div>
@@ -264,6 +289,7 @@ import Header3 from '@/components/gadgets/Header3.vue'
 import ExpandableText from '@/components/gadgets/ExpandableText.vue'
 import PopupText from '@/components/gadgets/PopupText.vue'
 import Hyperlink from '@/components/gadgets/Hyperlink.vue'
+import Spoiler from '@/components/gadgets/Spoiler.vue'
 
 import PictureGadget from '@/components/gadgets/PictureGadget.vue'
 import VideoGadget from '@/components/gadgets/VideoGadget.vue'
@@ -275,6 +301,7 @@ import Riddle from '@/components/gadgets/Riddle.vue'
 import Sequence from '@/components/gadgets/Sequence.vue'
 import RandomNumber from '@/components/gadgets/RandomNumber.vue'
 import MemoryCards from '@/components/gadgets/MemoryCards.vue'
+import CompleteClues from '@/components/gadgets/CompleteClues.vue'
 
 export default {
   name: 'editBook',
@@ -289,6 +316,7 @@ export default {
     ExpandableText,
     PopupText,
     Hyperlink,
+    Spoiler,
 
     PictureGadget,
     VideoGadget,
@@ -299,7 +327,8 @@ export default {
     Riddle,
     Sequence,
     RandomNumber,
-    MemoryCards
+    MemoryCards,
+    CompleteClues
 
   },
   props: {
@@ -386,6 +415,7 @@ export default {
       else if (this.data[index].component === 'ExpandableText') this.data.splice(index + 1, 0, { mainText: this.data[index].mainText, expandedText: this.data[index].expandedText, component: 'ExpandableText', componentName: 'Texto expandible' })
       else if (this.data[index].component === 'PopupText') this.data.splice(index + 1, 0, { mainText: this.data[index].mainText, popupText: this.data[index].popupText, component: 'PopupText', componentName: 'Texto emergente' })
       else if (this.data[index].component === 'Hyperlink') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, mainText: this.data[index].mainText, hyperlinkText: this.data[index].hyperlinkText, component: 'Hyperlink', componentName: 'Hipervínculo' })
+      else if (this.data[index].component === 'Spoiler') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Spoiler', componentName: 'Spoiler' })
 
       else if (this.data[index].component === 'Picture') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, component: 'Picture', componentName: 'Multimedia' })
       else if (this.data[index].component === 'Video') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, component: 'Video', componentName: 'Multimedia' })
@@ -457,6 +487,9 @@ export default {
     addHyperlink () {
       this.data.splice(this.lastPress + 1, 0, { mainText: '', htmlText: '', hyperlinkText: '', component: 'Hyperlink', componentName: 'Hipervínculo' })
     },
+    addSpoiler () {
+      this.data.splice(this.lastPress + 1, 0, { plainText: '', htmlText: '<span></span>', component: 'Spoiler', componentName: 'Spoiler' })
+    },
     addFile () {
       this.data.splice(this.lastPress + 1, 0, { htmlText: '', component: 'Multimedia', componentName: 'Multimedia' })
     },
@@ -500,6 +533,9 @@ export default {
     },
     addMemoryCards () {
       this.data.splice(this.lastPress + 1, 0, { numberOfPairs: 2, maxNumberOfMoves: 6, sectionNoMoreMoves: '', sectionSolved: '', changeSectionWhenWrong: false, component: 'MemoryCards', componentName: 'Tarjetas de memoria' })
+    },
+    addClues () {
+      this.data.splice(this.lastPress + 1, 0, { answers: [{ answer: '' }], answersNumber: 1, clues: [{ clue: '' }], cluesNumber: 1, onGuess: this.sectionsData[0].value, changeSectionWhenWrong: false, onWrong: '', component: 'CompleteClues', componentName: 'Pistas' })
     },
     checkStyles () {
       // En caso de acceder sin ningún componente (medida de seguridad. La ejecución no debería entrar aquí)
@@ -741,6 +777,15 @@ export default {
       this.data[index].sectionSolved = sectionSolved
       this.data[index].changeSectionWhenWrong = changeSectionWhenWrong
     },
+    saveClues (answers, answersNumber, clues, cluesNumber, onGuess, changeSectionWhenWrong, onWrong, index) {
+      this.data[index].answers = answers
+      this.data[index].answersNumber = answersNumber
+      this.data[index].clues = clues
+      this.data[index].cluesNumber = cluesNumber
+      this.data[index].onGuess = onGuess
+      this.data[index].changeSectionWhenWrong = changeSectionWhenWrong
+      this.data[index].onWrong = onWrong
+    },
     goBack () {
       this.$router.replace({ name: 'readBook', params: { book: this.book } })
     },
@@ -887,6 +932,12 @@ export default {
   border-right: 1px solid darkgray;
 }
 .randoms {
+  display: inline-block;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-right: 1px solid darkgray;
+}
+.spoilerPanel {
   display: inline-block;
   padding-left: 5px;
   padding-right: 5px;
