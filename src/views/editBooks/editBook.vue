@@ -240,8 +240,8 @@
         <span class="clickable" @click="addPopupText()"><b-icon icon="files-alt"/> Texto emergente</span>
         <div/>
         <span class="clickable" @click="addHyperlink()"><b-icon icon="link"/> Hipervínculo</span>
-        <span style="font-size: 20px;">Spoiler</span>
-        <b-icon icon="Square-fill" class="addGadgetButton" @click="addSpoiler()">Añadir</b-icon>
+        <div/>
+        <span class="clickable" @click="addSpoiler()"><b-icon icon="Square-fill"/> Spoiler</span>
         <hr>
 
         <span class="clickable" @click="addSectionChange()"><b-icon icon="box-arrow-right"/> Siguiente sección</span>
@@ -260,8 +260,8 @@
         <hr>
 
         <span class="clickable" @click="addRandomNumber()"><b-icon icon="hash"/> Número aleatorio</span>
-        <span style="font-size: 20px;">Pistas</span>
-        <b-icon icon="puzzle-fill" class="addGadgetButton" @click="addClues()">Añadir</b-icon>
+        <div/>
+        <span class="clickable" @click="addClues()"><b-icon icon="puzzle-fill"/> Pistas</span>
         <hr>
       </div>
     </div>
