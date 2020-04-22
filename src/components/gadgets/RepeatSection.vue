@@ -11,7 +11,7 @@
     <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="preparePreview()">Preview</b-button>
 
     <b-modal v-model="showPreview" hide-footer hide-header centered >
-      <h5>Cambio de seccion</h5>
+      <h5>Repetir seccion</h5>
       <div class="d-flex justify-content-center">
         <span v-html="htmlTextPreview"/>
         <button style="margin-left: 10px;" v-if="htmlTextPreview.length != 13" @click="clicked = true">Repetir</button>

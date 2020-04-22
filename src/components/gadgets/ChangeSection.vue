@@ -22,7 +22,7 @@
         <button style="margin-left: 10px;" v-if="htmlTextPreview.length !== 13" @click="changePreview()">Cambiar</button>
         <button v-else @click="changePreview()">Cambiar</button>
       </div>
-      <p style="padding-left: 15px;">Cambio a seccion: {{ sectionNamePreview }} </p>
+      <p v-if="clicked === true" style="padding-left: 15px;">Cambio a seccion: {{ sectionNamePreview }} </p>
       <div class="d-flex justify-content-center">
         <b-button id="button-modal-ok" class="mt-1" variant="secondary" block @click="showPreview = false">Ok</b-button>
       </div>
@@ -50,7 +50,8 @@ export default {
 
       sectionNamePreview: '',
       htmlTextPreview: '',
-      showPreview: false
+      showPreview: false,
+      clicked: false
     }
   },
   watch: {
@@ -128,6 +129,7 @@ export default {
       this.htmlTextPreview = ('<span>' + this.text + '</span>')
       this.sectionNamePreview = ''
       this.showPreview = true
+      this.clicked = false
     },
     changePreview () {
       sectionsCollection.doc(this.selectedSectionID).get().then(doc => {
@@ -137,6 +139,7 @@ export default {
           this.sectionNamePreview = 'No has seleccionado ninguna seccion'
         }
       })
+      this.clicked = true
     }
   }
 }
