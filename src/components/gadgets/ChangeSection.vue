@@ -13,10 +13,25 @@
       <b-col cols="5"><span>Sección a la que quieres saltar: </span></b-col>
       <b-col><b-form-select size="sm" @change="save()" v-model="selectedSectionID" :options="aux"></b-form-select></b-col>
     </b-row>
+    <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="preparePreview()">Preview</b-button>
+
+    <b-modal v-model="showPreview" hide-footer hide-header centered >
+      <h5>Cambio de seccion</h5>
+      <div class="d-flex justify-content-center">
+        <span v-html="htmlTextPreview"/>
+        <button style="margin-left: 10px;" v-if="htmlTextPreview.length !== 13" @click="changePreview()">Cambiar</button>
+        <button v-else @click="changePreview()">Cambiar</button>
+      </div>
+      <p v-if="clicked === true" style="padding-left: 15px;">Cambio a seccion: {{ sectionNamePreview }} </p>
+      <div class="d-flex justify-content-center">
+        <b-button id="button-modal-ok" class="mt-1" variant="secondary" block @click="showPreview = false">Ok</b-button>
+      </div>
+    </b-modal>
   </div>
 </template>
 
 <script>
+import { sectionsCollection } from '@/firebase.js'
 export default {
   name: 'changeSection',
   props: {
@@ -31,7 +46,12 @@ export default {
       aux: [],
       text: this.textAux,
       selectedSectionID: this.selectedSection,
-      valid: true
+      valid: true,
+
+      sectionNamePreview: '',
+      htmlTextPreview: '',
+      showPreview: false,
+      clicked: false
     }
   },
   watch: {
@@ -104,6 +124,22 @@ export default {
     },
     formatMaxText (value) {
       return String(value).substring(0, 2000)
+    },
+    preparePreview () {
+      this.htmlTextPreview = ('<span>' + this.text + '</span>')
+      this.sectionNamePreview = ''
+      this.showPreview = true
+      this.clicked = false
+    },
+    changePreview () {
+      sectionsCollection.doc(this.selectedSectionID).get().then(doc => {
+        if (doc.exists) {
+          this.sectionNamePreview = doc.data().name
+        } else {
+          this.sectionNamePreview = 'No has seleccionado ninguna seccion'
+        }
+      })
+      this.clicked = true
     }
   }
 }
@@ -112,6 +148,7 @@ export default {
 <style scoped>
 .border {
   padding: 10px;
+  padding-bottom: 54px;
 }
 .title {
   font-weight: bold;
