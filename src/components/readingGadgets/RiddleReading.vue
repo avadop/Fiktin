@@ -42,11 +42,11 @@ export default {
         this.numberOfTries--
         if (this.tryText === this.answerText) {
           this.correctPreview = true
-          this.$emit('answered', this.rightSection)
+          setTimeout(() => { this.$emit('answered', this.rightSection) }, 700)
         } else {
           this.correctPreview = false
           if (this.numberOfTries === 0 && this.wrongSection !== '') {
-            this.$emit('answered', this.wrongSection)
+            setTimeout(() => { this.$emit('answered', this.wrongSection) }, 700)
             this.correctPreview = null
           } else if (this.numberOfTries === 0 && this.wrongSection === '') this.text = '¡Sigue leyendo!'
         }

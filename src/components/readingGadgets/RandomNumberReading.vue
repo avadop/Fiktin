@@ -26,19 +26,21 @@ export default {
       this.pressed = true
     },
     processConditions () {
-      for (var i = 0; i < this.conditions.length; ++i) {
-        if (this.conditions[i].condition === '>') {
-          if (this.number > this.conditions[i].number) this.$emit('change', this.conditions[i].section)
-        } else if (this.conditions[i].condition === '>=') {
-          if (this.number >= this.conditions[i].number) this.$emit('change', this.conditions[i].section)
-        } else if (this.conditions[i].condition === '<') {
-          if (this.number < this.conditions[i].number) this.$emit('change', this.conditions[i].section)
-        } else if (this.conditions[i].condition === '<=') {
-          if (this.number <= this.conditions[i].number) this.$emit('change', this.conditions[i].section)
-        } else if (this.conditions[i].condition === '==') {
-          if (this.number === this.conditions[i].number) this.$emit('change', this.conditions[i].section)
+      setTimeout(() => {
+        for (var i = 0; i < this.conditions.length; ++i) {
+          if (this.conditions[i].condition === '>') {
+            if (this.number > this.conditions[i].number) this.$emit('change', this.conditions[i].section)
+          } else if (this.conditions[i].condition === '>=') {
+            if (this.number >= this.conditions[i].number) this.$emit('change', this.conditions[i].section)
+          } else if (this.conditions[i].condition === '<') {
+            if (this.number < this.conditions[i].number) this.$emit('change', this.conditions[i].section)
+          } else if (this.conditions[i].condition === '<=') {
+            if (this.number <= this.conditions[i].number) this.$emit('change', this.conditions[i].section)
+          } else if (this.conditions[i].condition === '==') {
+            if (this.number === this.conditions[i].number) this.$emit('change', this.conditions[i].section)
+          }
         }
-      }
+      }, 700)
     }
   }
 }

@@ -4,6 +4,7 @@
     <div class="buttons">
       <button class="buttonBack" @click="goBack()">Salir sin guardar</button>
       <button class="buttonBackAndSave" @click="goBackAndSave()">Guardar y salir</button>
+      <button class="buttonBackAndSave" @click="save()">Guardar</button>
       <h3 class="title">{{ book.title }}</h3>
       <br>
       <b-row>

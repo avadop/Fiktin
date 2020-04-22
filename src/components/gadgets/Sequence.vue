@@ -50,6 +50,36 @@
         <b-col><b-form-select size="sm" @change="save()" v-model="wrongSection" :options="aux"></b-form-select></b-col>
       </b-row>
     </div>
+    <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="preparePreview()">Preview</b-button>
+
+    <b-modal v-model="showPreview" hide-footer hide-header centered >
+      <div style="margin: 10px;">
+        <h5>Completa la secuencia: </h5>
+        <div class="d-block text-center">
+          <div class="d-flex">
+            <div class="d-flex">
+              <div v-for="(seq, sequenceIndex) in sequence" :key="sequenceIndex">
+                <div  style="margin-top:8px;">
+                  <span style="margin-right:10px; margin-left: 10px; font-size: 22px;">{{ seq.text }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex">
+              <div v-for="(text, answerIndex) in solution" :key="answerIndex">
+                <b-form-input style="margin-top:5px; margin-right:5px; margin-left: 5px; width: 115px;" v-model="answersPreview[answerIndex]" trim  :formatter="limit" placeholder="Respuesta"></b-form-input>
+              </div>
+              <b-button style="width: 100px;" :disabled="numberOfTriesPreview === 0 || answersPreview.length !== solution.length" variant="primary" block @click="tryPreview()">Probar</b-button>
+            </div>
+          </div>
+          <span v-if="correctPreview === false" style="color: red"> ¡Has fallado! </span>
+          <span v-else-if="correctPreview === true" style="color: green"> ¡Has acertado! </span>
+          <span> Te quedan {{ numberOfTriesPreview }} intentos</span><br/>
+        </div>
+      </div>
+      <div class="d-flex justify-content-center">
+        <b-button id="button-modal-ok" class="mt-1" variant="secondary" block @click="showPreview = false, correctPreview = null">Ok</b-button>
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -78,7 +108,12 @@ export default {
       wrongSection: '',
       rightSection: '',
       numberOfTries: 1,
-      valid: false
+      valid: false,
+
+      answersPreview: [],
+      numberOfTriesPreview: 0,
+      correctPreview: null,
+      showPreview: false
     }
   },
   watch: {
@@ -222,6 +257,26 @@ export default {
     save () {
       this.numberOfTries = parseInt(this.numberOfTries, 10)
       this.$emit('section', this.sequence, this.solution, this.changeSectionWhenWrong, this.wrongSection, this.rightSection, this.numberOfTries, this.index)
+    },
+    preparePreview () {
+      this.answersPreview = []
+      this.numberOfTriesPreview = this.numberOfTries
+      this.correctPreview = null
+      this.showPreview = true
+    },
+    tryPreview () {
+      if (this.numberOfTriesPreview > 0) {
+        this.numberOfTriesPreview--
+        var correct = true
+        for (var i = 0; i < this.solution.length; ++i) {
+          if (this.answersPreview[i] !== this.solution[i].text) correct = false
+        }
+        if (correct === true) this.correctPreview = true
+        else {
+          this.correctPreview = false
+          this.answersPreview = []
+        }
+      }
     }
   }
 }
@@ -230,6 +285,7 @@ export default {
 <style scoped>
 .border {
   padding: 10px;
+  padding-bottom: 54px;
 }
 .title {
   font-weight: bold;
