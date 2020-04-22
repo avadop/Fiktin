@@ -32,6 +32,18 @@
         <b-col><b-form-select size="sm" @change="save()" v-model="element.section" :options="aux"></b-form-select></b-col>
       </b-row>
     </div>
+    <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="preparePreview()">Preview</b-button>
+
+    <b-modal v-model="showPreview" hide-footer hide-header centered >
+      <div style="margin-bottom: 15px;">
+        <h5>Numero aleatorio</h5>
+        <button v-if="!pressedPreview" @click="generateRandomPreview()" >Generar</button>
+        <span v-else>El número generado es {{ this.numberPreview }}</span>
+      </div>
+      <div class="d-flex justify-content-center">
+        <b-button id="button-modal-ok" class="mt-1" variant="secondary" block @click="showPreview = false">Ok</b-button>
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -61,7 +73,11 @@ export default {
       numberOfConditions: 0,
       lowerLimit: 0,
       upperLimit: 0,
-      valid: true
+      valid: true,
+
+      numberPreview: 0,
+      pressedPreview: false,
+      showPreview: false
     }
   },
   watch: {
@@ -196,6 +212,16 @@ export default {
       this.upperLimit = parseInt(this.upperLimit, 10)
       this.numberOfConditions = parseInt(this.numberOfConditions, 10)
       this.$emit('random', this.conditions, this.numberOfConditions, this.lowerLimit, this.upperLimit, this.index)
+    },
+    preparePreview () {
+      this.numberPreview = 0
+      this.pressedPreview = false
+      this.showPreview = true
+    },
+    generateRandomPreview () {
+      this.numberPreview = Math.floor(Math.random() * (parseInt(this.upperLimit, 10) - parseInt(this.lowerLimit, 10) + 1) + parseInt(this.lowerLimit, 10))
+      this.numberPreview = parseInt(this.number, 10) // Hacemos un parseInt por si acaso
+      this.pressedPreview = true
     }
   }
 }
@@ -204,6 +230,7 @@ export default {
 <style scoped>
 .border {
   padding: 10px;
+  padding-bottom: 54px;
 }
 .title {
   font-weight: bold;
