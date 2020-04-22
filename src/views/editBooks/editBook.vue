@@ -11,7 +11,7 @@
           <b-form-select v-model="nextSectionID" :options="sectionsData" @change="save(), refresh(nextSectionID)"></b-form-select>
         </div>
         <div class="col">
-          <b-button variant="outline-secondary" size="sm" @click="openManagementSectionModal()"><b-icon icon="gear"/></b-button>
+          <b-button variant="light" size="sm" @click="openManagementSectionModal()"><b-icon icon="gear"/></b-button>
         </div>
         <SectionManagementModal v-if="showManagementSectionModal" :name="sectionName" :id="sectionID" :book_title="book.title" :book_author_ID="book.userID" :sectionsList="book.sections" @update="updateBookSections" @load="refresh" @saveActual="save" @cancel="openManagementSectionModal"/>
         <b-button variant="outline-dark" v-b-tooltip.hover title="Descargar"><b-icon icon="cloud-download" @mouseup="save()"></b-icon></b-button>
@@ -20,6 +20,7 @@
       </div>
     </div>
     <div class="row flex-xl-nowrap2">
+      <!-- barra lateral de gadgets añadidos -->
       <div class="bd-sidebar border-bottom-0 col-md-3 col-xl-2 col-12">
         <h4>Gadgets</h4>
         <hr>
@@ -48,6 +49,7 @@
           <hr>
         </div>
       </div>
+      <!-- hoja de edición -->
       <div class="bd-content col-md-9 col-xl-8 col-12 pl-md-5">
         <!--Poniendo el contenteditable, keyup y click aquí, podemos controlar las flechas de una forma muy sencilla-->
         <div class="document" @keyup="checkStyles" @keydown.tab.prevent>
@@ -180,10 +182,23 @@
           </div>
         </div>
       </div>
+      <!-- barra lateral para añadir gadgets -->
       <div class="bd-toc col-xl-2 d-none d-xl-block">
         <h4>Añadir gadgets</h4>
         <hr>
-        <span class="clickable" @click="addNormal()"><b-icon icon="fonts"/> Texto normal </span>
+
+        <span class="clickable" @click="addTitle()"><b-icon icon="fonts"/> Título </span>
+        <h5>
+          <b-icon icon="type-h1" class="buttonNormal" v-if="header1Active!=1" @mousedown="onLiveEditComponent($event, 'Header1')">Añadir título 1</b-icon>
+          <b-icon icon="type-h1" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Header1')">Añadir título 1</b-icon>
+          <b-icon icon="type-h2" class="buttonNormal" v-if="header2Active!=1" @mousedown="onLiveEditComponent($event, 'Header2')">Añadir título 2</b-icon>
+          <b-icon icon="type-h2" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Header2')">Añadir título 2</b-icon>
+          <b-icon icon="type-h3" class="buttonNormalRightBorder" v-if="header3Active!=1" @mousedown="onLiveEditComponent($event, 'Header3')">Añadir título 3</b-icon>
+          <b-icon icon="type-h3" class="buttonPressedRightBorder" v-else @mousedown="onLiveEditComponent($event, 'Header3')">Añadir título 3</b-icon>
+        </h5>
+        <hr>
+
+        <span class="clickable" @click="addNormal()"><b-icon icon="justify-left"/> Texto normal </span>
         <h5>
           <b-icon icon="type-bold" class="buttonNormal" v-if="boldActive!=1" @mousedown="onLiveEditComponent($event, 'Bold')">Bold</b-icon>
           <b-icon icon="type-bold" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Bold')">Bold</b-icon>
@@ -196,27 +211,16 @@
         </h5>
         <hr>
 
-        <span class="clickable" @click="addTitle()"><b-icon icon="plus"/> Título </span>
-        <h5>
-          <b-icon icon="type-h1" class="buttonNormal" v-if="header1Active!=1" @mousedown="onLiveEditComponent($event, 'Header1')">Añadir título 1</b-icon>
-          <b-icon icon="type-h1" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Header1')">Añadir título 1</b-icon>
-          <b-icon icon="type-h2" class="buttonNormal" v-if="header2Active!=1" @mousedown="onLiveEditComponent($event, 'Header2')">Añadir título 2</b-icon>
-          <b-icon icon="type-h2" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Header2')">Añadir título 2</b-icon>
-          <b-icon icon="type-h3" class="buttonNormalRightBorder" v-if="header3Active!=1" @mousedown="onLiveEditComponent($event, 'Header3')">Añadir título 3</b-icon>
-          <b-icon icon="type-h3" class="buttonPressedRightBorder" v-else @mousedown="onLiveEditComponent($event, 'Header3')">Añadir título 3</b-icon>
-        </h5>
-        <hr>
-
-        <span class="clickable" @click="addFile()"><b-icon icon="plus"/> Multimedia </span>
+        <span class="clickable" @click="addFile()"><b-icon icon="collection-play"/> Multimedia </span>
         <h5>
           <b-icon icon="image-fill" class="buttonNormal" @click="changeFileType('picture')">Añadir</b-icon>
           <b-icon icon="camera-video-fill" class="buttonNormal" @click="changeFileType('video')">Añadir</b-icon>
         </h5>
         <hr>
 
-        <span class="clickable" @click="addExandableText()"><b-icon icon="plus"/> Texto expandible</span>
+        <span class="clickable" @click="addExandableText()"><b-icon icon="layers-half"/> Texto expandible</span>
         <div/>
-        <span class="clickable" @click="addPopupText()"><b-icon icon="plus"/> Texto emergente</span>
+        <span class="clickable" @click="addPopupText()"><b-icon icon="files-alt"/> Texto emergente</span>
         <div/>
         <span class="clickable" @click="addHyperlink()"><b-icon icon="link"/> Hipervínculo</span>
         <hr>
@@ -757,7 +761,7 @@ export default {
 .buttons {
   text-align: justify;
   margin-top: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 0px;
   margin-left: 30px;
 }
 /* Barra lateral izquierda */
@@ -856,6 +860,7 @@ export default {
   height: calc(100vh - 4rem);
   overflow-y: auto;
   order: 2;
+  padding-top: 1.5rem;
   padding-bottom: 1.5rem;
   font-size: .875rem;
   text-align: left;
@@ -879,6 +884,7 @@ export default {
   height: calc(100vh - 4rem);
   overflow-y: auto;
   order: 0;
+  padding-top: 1.5rem;
   padding-bottom: 1.5rem;
 }
 .border-bottom-0 {

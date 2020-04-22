@@ -9,12 +9,12 @@
             {{ book.title }}
             <b-button v-if="isBookOfLoggedUser()" variant="light" @click="goEdit()"  :disabled="book.published===true"><b-icon icon="pencil"/></b-button>
           </h3>
-          <span style="color: red; padding-left: 10px;" v-if="isBookOfLoggedUser() && book.published===true">No se puede editar un libro si este se encuentra publicado</span>
         </div>
         <div class="col">
           <b-form-select v-model="currentSectionID" :options="sectionsData" style="max-width: 500px;" @change="loadSection(currentSectionID)"></b-form-select>
         </div>
       </div>
+      <span style="color: red; padding-left: 10px;" v-if="isBookOfLoggedUser() && book.published===true">No se puede editar un libro si este se encuentra publicado</span>
     </div>
     <div class="readBook" v-if="sectionExists">
       <div v-for="(text, index) in sectionGadgets" :key="index">
