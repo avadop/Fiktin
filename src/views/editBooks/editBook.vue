@@ -231,7 +231,7 @@
         <span class="clickable" @click="addFile()"><b-icon icon="collection-play"/> Multimedia </span>
         <h5>
           <b-icon icon="image-fill" class="buttonNormal" @click="changeFileType('picture')">Añadir</b-icon>
-          <b-icon icon="camera-video-fill" class="buttonNormal" @click="changeFileType('video')">Añadir</b-icon>
+          <b-icon icon="camera-video-fill" class="buttonNormalRightBorder" @click="changeFileType('video')">Añadir</b-icon>
         </h5>
         <hr>
 
