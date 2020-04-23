@@ -14,7 +14,7 @@
           <b-button variant="light" size="sm" @click="openManagementSectionModal()"><b-icon icon="gear"/></b-button>
         </div>
         <SectionManagementModal v-if="showManagementSectionModal" :name="sectionName" :id="sectionID" :book_title="book.title" :book_author_ID="book.userID" :sectionsList="book.sections" @update="updateBookSections" @load="refresh" @saveActual="save" @cancel="openManagementSectionModal"/>
-        <b-button variant="outline-dark" v-b-tooltip.hover title="Descargar"><b-icon icon="cloud-download" @mouseup="save()"></b-icon></b-button>
+        <b-button variant="outline-dark" v-b-tooltip.hover title="Descargar" hidden><b-icon icon="cloud-download" @mouseup="save()"></b-icon></b-button>
         <b-button variant="outline-dark" v-b-tooltip.hover title="Guardar" @click="save()"><b-icon icon="cloud-upload"></b-icon></b-button>
         <b-button variant="dark" @click="goBackAndSave()">Guardar y salir</b-button>
       </div>
