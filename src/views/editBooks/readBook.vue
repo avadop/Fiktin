@@ -5,7 +5,7 @@
       <div class="row d-flex justify-content-between">
         <b-button variant="light" @click="goBack()"><b-icon icon="chevron-left"></b-icon></b-button>
         <div class="col" style="max-width: 300px;">
-          <h3>
+          <h3 style="padding-top: 15px;">
             {{ book.title }}
             <b-button v-if="isBookOfLoggedUser()" variant="light" @click="goEdit()"  :disabled="book.published===true"><b-icon icon="pencil"/></b-button>
           </h3>
