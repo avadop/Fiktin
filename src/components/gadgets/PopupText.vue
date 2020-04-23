@@ -23,7 +23,7 @@
         </b-form-invalid-feedback>
       </b-container>
       <b-container fluid class="col">
-        <label>Texto expandible</label>
+        <label>Texto emergente</label>
         <b-form-textarea
           v-model="popupText"
           :state="popupText.length <= 1000 && popupText.length > 0"

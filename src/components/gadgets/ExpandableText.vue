@@ -45,7 +45,7 @@
       </div>
       <div v-show="preview">
         <hr>
-        <p @click="show = !show" style="cursor: pointer;">{{ mainText }}</p>
+        <p @click="show = !show" style="cursor: pointer;">{{ mainText }} <b-icon v-if="!show" icon="caret-down-fill"/><b-icon v-else icon="caret-up-fill"/></p>
         <p class="container" v-show="show">{{expandedText}}</p>
       </div>
     </b-card>
