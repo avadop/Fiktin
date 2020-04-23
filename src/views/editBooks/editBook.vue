@@ -5,7 +5,7 @@
       <div class="row d-flex justify-content-end">
         <b-button v-b-tooltip.hover title="Salir sin guardar" variant="light" @click="goBack()"><b-icon icon="chevron-left"></b-icon></b-button>
         <div class="col">
-          <h3 class="mr-auto">{{ book.title }}</h3>
+          <h3 class="mr-auto" style="padding-top: 15px;">{{ book.title }}</h3>
         </div>
         <div class="col">
           <b-form-select v-model="nextSectionID" :options="sectionsData" @change="save(), refresh(nextSectionID)"></b-form-select>
@@ -886,9 +886,10 @@ export default {
 }
 /* Documento de texto */
 .document {
+  margin:auto;
   width: 210mm;
   height: 297mm;
-  padding: 20mm;
+  top: 20mm;
   border: 1px rgb(168, 168, 168) solid;
   background: white;
   overflow-y: auto;
