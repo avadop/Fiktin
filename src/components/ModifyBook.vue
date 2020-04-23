@@ -86,7 +86,8 @@
 
       <!-- botones -->
       <div class="d-flex justify-content-end">
-        <b-button variant="danger" class="mr-auto" @click="deleteButton">Eliminar</b-button>
+        <b-button v-if="!confirmDelete" variant="outline-danger" class="mr-auto" @click="confirmDelete=true">Eliminar</b-button>
+        <b-button v-else variant="danger" class="mr-auto" @click="deleteButton">Eliminar</b-button>
         <!-- publicado -->
         <div class="custom-control custom-checkbox my-4">
           <input type="checkbox" class="custom-control-input" id="published_modify_id" v-model="published">
@@ -133,7 +134,8 @@ export default {
 
       repitedTitle: [],
       repited: false,
-      modalModify: false
+      modalModify: false,
+      confirmDelete: false
     }
   },
   watch: {

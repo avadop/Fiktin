@@ -46,7 +46,8 @@
                   <b-dropdown-item id="modifyButton" @click.stop="modifyBook(book)" v-show="modifyID !== book.ID">Modificar</b-dropdown-item>
                   <b-dropdown-item @click.stop="addToLibraryButton(idx)">Añadir a bibliotecas</b-dropdown-item>
                   <b-dropdown-divider></b-dropdown-divider>
-                  <b-dropdown-item variant="danger" v-if="modifyID !== book.ID" @click.stop="deleteBook(book.ID, idx)"><b-icon icon="trash-fill"></b-icon> Eliminar</b-dropdown-item>
+                  <b-dropdown-item v-if="modifyID !== book.ID && !book.confirmDelete" variant="danger" @click="book.confirmDelete=true"><b-icon icon="trash-fill"></b-icon> Eliminar</b-dropdown-item>
+                  <b-dropdown-item v-else-if="book.confirmDelete" variant="light" style="background-color: #dc3545 !important" @click.stop="deleteBook(book.ID, idx)"><b-icon icon="trash-fill"></b-icon> Eliminar</b-dropdown-item>
                 </b-dropdown>
               </div>
               <AddToLibraryModal v-if="showModal===idx" :bookId="primaryKeys[idx]" @add="addToLibrary" @cancel="addToLibraryButton"/>
@@ -114,7 +115,8 @@ export default {
               published: doc.data().published,
               userID: doc.data().user_id,
               sections: doc.data().sections,
-              ID: doc.id
+              ID: doc.id,
+              confirmDelete: false
             })
           }
         })
