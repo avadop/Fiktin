@@ -7,10 +7,10 @@
         <div class="col" style="max-width: 300px;">
           <h3 style="padding-top: 15px;">
             {{ book.title }}
-            <b-button v-if="isBookOfLoggedUser()" variant="light" @click="goEdit()"  :disabled="book.published===true"><b-icon icon="pencil"/></b-button>
+            <b-button v-if="isBookOfLoggedUser()" variant="light" @click="goEdit()" :disabled="book.published===true"><b-icon icon="pencil"/></b-button>
           </h3>
         </div>
-        <div class="col">
+        <div class="col" style="padding-top: 20px;">
           <b-form-select v-model="currentSectionID" :options="sectionsData" style="max-width: 500px;" @change="loadSection(currentSectionID)"></b-form-select>
         </div>
       </div>

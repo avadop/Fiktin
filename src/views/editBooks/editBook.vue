@@ -7,10 +7,10 @@
         <div class="col">
           <h3 class="mr-auto" style="padding-top: 15px;">{{ book.title }}</h3>
         </div>
-        <div class="col">
+        <div class="col" style="padding-top: 15px;">
           <b-form-select v-model="nextSectionID" :options="sectionsData" @change="save(), refresh(nextSectionID)"></b-form-select>
         </div>
-        <div class="col">
+        <div class="col" style="padding-top: 15px;">
           <b-button variant="light" size="sm" @click="openManagementSectionModal()"><b-icon icon="gear"/></b-button>
         </div>
         <SectionManagementModal v-if="showManagementSectionModal" :name="sectionName" :id="sectionID" :book_title="book.title" :book_author_ID="book.userID" :sectionsList="book.sections" @update="updateBookSections" @load="refresh" @saveActual="save" @cancel="openManagementSectionModal"/>
@@ -802,9 +802,10 @@ export default {
 /* Botones de la aplicación y no del editor de texto */
 .buttons {
   text-align: justify;
-  margin-top: 10px;
+  margin-top: 0px;
   margin-bottom: 0px;
-  margin-left: 30px;
+  margin-left: 20px;
+  margin-right: 20px;
 }
 /* Barra lateral izquierda */
 .sidebarBlock {
@@ -887,9 +888,11 @@ export default {
 /* Documento de texto */
 .document {
   margin:auto;
+  /*margin-bottom: 20mm;*/
   width: 210mm;
-  height: 297mm;
-  top: 20mm;
+  /*height: 297mm;*/
+  padding: 20mm;
+  /*top: 20mm;*/
   border: 1px rgb(168, 168, 168) solid;
   background: white;
   overflow-y: auto;
