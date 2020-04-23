@@ -77,6 +77,7 @@ export default {
                 description: doc1.data().description,
                 cover: doc1.data().cover,
                 tags: doc1.data().tags,
+                published: doc1.data().published,
                 userID: doc1.data().user_id,
                 nick: doc2.data().nick,
                 name: doc2.data().name,

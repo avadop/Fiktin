@@ -2,26 +2,33 @@
   <div>
     <LoadingModal v-if="loading"/>
     <div class="buttons">
-      <button class="buttonBack" @click="goBack()">Salir sin guardar</button>
-      <button class="buttonBackAndSave" @click="goBackAndSave()">Guardar y salir</button>
-      <button class="buttonBackAndSave" @click="save()">Guardar</button>
-      <h3 class="title">{{ book.title }}</h3>
-      <br>
-      <b-row>
-        <b-col cols="3"><h5>Sección: {{ sectionName }}</h5></b-col>
-        <b-col cols="1"><b-button variant="outline-secondary" size="sm" @click="openManagementSectionModal()"><b-icon icon="gear"/></b-button>
-        <SectionManagementModal v-if="showManagementSectionModal" :name="sectionName" :id="sectionID" :book_title="book.title" :book_author_ID="book.userID" :sectionsList="book.sections" @update="updateBookSections" @load="refresh" @saveActual="save" @cancel="openManagementSectionModal"/></b-col>
-        <b-col cols="3"><b-form-select size="sm" v-model="nextSectionID" :options="sectionsData" @change="save(), refresh(nextSectionID)"></b-form-select></b-col>
-      </b-row>
+      <div class="row d-flex justify-content-end">
+        <b-button v-b-tooltip.hover title="Salir sin guardar" variant="light" @click="goBack()"><b-icon icon="chevron-left"></b-icon></b-button>
+        <div class="col">
+          <h3 class="mr-auto" style="padding-top: 15px;">{{ book.title }}</h3>
+        </div>
+        <div class="col" style="padding-top: 15px;">
+          <b-form-select v-model="nextSectionID" :options="sectionsData" @change="save(), refresh(nextSectionID)"></b-form-select>
+        </div>
+        <div class="col" style="padding-top: 15px;">
+          <b-button variant="light" size="sm" @click="openManagementSectionModal()"><b-icon icon="gear"/></b-button>
+        </div>
+        <SectionManagementModal v-if="showManagementSectionModal" :name="sectionName" :id="sectionID" :book_title="book.title" :book_author_ID="book.userID" :sectionsList="book.sections" @update="updateBookSections" @load="refresh" @saveActual="save" @cancel="openManagementSectionModal"/>
+        <b-button variant="outline-dark" v-b-tooltip.hover title="Descargar" hidden><b-icon icon="cloud-download" @mouseup="save()"></b-icon></b-button>
+        <b-button variant="outline-dark" v-b-tooltip.hover title="Guardar" @click="save()"><b-icon icon="cloud-upload"></b-icon></b-button>
+        <b-button variant="dark" @click="goBackAndSave()">Guardar y salir</b-button>
+      </div>
     </div>
-    <div class="editBook">
-      <div class="sidebar">
+    <div class="row flex-xl-nowrap2">
+      <!-- barra lateral de gadgets añadidos -->
+      <div class="bd-sidebar border-bottom-0 col-md-3 col-xl-2 col-12">
         <h4>Gadgets</h4>
-        <div class="sidebarHeight">
+        <hr>
+        <div>
           <span style="color: red;" v-if="data.length==0">No hay gadgets creados. Para editar el documento, agrega uno primero</span>
           <div v-for="(text, index) in data" :key="index">
             <div class="sidebarBlock" v-if="lastPress!==index" @click="lastElementPressed(index)">
-              <span class="marginLeft">Tipo: {{ text.componentName }}</span>
+              <span>{{ text.componentName }}</span>
               <div class="h5 lg, verticalLine">
                 <b-icon icon="chevron-up" class="marginLeftButton" @click.stop @mouseup="itemUp(index)">Subir gadget</b-icon>
                 <b-icon icon="chevron-down" class="marginLeftButton" @click.stop @mouseup="itemDown(index)">Bajar gadget</b-icon>
@@ -30,7 +37,7 @@
               </div>
             </div>
             <div class="sidebarBlockSelected" v-else @click="lastElementPressed(index)">
-              <span class="marginLeft">Tipo: {{ text.componentName }}</span>
+              <span>{{ text.componentName }}</span>
               <div class="h5 lg, verticalLine">
                 <b-icon icon="chevron-up" class="marginLeftButtonSelected" @click.stop @mouseup="itemUp(index)">Subir gadget</b-icon>
                 <b-icon icon="chevron-down" class="marginLeftButtonSelected" @click.stop @mouseup="itemDown(index)">Bajar gadget</b-icon>
@@ -39,240 +46,223 @@
               </div>
             </div>
           </div>
+          <hr>
         </div>
       </div>
-      <div class="h3 mb-2, options">
-        <div class="normalPanel">
-          <span style="font-size: 20px;">Texto normal</span>
-          <b-icon icon="fonts" class="addGadgetButton" @click="addNormal()">Añadir</b-icon>
-          <div class="normalPanelOptions">
-            <b-icon icon="type-bold" class="buttonNormal" v-if="boldActive!=1" @mousedown="onLiveEditComponent($event, 'Bold')">Bold</b-icon>
-            <b-icon icon="type-bold" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Bold')">Bold</b-icon>
-            <b-icon icon="type-italic" class="buttonNormal" v-if="italicActive!=1" @mousedown="onLiveEditComponent($event, 'Italic')">Italic</b-icon>
-            <b-icon icon="type-italic" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Italic')">Italic</b-icon>
-            <b-icon icon="type-underline" class="buttonNormal" v-if="underlineActive!=1" @mousedown="onLiveEditComponent($event, 'Underline')">Underline</b-icon>
-            <b-icon icon="type-underline" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Underline')">Underline</b-icon>
-            <b-icon icon="type-strikethrough" class="buttonNormalRightBorder" v-if="strikeThroughActive!=1" @mousedown="onLiveEditComponent($event, 'StrikeThrough')">strikeThrough</b-icon>
-            <b-icon icon="type-strikethrough" class="buttonPressedRightBorder" v-else @mousedown="onLiveEditComponent($event, 'StrikeThrough')">strikeThrough</b-icon>
+      <!-- hoja de edición -->
+      <div class="bd-content col-md-9 col-xl-8 col-12 pl-md-5">
+        <!--Poniendo el contenteditable, keyup y click aquí, podemos controlar las flechas de una forma muy sencilla-->
+        <div class="document" @keyup="checkStyles" @keydown.tab.prevent>
+          <div class="editable" v-for="(text, index) in data" :key="index" @click="lastElementPressed(index), checkStyles()">
+            <Normal v-if="text.component=='Normal'"
+              :htmlTextAux="text.htmlText"
+              :index="index"
+              :boldUse="boldUse"
+              :italicUse="italicUse"
+              :underlineUse="underlineUse"
+              :strikeThroughUse="strikeThroughUse"
+              :lastPress="lastPress"
+              @html="saveHTML"
+              @delete="checkDelete"/>
+            <Header1 v-if="text.component=='Header1'"
+              :htmlTextAux="text.htmlText"
+              :plainTextAux="text.plainText"
+              :index="index"
+              @html="savePlaneAndHTML"/>
+            <Header2 v-if="text.component=='Header2'"
+              :htmlTextAux="text.htmlText"
+              :plainTextAux="text.plainText"
+              :index="index"
+              @html="savePlaneAndHTML"/>
+            <Header3 v-if="text.component=='Header3'"
+              :htmlTextAux="text.htmlText"
+              :plainTextAux="text.plainText"
+              :index="index"
+              @html="savePlaneAndHTML"/>
+
+            <ExpandableText v-if="text.component=='ExpandableText'"
+              :index="index"
+              :mainTextAux="text.mainText"
+              :expandedTextAux="text.expandedText"
+              :lastPressed="lastPress"
+              @html="saveExpandableText"/>
+            <PopupText v-if="text.component=='PopupText'"
+              :index="index"
+              :mainTextAux="text.mainText"
+              :popupTextAux="text.popupText"
+              :lastPressed="lastPress"
+              @html="savePopupText"/>
+            <Hyperlink v-if="text.component=='Hyperlink'"
+              :index="index"
+              :mainTextAux="text.mainText"
+              :hyperlinkTextAux="text.hyperlinkText"
+              :lastPressed="lastPress"
+              @html="saveHyperlink"/>
+            <Spoiler v-if="text.component=='Spoiler'"
+              :htmlTextAux="text.htmlText"
+              :plainTextAux="text.plainText"
+              :index="index"
+              @html="savePlaneAndHTML"/>
+
+            <PictureGadget v-if="text.component==='Picture'"
+              :bookID="bookID"
+              :htmlTextAux="text.htmlText"
+              :index="index"
+              :openModal="openModalPicture"
+              :lastPressed="lastPress"
+              @cancel-picture="cancelMultimedia"
+              @html="saveHTMLMultimedia"/>
+            <VideoGadget v-if="text.component==='Video'"
+              :index="index"
+              :htmlTextAux="text.htmlText"
+              :bookID="bookID"
+              :openModal="openModalVideo"
+              :lastPressed="lastPress"
+              @cancel-video="cancelMultimedia"
+              @html="saveHTMLMultimedia"/>
+
+            <ChangeSection v-if="text.component=='ChangeSection'"
+              :actualSection="sectionID"
+              :auxSectionsData="sectionsData"
+              :selectedSection="text.next"
+              :textAux="text.plainText"
+              :index="index"
+              @section="saveHTMLAndSection"
+              @save="save"/>
+            <RepeatSection v-if="text.component=='RepeatSection'"
+              :actualSection="sectionID"
+              :sectionName="sectionName"
+              :textAux="text.plainText"
+              :index="index"
+              @html="savePlaneAndHTML"/>
+            <DecisionMaking v-if="text.component=='DecisionMaking'"
+              :actualSection="sectionID"
+              :auxSectionsData="sectionsData"
+              :auxDecisions="text.choices"
+              :auxNumberOfOptions="text.numberOfOptions"
+              :index="index"
+              @section="saveChoices"/>
+
+            <Riddle v-if="text.component=='Riddle'"
+              :actualSection="sectionID"
+              :auxSectionsData="sectionsData"
+              :wrongSectionAux="text.wrongSection"
+              :rightSectionAux="text.rightSection"
+              :riddleTextAux="text.riddleText"
+              :answerTextAux="text.answerText"
+              :numberOfTriesAux="text.numberOfTries"
+              :changeSectionWhenWrongAux="text.changeSectionWhenWrong"
+              :index="index"
+              @section="saveHTMLRiddle"/>
+            <Sequence v-if="text.component=='Sequence'"
+              :actualSection="sectionID"
+              :auxSectionsData="sectionsData"
+              :auxSequence="text.sequence"
+              :auxSolution="text.solution"
+              :auxChangeSectionWhenWrong="text.changeSectionWhenWrong"
+              :auxWrongSection="text.wrongSection"
+              :auxRightSection="text.rightSection"
+              :auxNumberOfTries="text.numberOfTries"
+              :index="index"
+              @section="saveSequence"/>
+            <RandomNumber v-if="text.component=='RandomNumber'"
+              :actualSection="sectionID"
+              :auxSectionsData="sectionsData"
+              :auxConditions="text.conditions"
+              :auxNumberOfConditions="text.numberOfConditions"
+              :auxLowerLimit="text.lowerLimit"
+              :auxUpperLimit="text.upperLimit"
+              :index="index"
+              @random="saveRandomNumbers"/>
+            <MemoryCards v-if="text.component === 'MemoryCards'"
+              :actualSection="sectionID"
+              :sectionsDataAux="sectionsData"
+              :numberOfPairsAux="text.numberOfPairs"
+              :maxNumberOfMovesAux="text.maxNumberOfMoves"
+              :sectionNoMoreMovesAux="text.sectionNoMoreMoves"
+              :sectionSolvedAux="text.sectionSolved"
+              :changeSectionWhenWrongAux="text.changeSectionWhenWrong"
+              :index="index"
+              @save="saveMemoryCards"/>
+            <CompleteClues v-if="text.component === 'CompleteClues'"
+              :actualSection="sectionID"
+              :auxSectionsData="sectionsData"
+              :auxAnswersNumber="text.answersNumber"
+              :auxAnswers="text.answers"
+              :auxCluesNumber="text.cluesNumber"
+              :auxClues="text.clues"
+              :auxOnGuess="text.onGuess"
+              :auxChangeSectionWhenWrong="text.changeSectionWhenWrong"
+              :auxOnWrong="text.onWrong"
+              :index="index"
+              @clues="saveClues"/>
           </div>
         </div>
-
-        <div class="headerPanel">
-          <span style="font-size: 20px;">Título</span>
-          <b-icon icon="plus" class="addGadgetButton" @click="addTitle()">Añadir</b-icon>
-          <div class="headerPanelOptions">
-            <b-icon icon="type-h1" class="buttonNormal" v-if="header1Active!=1" @mousedown="onLiveEditComponent($event, 'Header1')">Añadir título 1</b-icon>
-            <b-icon icon="type-h1" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Header1')">Añadir título 1</b-icon>
-            <b-icon icon="type-h2" class="buttonNormal" v-if="header2Active!=1" @mousedown="onLiveEditComponent($event, 'Header2')">Añadir título 2</b-icon>
-            <b-icon icon="type-h2" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Header2')">Añadir título 2</b-icon>
-            <b-icon icon="type-h3" class="buttonNormalRightBorder" v-if="header3Active!=1" @mousedown="onLiveEditComponent($event, 'Header3')">Añadir título 3</b-icon>
-            <b-icon icon="type-h3" class="buttonPressedRightBorder" v-else @mousedown="onLiveEditComponent($event, 'Header3')">Añadir título 3</b-icon>
-          </div>
-        </div>
-
-        <div class="multimediaPanel">
-          <span style="font-size: 20px;">Multimedia</span>
-          <b-icon icon="plus" class="addGadgetButton" @click="addFile()">Añadir</b-icon>
-          <div class="multimediaPanelOptions">
-            <b-icon icon="image-fill" class="addGadgetButton" @click="changeFileType('picture')">Añadir</b-icon>
-            <b-icon icon="camera-video-fill" class="addGadgetButton" @click="changeFileType('video')">Añadir</b-icon>
-          </div>
-        </div>
-
-        <div class="exandableTextPanel multimediaPanel">
-          <span style="font-size: 20px;">Texto expandible</span>
-          <b-icon icon="plus" class="addGadgetButton" @click="addExandableText()">Añadir</b-icon>
-        </div>
-        <div class="popupTextPanel multimediaPanel">
-          <span style="font-size: 20px;">Texto emergente</span>
-          <b-icon icon="plus" class="addGadgetButton" @click="addPopupText()">Añadir</b-icon>
-        </div>
-        <div class="hyperlinkPanel multimediaPanel">
-          <span style="font-size: 20px;">Hipervínculo</span>
-          <b-icon icon="link" class="addGadgetButton" @click="addHyperlink()">Añadir</b-icon>
-        </div>
-        <div class="spoilerPanel">
-          <span style="font-size: 20px;">Spoiler</span>
-          <b-icon icon="Square-fill" class="addGadgetButton" @click="addSpoiler()">Añadir</b-icon>
-        </div>
-
-        <div class="sections">
-          <span style="font-size: 20px">Siguiente sección</span>
-          <b-icon icon="box-arrow-right" class="addGadgetButton" @click="addSectionChange()">Añadir</b-icon>
-          <div/>
-          <span style="font-size: 20px">Repetir sección</span>
-          <b-icon icon="arrow-repeat" class="addGadgetButton" @click="addSectionRepeat()">Añadir</b-icon>
-          <div/>
-          <span style="font-size: 20px">Decisiones</span>
-          <b-icon icon="list-task" class="addGadgetButton" @click="addDecisionMaking()">Añadir</b-icon>
-        </div>
-
-        <div class="games">
-          <span style="font-size: 20px">Adivinanzas</span>
-          <b-icon icon="question" class="addGadgetButton" @click="addRiddle()">Añadir</b-icon>
-          <div/>
-          <span style="font-size: 20px">Secuencia</span>
-          <b-icon icon="three-dots" class="addGadgetButton" @click="addSequence()">Añadir</b-icon>
-          <div/>
-          <span style="font-size: 20px">Tarjetas de memoria</span>
-          <b-icon icon="grid-fill" class="addGadgetButton" @click="addMemoryCards()">Añadir</b-icon>
-          <div/>
-          <span style="font-size: 20px;">Pistas</span>
-          <b-icon icon="puzzle-fill" class="addGadgetButton" @click="addClues()">Añadir</b-icon>
-        </div>
-
-        <div class="randoms">
-          <span style="font-size: 20px">Número<br>aleatorio</span>
-          <b-icon icon="hash" class="addGadgetButton" @click="addRandomNumber()">Añadir</b-icon>
-        </div>
-        <b-icon icon="cloud-upload" class="buttonNormalRightBorder" @mouseup="save()">Save</b-icon>
       </div>
-      <!--Poniendo el contenteditable, keyup y click aquí, podemos controlar las flechas de una forma muy sencilla-->
-      <div class="document" @keyup="checkStyles" @keydown.tab.prevent>
-        <div class="editable" v-for="(text, index) in data" :key="index" @click="lastElementPressed(index), checkStyles()">
-          <Normal v-if="text.component=='Normal'"
-            :htmlTextAux="text.htmlText"
-            :index="index"
-            :boldUse="boldUse"
-            :italicUse="italicUse"
-            :underlineUse="underlineUse"
-            :strikeThroughUse="strikeThroughUse"
-            :lastPress="lastPress"
-            @html="saveHTML"
-            @delete="checkDelete"/>
-          <Header1 v-if="text.component=='Header1'"
-            :htmlTextAux="text.htmlText"
-            :plainTextAux="text.plainText"
-            :index="index"
-            @html="savePlaneAndHTML"/>
-          <Header2 v-if="text.component=='Header2'"
-            :htmlTextAux="text.htmlText"
-            :plainTextAux="text.plainText"
-            :index="index"
-            @html="savePlaneAndHTML"/>
-          <Header3 v-if="text.component=='Header3'"
-            :htmlTextAux="text.htmlText"
-            :plainTextAux="text.plainText"
-            :index="index"
-            @html="savePlaneAndHTML"/>
+      <!-- barra lateral para añadir gadgets -->
+      <div class="bd-toc col-xl-2 d-none d-xl-block">
+        <h4>Añadir gadgets</h4>
+        <hr>
 
-          <ExpandableText v-if="text.component=='ExpandableText'"
-            :index="index"
-            :mainTextAux="text.mainText"
-            :expandedTextAux="text.expandedText"
-            :lastPressed="lastPress"
-            @html="saveExpandableText"/>
-          <PopupText v-if="text.component=='PopupText'"
-            :index="index"
-            :mainTextAux="text.mainText"
-            :popupTextAux="text.popupText"
-            :lastPressed="lastPress"
-            @html="savePopupText"/>
-          <Hyperlink v-if="text.component=='Hyperlink'"
-            :index="index"
-            :mainTextAux="text.mainText"
-            :hyperlinkTextAux="text.hyperlinkText"
-            :lastPressed="lastPress"
-            @html="saveHyperlink"/>
-          <Spoiler v-if="text.component=='Spoiler'"
-            :htmlTextAux="text.htmlText"
-            :plainTextAux="text.plainText"
-            :index="index"
-            @html="savePlaneAndHTML"/>
+        <span class="clickable" @click="addTitle()"><b-icon icon="fonts"/> Título </span>
+        <h5>
+          <b-icon icon="type-h1" class="buttonNormal" v-if="header1Active!=1" @mousedown="onLiveEditComponent($event, 'Header1')">Añadir título 1</b-icon>
+          <b-icon icon="type-h1" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Header1')">Añadir título 1</b-icon>
+          <b-icon icon="type-h2" class="buttonNormal" v-if="header2Active!=1" @mousedown="onLiveEditComponent($event, 'Header2')">Añadir título 2</b-icon>
+          <b-icon icon="type-h2" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Header2')">Añadir título 2</b-icon>
+          <b-icon icon="type-h3" class="buttonNormalRightBorder" v-if="header3Active!=1" @mousedown="onLiveEditComponent($event, 'Header3')">Añadir título 3</b-icon>
+          <b-icon icon="type-h3" class="buttonPressedRightBorder" v-else @mousedown="onLiveEditComponent($event, 'Header3')">Añadir título 3</b-icon>
+        </h5>
+        <hr>
 
-          <PictureGadget v-if="text.component==='Picture'"
-            :bookID="bookID"
-            :htmlTextAux="text.htmlText"
-            :index="index"
-            :openModal="openModalPicture"
-            :lastPressed="lastPress"
-            @cancel-picture="cancelMultimedia"
-            @html="saveHTMLMultimedia"/>
-          <VideoGadget v-if="text.component==='Video'"
-            :index="index"
-            :htmlTextAux="text.htmlText"
-            :bookID="bookID"
-            :openModal="openModalVideo"
-            :lastPressed="lastPress"
-            @cancel-video="cancelMultimedia"
-            @html="saveHTMLMultimedia"/>
+        <span class="clickable" @click="addNormal()"><b-icon icon="justify-left"/> Texto normal </span>
+        <h5>
+          <b-icon icon="type-bold" class="buttonNormal" v-if="boldActive!=1" @mousedown="onLiveEditComponent($event, 'Bold')">Bold</b-icon>
+          <b-icon icon="type-bold" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Bold')">Bold</b-icon>
+          <b-icon icon="type-italic" class="buttonNormal" v-if="italicActive!=1" @mousedown="onLiveEditComponent($event, 'Italic')">Italic</b-icon>
+          <b-icon icon="type-italic" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Italic')">Italic</b-icon>
+          <b-icon icon="type-underline" class="buttonNormal" v-if="underlineActive!=1" @mousedown="onLiveEditComponent($event, 'Underline')">Underline</b-icon>
+          <b-icon icon="type-underline" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Underline')">Underline</b-icon>
+          <b-icon icon="type-strikethrough" class="buttonNormalRightBorder" v-if="strikeThroughActive!=1" @mousedown="onLiveEditComponent($event, 'StrikeThrough')">strikeThrough</b-icon>
+          <b-icon icon="type-strikethrough" class="buttonPressedRightBorder" v-else @mousedown="onLiveEditComponent($event, 'StrikeThrough')">strikeThrough</b-icon>
+        </h5>
+        <hr>
 
-          <ChangeSection v-if="text.component=='ChangeSection'"
-            :actualSection="sectionID"
-            :auxSectionsData="sectionsData"
-            :selectedSection="text.next"
-            :textAux="text.plainText"
-            :index="index"
-            @section="saveHTMLAndSection"
-            @save="save"/>
-          <RepeatSection v-if="text.component=='RepeatSection'"
-            :actualSection="sectionID"
-            :sectionName="sectionName"
-            :textAux="text.plainText"
-            :index="index"
-            @html="savePlaneAndHTML"/>
-          <DecisionMaking v-if="text.component=='DecisionMaking'"
-            :actualSection="sectionID"
-            :auxSectionsData="sectionsData"
-            :auxDecisions="text.choices"
-            :auxNumberOfOptions="text.numberOfOptions"
-            :index="index"
-            @section="saveChoices"/>
+        <span class="clickable" @click="addFile()"><b-icon icon="collection-play"/> Multimedia </span>
+        <h5>
+          <b-icon icon="image-fill" class="buttonNormal" @click="changeFileType('picture')">Añadir</b-icon>
+          <b-icon icon="camera-video-fill" class="buttonNormal" @click="changeFileType('video')">Añadir</b-icon>
+        </h5>
+        <hr>
 
-          <Riddle v-if="text.component=='Riddle'"
-            :actualSection="sectionID"
-            :auxSectionsData="sectionsData"
-            :wrongSectionAux="text.wrongSection"
-            :rightSectionAux="text.rightSection"
-            :riddleTextAux="text.riddleText"
-            :answerTextAux="text.answerText"
-            :numberOfTriesAux="text.numberOfTries"
-            :changeSectionWhenWrongAux="text.changeSectionWhenWrong"
-            :index="index"
-            @section="saveHTMLRiddle"/>
-          <Sequence v-if="text.component=='Sequence'"
-            :actualSection="sectionID"
-            :auxSectionsData="sectionsData"
-            :auxSequence="text.sequence"
-            :auxSolution="text.solution"
-            :auxChangeSectionWhenWrong="text.changeSectionWhenWrong"
-            :auxWrongSection="text.wrongSection"
-            :auxRightSection="text.rightSection"
-            :auxNumberOfTries="text.numberOfTries"
-            :index="index"
-            @section="saveSequence"/>
-          <RandomNumber v-if="text.component=='RandomNumber'"
-            :actualSection="sectionID"
-            :auxSectionsData="sectionsData"
-            :auxConditions="text.conditions"
-            :auxNumberOfConditions="text.numberOfConditions"
-            :auxLowerLimit="text.lowerLimit"
-            :auxUpperLimit="text.upperLimit"
-            :index="index"
-            @random="saveRandomNumbers"/>
-          <MemoryCards v-if="text.component === 'MemoryCards'"
-            :actualSection="sectionID"
-            :sectionsDataAux="sectionsData"
-            :numberOfPairsAux="text.numberOfPairs"
-            :maxNumberOfMovesAux="text.maxNumberOfMoves"
-            :sectionNoMoreMovesAux="text.sectionNoMoreMoves"
-            :sectionSolvedAux="text.sectionSolved"
-            :changeSectionWhenWrongAux="text.changeSectionWhenWrong"
-            :index="index"
-            @save="saveMemoryCards"/>
-          <CompleteClues v-if="text.component === 'CompleteClues'"
-            :actualSection="sectionID"
-            :auxSectionsData="sectionsData"
-            :auxAnswersNumber="text.answersNumber"
-            :auxAnswers="text.answers"
-            :auxCluesNumber="text.cluesNumber"
-            :auxClues="text.clues"
-            :auxOnGuess="text.onGuess"
-            :auxChangeSectionWhenWrong="text.changeSectionWhenWrong"
-            :auxOnWrong="text.onWrong"
-            :index="index"
-            @clues="saveClues"/>
-        </div>
+        <span class="clickable" @click="addExandableText()"><b-icon icon="layers-half"/> Texto expandible</span>
+        <div/>
+        <span class="clickable" @click="addPopupText()"><b-icon icon="files-alt"/> Texto emergente</span>
+        <div/>
+        <span class="clickable" @click="addHyperlink()"><b-icon icon="link"/> Hipervínculo</span>
+        <div/>
+        <span class="clickable" @click="addSpoiler()"><b-icon icon="Square-fill"/> Spoiler</span>
+        <hr>
+
+        <span class="clickable" @click="addSectionChange()"><b-icon icon="box-arrow-right"/> Siguiente sección</span>
+        <div/>
+        <span class="clickable" @click="addSectionRepeat()"><b-icon icon="arrow-repeat"/> Repetir sección</span>
+        <div/>
+        <span class="clickable" @click="addDecisionMaking()"><b-icon icon="list-task"/> Decisiones</span>
+        <div/>
+        <hr>
+
+        <span class="clickable" @click="addRiddle()"><b-icon icon="question"/> Adivinanzas</span>
+        <div/>
+        <span class="clickable" @click="addSequence()"><b-icon icon="three-dots"/> Secuencia</span>
+        <div/>
+        <span class="clickable" @click="addMemoryCards()"><b-icon icon="grid-fill"/> Tarjetas de memoria</span>
+        <hr>
+
+        <span class="clickable" @click="addRandomNumber()"><b-icon icon="hash"/> Número aleatorio</span>
+        <div/>
+        <span class="clickable" @click="addClues()"><b-icon icon="puzzle-fill"/> Pistas</span>
+        <hr>
       </div>
     </div>
   </div>
@@ -799,62 +789,38 @@ export default {
 </script>
 
 <style scoped>
+.row {
+  margin-right: 0px!important;
+  margin-left: 0px!important;
+}
+.clickable {
+  cursor: pointer;
+}
+.clickable:hover {
+  text-decoration: underline;
+}
 /* Botones de la aplicación y no del editor de texto */
 .buttons {
   text-align: justify;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  margin-left: 30px;
-}
-.buttonBack {
-  cursor: pointer;
-  background-color: lightgreen;
-  border: 1px solid darkgreen;
-}
-.buttonBackAndSave {
-  cursor: pointer;
-  background-color: lightgreen;
-  border: 1px solid darkgreen;
-  margin-left: 5px;
-}
-.title {
-  vertical-align: top;
+  margin-top: 0px;
+  margin-bottom: 0px;
   margin-left: 20px;
-  display: inline-block;
-}
-/* Características principales de la vista */
-.editBook {
-  text-align: justify;
-  margin-left: 30px;
-  padding-bottom: 30px;
-  background-color: rgb(226, 250, 227);
+  margin-right: 20px;
 }
 /* Barra lateral izquierda */
-.sidebar {
-  margin: 0;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  padding-left: 10px;
-  padding-right: 10px;
-  width: 250px;
-  height: 61%;
-  background-color: rgb(227, 229, 241);
-  border: 1px solid rgb(129, 129, 129);
-  position: fixed;
-}
-.sidebarHeight {
-  height: 90%;
-  padding-top: 5px;
-  overflow-y: auto;
-}
 .sidebarBlock {
+  text-align: justify;
+  padding-left: 5px;
   border: 1px solid rgb(129, 129, 129);
   margin-bottom: 5px;
   cursor: pointer;
 }
 .sidebarBlockSelected {
+  text-align: justify;
+  padding-left: 5px;
   border: 1px solid rgb(87, 87, 87);
-  background-color: lightgray;
+  box-shadow: 1px 1px 2px #000000;
+  background-color: #eee;
   margin-bottom: 5px;
   cursor: pointer;
 }
@@ -862,9 +828,6 @@ export default {
   border-top: 1px solid gray;
   text-align: justify;
   margin-bottom: 0px;
-}
-.marginLeft {
-  margin-left: 5px;
 }
 .marginLeftButton {
   margin-left: 5px;
@@ -887,76 +850,7 @@ export default {
   margin-bottom: 15px;
 }
 /* Cinta de opciones del editor */
-.normalPanel {
-  display: inline-block;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-right: 1px solid darkgray;
-  border-left: 1px solid darkgray;
-}
-.normalPanelOptions {
-  margin-top: 5px;
-  justify-content: center;
-  display: flex;
-}
-.headerPanel {
-  display: inline-block;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-right: 1px solid darkgray;
-}
-.headerPanelOptions {
-  margin-top: 5px;
-  justify-content: center;
-  display: flex;
-}
-.multimediaPanel {
-  display: inline-block;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-right: 1px solid darkgray;
-}
-.multimediaPanelOptions {
-  margin-top: 5px;
-  display: flex;
-}
-.sections {
-  display: inline-block;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-right: 1px solid darkgray;
-}
-.games {
-  display: inline-block;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-right: 1px solid darkgray;
-}
-.randoms {
-  display: inline-block;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-right: 1px solid darkgray;
-}
-.spoilerPanel {
-  display: inline-block;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-right: 1px solid darkgray;
-}
-.addGadgetButton {
-  background-color: rgb(227, 229, 241);
-  border: 1px solid rgb(189, 189, 189);
-  padding: 2px;
-  margin-left: 25px;
-}
-.addGadgetButton:hover {
-  background-color: rgb(213, 215, 228);
-}
-.options {
-  margin-left: 280px;
-  padding-top: 20px;
-}
+
 .buttonNormal {
   background-color: rgb(227, 229, 241);
   border-top: 1px solid rgb(189, 189, 189);
@@ -993,14 +887,58 @@ export default {
 }
 /* Documento de texto */
 .document {
+  margin:auto;
+  /*margin-bottom: 20mm;*/
   width: 210mm;
-  height: 297mm;
+  /*height: 297mm;*/
   padding: 20mm;
-  margin-left: 280px;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  /*top: 20mm;*/
   border: 1px rgb(168, 168, 168) solid;
   background: white;
   overflow-y: auto;
+  text-align: left;
+  height: calc(100vh - 4rem);
+}
+/* Right sidebar*/
+.bd-toc {
+  border-left: 1px solid rgba(0,0,0,.1);
+  position: sticky;
+  top: 4rem;
+  height: calc(100vh - 4rem);
+  overflow-y: auto;
+  order: 2;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  font-size: .875rem;
+  text-align: left;
+}
+.d-xl-block {
+  display: block !important;
+}
+.col-xl-2 {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+* {
+  box-sizing: border-box;
+}
+/* left sidebar*/
+.bd-sidebar {
+  border-right: 1px solid rgba(0,0,0,.1);
+  position: sticky;
+  top: 4rem;
+  height: calc(100vh - 4rem);
+  overflow-y: auto;
+  order: 0;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+.border-bottom-0 {
+  border-bottom: 0 !important;
+}
+.col-xl-2 {
+  flex: 0 0 16.666667%;
+  max-width: 16.666667%;
 }
 </style>
