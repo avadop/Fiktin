@@ -324,10 +324,6 @@ export default {
     CompleteClues
 
   },
-  // props: {
-  //   book: Object,
-  //   bookID: String
-  // },
   data () {
     return {
       book: store.state.openedBook,
