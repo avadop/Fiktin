@@ -163,7 +163,6 @@ export default {
     openBook (book, idx) {
       store.commit('openBookID', this.primaryKeys[idx])
       store.commit('openBook', book)
-      // this.$router.push({ name: 'readBook', params: { book: book, bookID: this.primaryKeys[idx] } })
       this.$router.push({ name: 'readBook' })
     },
     description (desc) {
