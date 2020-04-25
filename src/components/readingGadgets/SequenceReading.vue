@@ -65,8 +65,7 @@ export default {
       }
     },
     limit (value) {
-      var aux = String(value).substring(0, 10)
-      return aux.toLowerCase()
+      return String(value).substring(0, 20)
     }
   }
 }
