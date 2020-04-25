@@ -187,7 +187,6 @@ export default {
     },
     goBack () {
       store.commit('closeBook')
-      console.log('libro cerrado ' + store.state.openBookID + 'El libro' + store.state.openedBook)
       this.$router.go(-1)
     }
   }
