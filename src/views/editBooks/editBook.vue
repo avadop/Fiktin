@@ -90,6 +90,8 @@
               :index="index"
               :mainTextAux="text.mainText"
               :popupTextAux="text.popupText"
+              :htmlTextAux="text.htmlText"
+              :pictureAux="text.picture"
               :lastPressed="lastPress"
               @html="savePopupText"/>
             <Hyperlink v-if="text.component=='Hyperlink'"
@@ -237,7 +239,7 @@
 
         <span class="clickable" @click="addExandableText()"><b-icon icon="layers-half"/> Texto expandible</span>
         <div/>
-        <span class="clickable" @click="addPopupText()"><b-icon icon="files-alt"/> Texto emergente</span>
+        <span class="clickable" @click="addPopupText()"><b-icon icon="files-alt"/> Anotación</span>
         <div/>
         <span class="clickable" @click="addHyperlink()"><b-icon icon="link"/> Hipervínculo</span>
         <div/>
@@ -270,8 +272,6 @@
 
 <script>
 import { sectionsCollection, booksCollection } from '@/firebase.js'
-import { store } from '@/store/index.js'
-
 import SectionManagementModal from '@/components/modals/SectionManagementModal.vue'
 import LoadingModal from '@/components/modals/LoadingModal.vue'
 import Normal from '@/components/gadgets/Normal.vue'
@@ -324,13 +324,15 @@ export default {
     CompleteClues
 
   },
+  props: {
+    book: Object,
+    bookID: String
+  },
   data () {
     return {
-      book: store.state.openedBook,
-      bookID: store.state.openBookID,
       sectionName: '', // Nombre de la sección
       sectionID: '', // ID de la sección actual
-      nextSectionID: store.state.openedBook.sections[0], // ID de la sección que deseamos cargar
+      nextSectionID: this.book.sections[0], // ID de la sección que deseamos cargar
       sectionsData: [],
       loading: false,
       showManagementSectionModal: false,
@@ -404,7 +406,7 @@ export default {
       else if (this.data[index].component === 'Header3') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Header3', componentName: 'Título' })
 
       else if (this.data[index].component === 'ExpandableText') this.data.splice(index + 1, 0, { mainText: this.data[index].mainText, expandedText: this.data[index].expandedText, component: 'ExpandableText', componentName: 'Texto expandible' })
-      else if (this.data[index].component === 'PopupText') this.data.splice(index + 1, 0, { mainText: this.data[index].mainText, popupText: this.data[index].popupText, component: 'PopupText', componentName: 'Texto emergente' })
+      else if (this.data[index].component === 'PopupText') this.data.splice(index + 1, 0, { mainText: this.data[index].mainText, popupText: this.data[index].popupText, htmlText: this.data[index].htmlText, picture: this.data[index].picture, component: 'PopupText', componentName: 'Texto emergente' })
       else if (this.data[index].component === 'Hyperlink') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, mainText: this.data[index].mainText, hyperlinkText: this.data[index].hyperlinkText, component: 'Hyperlink', componentName: 'Hipervínculo' })
       else if (this.data[index].component === 'Spoiler') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Spoiler', componentName: 'Spoiler' })
 
@@ -473,7 +475,7 @@ export default {
       this.data.splice(this.lastPress + 1, 0, { mainText: '', expandedText: '', component: 'ExpandableText', componentName: 'Texto expandible' })
     },
     addPopupText () {
-      this.data.splice(this.lastPress + 1, 0, { mainText: '', popupText: '', component: 'PopupText', componentName: 'Texto emergente' })
+      this.data.splice(this.lastPress + 1, 0, { mainText: '', popupText: '', htmlText: '', picture: '', component: 'PopupText', componentName: 'Texto emergente' })
     },
     addHyperlink () {
       this.data.splice(this.lastPress + 1, 0, { mainText: '', htmlText: '', hyperlinkText: '', component: 'Hyperlink', componentName: 'Hipervínculo' })
@@ -707,9 +709,11 @@ export default {
       this.data[index].mainText = mainText
       this.data[index].expandedText = expandedText
     },
-    savePopupText (mainText, popupText, index) {
+    savePopupText (mainText, popupText, htmlText, picture, index) {
       this.data[index].mainText = mainText
       this.data[index].popupText = popupText
+      this.data[index].htmlText = htmlText
+      this.data[index].picture = picture
     },
     saveHyperlink (htmlText, mainText, hyperlinkText, index) {
       this.data[index].htmlText = htmlText
