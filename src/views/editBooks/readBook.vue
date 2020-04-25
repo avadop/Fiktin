@@ -112,10 +112,6 @@ export default {
     SpoilerReading,
     CompleteCluesReading
   },
-  // props: {
-  //   book: Object,
-  //   bookID: String
-  // },
   data () {
     return {
       loading: false,
