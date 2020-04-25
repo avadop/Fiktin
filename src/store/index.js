@@ -8,7 +8,9 @@ export const store = new Vuex.Store({
   state: {
     userID: '',
     userNick: '',
-    loggedIn: false
+    loggedIn: false,
+    openBookID: '',
+    openedBook: null
   },
   plugins: [createPersistedState()],
   mutations: {
@@ -22,6 +24,16 @@ export const store = new Vuex.Store({
     },
     nickChange (state, nick) {
       state.userNick = nick
+    },
+    openBookID (state, id) {
+      state.openBookID = id
+    },
+    openBook (state, book) {
+      state.openedBook = book
+    },
+    closeBook (state) {
+      state.openBookID = ''
+      state.openedBook = ''
     }
   },
   actions: {

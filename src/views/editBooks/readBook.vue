@@ -82,7 +82,7 @@
 
 <script>
 import { librariesCollection, sectionsCollection } from '@/firebase.js'
-import { store } from '../../store/index.js'
+import { store } from '@/store/index.js'
 import LoadingModal from '@/components/modals/LoadingModal.vue'
 import ChangeSectionReading from '@/components/readingGadgets/ChangeSectionReading.vue'
 import RepeatSectionReading from '@/components/readingGadgets/RepeatSectionReading.vue'
@@ -112,10 +112,10 @@ export default {
     SpoilerReading,
     CompleteCluesReading
   },
-  props: {
-    book: Object,
-    bookID: String
-  },
+  // props: {
+  //   book: Object,
+  //   bookID: String
+  // },
   data () {
     return {
       loading: false,
@@ -124,7 +124,9 @@ export default {
       currentSectionID: '',
       sectionGadgets: [],
       sectionsData: [],
-      sectionName: ''
+      sectionName: '',
+      book: store.state.openedBook,
+      bookID: store.state.openBookID
     }
   },
   mounted () {
@@ -188,6 +190,8 @@ export default {
       this.$router.replace({ name: 'editBook', params: { book: this.book, bookID: this.bookID } })
     },
     goBack () {
+      store.commit('closeBook')
+      console.log('libro cerrado ' + store.state.openBookID + 'El libro' + store.state.openedBook)
       this.$router.go(-1)
     }
   }
