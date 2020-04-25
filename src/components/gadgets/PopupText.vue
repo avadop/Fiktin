@@ -73,7 +73,7 @@
       <div v-show="preview">
         <hr>
         <span>{{ mainText }}<span @click="openPopupTextModal = !openPopupTextModal" style="cursor: pointer; color: #0a8df4;"> [...]</span></span>
-        <b-modal v-model="openPopupTextModal" hide-footer hide-header scrollable >
+        <b-modal v-model="openPopupTextModal" hide-footer hide-header scrollable centered>
           <p v-show="openPopupTextModal">{{popupText}}</p>
           <div v-html="htmlText"></div>
         </b-modal>
