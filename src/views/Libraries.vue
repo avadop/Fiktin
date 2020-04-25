@@ -1,14 +1,17 @@
 <template>
   <div class="CreateLibrary">
     <b-card class="background-card">
+      <b-modal id="modal-create" size="xl" v-model="modalCreate" hide-footer hide-header no-close-on-backdrop>
+        <CreateLibrary v-if="this.internetConnection === 0" class="create" @cancel="discardChangesLibrary" @create="createLibrary"/>
+      </b-modal>
       <div v-if="this.internetConnection === 0" class="d-flex justify-content-end">
         <h4 class="mr-auto">Mis bibliotecas</h4>
         <!-- Botón de creación de librería según la conexión. Si no hay, no aparece el botón -->
-        <b-button v-if="!opened" variant="info" size="sm" class="m-md-2" :disabled="modifying != -1" @click="btnCreateNewLib()">
+        <b-button variant="info" size="sm" class="m-md-2" v-b-modal.modal-create>
           <b-icon icon="plus"></b-icon> Crear biblioteca
         </b-button>
       </div>
-      <CreateLibrary v-if="opened && this.internetConnection === 0" class="create" @cancel="btnCreateNewLib" @create="createLibrary"/>
+      <!-- <CreateLibrary v-if="opened && this.internetConnection === 0" class="create" @cancel="btnCreateNewLib" @create="createLibrary"/> -->
       <!-- Mensaje o librerías según la conexión y el número de libros -->
       <h3 v-if="this.numberOfLibraries === 0 && this.internetConnection === 0">No hay bibliotecas creadas</h3>
       <h3 v-else-if="this.numberOfLibraries === -1 && this.internetConnection === 0">Cargando</h3>
@@ -16,7 +19,7 @@
       <span v-else> <!-- Aunque no haya conexión, si se han cargado las librerías se siguen mostrando -->
         <b-list-group v-for="(library, index) in librariesList" :key="library.name" @click="viewLibrary(library.id, library.name, library.numberOfBooks, index)">
           <b-list-group-item>
-            <div v-if="modifying!==index || library.id === searchHistory">
+            <div>
               <div class="row d-flex justify-content-end">
                 <!-- Nombre -->
                 <h4 class="mr-auto">
@@ -38,15 +41,17 @@
                 </div>
                 <!-- Botones -->
                 <div class="m-md-2">
-                  <b-button v-if="(modifying===-1 || modifying !==index) && library.id == searchHistory" variant="outline-dark" :disabled="opened || modifying != -1" @click.stop="btnEmptyHistory(library.id)">Vaciar historial</b-button>
-                  <b-button v-if="(modifying===-1 || modifying !==index) && library.id !== searchHistory" variant="outline-dark" :disabled="opened || modifying != -1" @click.stop="btnModifyLib(index)">Modificar</b-button>
-                  <b-button v-if="modifying!==index && library.id !== searchHistory" variant="danger" :disabled="opened || modifying != -1" @click.stop="btnDeleteHandler(index)">Eliminar</b-button>
+                  <b-button v-if="(modifying===-1 || modifying !==index) && library.id == searchHistory" variant="outline-dark" @click.stop="btnEmptyHistory(library.id)">Vaciar historial</b-button>
+                  <b-button variant="outline-dark" @click.stop="btnModifyLib(index)">Modificar</b-button>
+                  <b-button variant="danger" @click.stop="btnDeleteHandler(index)">Eliminar</b-button>
                   <DeleteLibraryModal v-if="showModal===index" :name="librariesList[index].name" :id="librariesList[index].id" @cancel="btnDeleteHandler" @delete="deleteLib"/>
                 </div>
               </div>
             </div>
-            <ModifyLibrary v-else :disabled="opened || modifying != -1" :index="index" :nameAux="librariesList[index].name" :descriptionAux="librariesList[index].description" :privacyAux="librariesList[index].privacy" :id="librariesList[index].id" @cancel="btnModifyLib" @modify="modifyLibrary"/>
           </b-list-group-item>
+          <b-modal v-if="modifying === index" size="xl" v-model="modalModify" hide-footer hide-header no-close-on-backdrop>
+            <ModifyLibrary :index="index" :nameAux="librariesList[index].name" :descriptionAux="librariesList[index].description" :privacyAux="librariesList[index].privacy" :id="librariesList[index].id" @cancel="btnModifyLib" @modify="modifyLibrary"/>
+          </b-modal>
         </b-list-group>
       </span>
     </b-card>
@@ -92,10 +97,11 @@ export default {
       searchNick: store.state.userNick.concat('_mis_obras').toLowerCase(),
       searchHistory: store.state.userNick.concat('_historial').toLowerCase(),
       showModal: -1,
-      opened: false,
       modifying: -1,
       numberOfLibraries: -3,
-      internetConnection: 1
+      internetConnection: 1,
+      modalCreate: false,
+      modalModify: false
     }
   },
   /**
@@ -155,19 +161,13 @@ export default {
     },
 
     /**
-     * Se modifica el valor de "opened", negándolo (si era true, ahora es false, y viceversa).
-     */
-    btnCreateNewLib () {
-      this.opened = !this.opened
-    },
-
-    /**
      * @param {int} index: Índice en "librariesList" de la biblioteca a modificar.
      * Cada vez que se presiona el botón de modificar biblioteca se llama a este método.
      * Se modifica el valor de "modifying" con el índice del libro que se va a modificar.
      */
     btnModifyLib (index) {
       this.modifying = index
+      this.modalModify = true
     },
 
     /**
@@ -213,8 +213,9 @@ export default {
      *  Llama a "btnCreateNewLib()".
      */
     createLibrary () {
+      this.modalCreate = false
       this.refresh()
-      this.btnCreateNewLib()
+      this.btnCreateNewLib() // me da que esto no hace nada (Andrea)
     },
 
     /**
@@ -226,6 +227,12 @@ export default {
     modifyLibrary () {
       this.refresh()
       this.btnModifyLib(-1)
+      this.modalModify = false
+    },
+    discardChangesLibrary: function () {
+      this.modalCreate = false
+      this.modifying = -1
+      this.modalModify = false
     },
 
     /**
