@@ -330,7 +330,7 @@ export default {
       bookID: store.state.openBookID,
       sectionName: '', // Nombre de la sección
       sectionID: '', // ID de la sección actual
-      nextSectionID: '', // ID de la sección que deseamos cargar
+      nextSectionID: store.state.openedBook.sections[0], // ID de la sección que deseamos cargar
       sectionsData: [],
       loading: false,
       showManagementSectionModal: false,
@@ -357,7 +357,6 @@ export default {
   mounted () {
     this.bookID = store.state.openBookID
     this.book = store.state.openedBook
-    this.nextSectionID = this.book.sections[0]
     this.refresh(this.book.sections[0])
   },
   methods: {
