@@ -48,7 +48,7 @@ export default {
   },
   data () {
     return {
-      loggedIn: false,
+      loggedIn: store.state.loggedIn,
       modal: false
     }
   },

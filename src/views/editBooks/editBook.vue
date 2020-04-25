@@ -270,6 +270,8 @@
 
 <script>
 import { sectionsCollection, booksCollection } from '@/firebase.js'
+import { store } from '@/store/index.js'
+
 import SectionManagementModal from '@/components/modals/SectionManagementModal.vue'
 import LoadingModal from '@/components/modals/LoadingModal.vue'
 import Normal from '@/components/gadgets/Normal.vue'
@@ -322,15 +324,13 @@ export default {
     CompleteClues
 
   },
-  props: {
-    book: Object,
-    bookID: String
-  },
   data () {
     return {
+      book: store.state.openedBook,
+      bookID: store.state.openBookID,
       sectionName: '', // Nombre de la sección
       sectionID: '', // ID de la sección actual
-      nextSectionID: this.book.sections[0], // ID de la sección que deseamos cargar
+      nextSectionID: store.state.openedBook.sections[0], // ID de la sección que deseamos cargar
       sectionsData: [],
       loading: false,
       showManagementSectionModal: false,

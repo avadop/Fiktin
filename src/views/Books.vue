@@ -161,7 +161,9 @@ export default {
       this.addToLibraryButton(-1)
     },
     openBook (book, idx) {
-      this.$router.push({ name: 'readBook', params: { book: book, bookID: this.primaryKeys[idx] } })
+      store.commit('openBookID', this.primaryKeys[idx])
+      store.commit('openBook', book)
+      this.$router.push({ name: 'readBook' })
     },
     description (desc) {
       if (desc.length > 100) {
