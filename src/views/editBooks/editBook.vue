@@ -355,8 +355,6 @@ export default {
     }
   },
   mounted () {
-    this.bookID = store.state.openBookID
-    this.book = store.state.openedBook
     this.refresh(this.book.sections[0])
   },
   methods: {
