@@ -8,14 +8,16 @@
         <label>Texto principal</label>
         <b-form-textarea
           v-model="mainText"
-          :state="mainText.length <= 1000 && mainText.length > 0"
+          :state="mainText.length <= 2000 && mainText.length > 0"
+          :formatter="limit"
           aria-describedby="input-live-help input-live-feedback"
           placeholder="Introduce el texto que quieres que se muestre..."
           rows="3"
           max-rows="6"
           @change="save()"
         ></b-form-textarea>
-        <b-form-invalid-feedback v-if="mainText.length >= 1000" id="input-live-feedback">
+        <span v-if="mainText.length > 1900" style="color: red;">Estas cerca del limite de caracteres, llevas {{ this.mainText.length}} /2000</span>
+        <b-form-invalid-feedback v-if="mainText.length >= 2000" id="input-live-feedback">
           Superada longitud máxima de 1000 caracteres
         </b-form-invalid-feedback>
         <b-form-invalid-feedback v-else-if="mainText.length < 0" id="input-live-feedback">
@@ -26,15 +28,17 @@
         <label>Texto emergente</label>
         <b-form-textarea
           v-model="popupText"
-          :state="popupText.length <= 1000 && popupText.length > 0"
+          :state="popupText.length <= 2000 && popupText.length > 0"
+          :formatter="limit"
           aria-describedby="input-live-help input-live-feedback"
           placeholder="Introduce el texto que se mostrara al emergentemente..."
           rows="3"
           max-rows="6"
           @change="save()"
         ></b-form-textarea>
-        <b-form-invalid-feedback v-if="popupText.length >= 1000" id="input-live-feedback">
-          Superada longitud máxima de 1000 caracteres
+        <span v-if="popupText.length > 1900" style="color: red;">Estas cerca del limite de caracteres, llevas {{ this.popupText.length}} /2000</span>
+        <b-form-invalid-feedback v-if="popupText.length >= 2000" id="input-live-feedback">
+          Superada longitud máxima de 2000 caracteres
         </b-form-invalid-feedback>
         <b-form-invalid-feedback v-else-if="popupText.length < 0" id="input-live-feedback">
           No se puede dejar este campo vacio
@@ -69,7 +73,7 @@
       <div v-show="preview">
         <hr>
         <span>{{ mainText }}<span @click="openPopupTextModal = !openPopupTextModal" style="cursor: pointer; color: #0a8df4;"> [...]</span></span>
-        <b-modal v-model="openPopupTextModal" hide-footer hide-header>
+        <b-modal v-model="openPopupTextModal" hide-footer hide-header scrollable >
           <p v-show="openPopupTextModal">{{popupText}}</p>
           <div v-html="htmlText"></div>
         </b-modal>
@@ -112,6 +116,9 @@ export default {
       this.refresh()
     },
     htmlTextAux: function () {
+      this.refresh()
+    },
+    pictureAux: function () {
       this.refresh()
     },
     index: function () {
@@ -164,6 +171,9 @@ export default {
     },
     save: async function () {
       this.$emit('html', this.mainText, this.popupText, this.htmlText, this.picture, this.index)
+    },
+    limit (value) {
+      return String(value).substring(0, 2000)
     }
   }
 }
