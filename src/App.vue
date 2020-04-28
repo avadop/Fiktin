@@ -53,7 +53,7 @@ export default {
     }
   },
   mounted () {
-    if (store.state.loggedIn === true) this.$router.push('/home')
+    if (store.state.loggedIn !== true) this.$router.push('/home')
   },
   methods: {
     logIn: function () {
