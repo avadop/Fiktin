@@ -52,6 +52,9 @@ export default {
       modal: false
     }
   },
+  mounted () {
+    if (store.state.loggedIn === true) this.$router.push('/home')
+  },
   methods: {
     logIn: function () {
       this.loggedIn = true

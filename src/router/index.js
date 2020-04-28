@@ -1,13 +1,13 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-import User from '../views/User.vue'
-import Home from '../views/Home.vue'
-import Books from '../views/Books.vue'
-import Libraries from '../views/Libraries.vue'
-import ViewLibrary from '../views/ViewLibrary.vue'
-import EditBook from '../views/editBooks/editBook.vue'
-import ReadBook from '../views/editBooks/readBook.vue'
+import User from '@/views/User.vue'
+import Home from '@/views/Home.vue'
+import Books from '@/views/Books.vue'
+import Libraries from '@/views/Libraries.vue'
+import ViewLibrary from '@/views/ViewLibrary.vue'
+import EditBook from '@/views/editBooks/editBook.vue'
+import ReadBook from '@/views/editBooks/readBook.vue'
 // import { userInfo } from 'os'
 
 Vue.use(VueRouter)
