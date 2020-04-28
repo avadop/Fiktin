@@ -6,14 +6,14 @@
       <b-col cols="4"><span>Número de intentos: {{ numberOfTries }}</span></b-col>
       <b-col>
         <b-form-input v-if="aux.length > 0" v-model="numberOfTries" type="range" min="1" max="10" @change="save()"/>
-        <b-form-input v-else disabled v-model="numberOfTries" type="range" min="1" max="8" @change="save()"/>
+        <b-form-input v-else disabled v-model="numberOfTries" type="range" min="1" max="10" @change="save()"/>
       </b-col>
     </b-row>
     <div class = "table">
       <b-row style="padding-bottom: 10px;">
         <b-col cols="6"><span>Número de campos dados: {{ sequence.length }}</span></b-col>
         <b-col>
-          <b-form-input v-model="numberOfSequence" type="range" min="1" max="10" @change="modifySequence(), save()"/>
+          <b-form-input v-model="numberOfSequence" type="range" min="1" max="8" @change="modifySequence(), save()"/>
         </b-col>
       </b-row>
       <div class="table" v-for="(element, index) in sequence" :key="index">

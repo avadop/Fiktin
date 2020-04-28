@@ -34,6 +34,7 @@
           placeholder="Introduce el texto que se mostrara al emergentemente..."
           rows="3"
           max-rows="6"
+          style="margin-bottom: 15px;"
           @change="save()"
         ></b-form-textarea>
         <span v-if="popupText.length > 1900" style="color: red;">Estas cerca del limite de caracteres, llevas {{ this.popupText.length}} /2000</span>
@@ -43,11 +44,11 @@
         <b-form-invalid-feedback v-else-if="popupText.length < 0" id="input-live-feedback">
           No se puede dejar este campo vacio
         </b-form-invalid-feedback>
-        <div class="d-block text-center">
-          <h5>Elija la imagen que desea añadir</h5>
-        </div>
-        <p style="color: darkblue; font-weight: bold; cursor: pointer;" @click="addPicture = true">Añadir imagen al final del texto</p>
+        <p v-if="addPicture === false && this.picture === ''" style="color: darkblue; font-weight: bold; cursor: pointer;" @click="addPicture = true">Añadir imagen al final del texto</p>
         <div v-if="addPicture === true || this.picture !== ''">
+          <div class="d-block text-center">
+            <h5>Elija la imagen que desea añadir</h5>
+          </div>
           <b-container fluid class="col">
             <b-form-file
               @change="onFileSelected"
