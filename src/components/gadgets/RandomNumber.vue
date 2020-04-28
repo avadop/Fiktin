@@ -32,7 +32,7 @@
         <b-col><b-form-select size="sm" @change="save()" v-model="element.section" :options="aux"></b-form-select></b-col>
       </b-row>
     </div>
-    <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="preparePreview()">Preview</b-button>
+    <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="preparePreview()">Previsualizar</b-button>
 
     <b-modal v-model="showPreview" hide-footer hide-header centered >
       <div style="margin-bottom: 15px;">

@@ -27,7 +27,7 @@
       <span @click="changeSectionWhenWrong = true, save()" style="color: darkblue; font-weight: bold; cursor: pointer;"> Agregar salto de seccion al quedarse sin movimientos</span>
       <span style="font-size: 13px;"> (En caso de no activar esta opción, si el lector se queda sin movimientos se quedará en la página que está)</span>
     </div>
-    <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="show = true, shufflePreview()">Preview</b-button>
+    <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="show = true, shufflePreview()">Previsualizar</b-button>
 
     <b-modal v-model="show" hide-footer hide-header centered>
       <div class="d-block text-left">
