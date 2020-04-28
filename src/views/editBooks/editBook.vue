@@ -184,6 +184,7 @@
               :sectionNoMoreMovesAux="text.sectionNoMoreMoves"
               :sectionSolvedAux="text.sectionSolved"
               :changeSectionWhenWrongAux="text.changeSectionWhenWrong"
+              :customizedAux="text.customized"
               :index="index"
               @save="saveMemoryCards"/>
             <CompleteClues v-if="text.component === 'CompleteClues'"
@@ -455,6 +456,7 @@ export default {
           sectionNoMoreMoves: this.data[index].sectionNoMoreMoves,
           sectionSolved: this.data[index].sectionSolved,
           changeSectionWhenWrong: this.data[index].changeSectionWhenWrong,
+          customized: this.data[index].customized,
           component: 'MemoryCards',
           componentName: 'Tarjetas de memoria' })
       }
@@ -525,7 +527,7 @@ export default {
       this.data.splice(this.lastPress + 1, 0, { lowerLimit: 0, upperLimit: 10, conditions: [], numberOfConditions: 0, component: 'RandomNumber', componentName: 'Número aleatorio' })
     },
     addMemoryCards () {
-      this.data.splice(this.lastPress + 1, 0, { numberOfPairs: 2, maxNumberOfMoves: 6, sectionNoMoreMoves: '', sectionSolved: '', changeSectionWhenWrong: false, component: 'MemoryCards', componentName: 'Tarjetas de memoria' })
+      this.data.splice(this.lastPress + 1, 0, { numberOfPairs: 2, maxNumberOfMoves: 6, sectionNoMoreMoves: '', sectionSolved: '', changeSectionWhenWrong: false, customized: false, component: 'MemoryCards', componentName: 'Tarjetas de memoria' })
     },
     addClues () {
       this.data.splice(this.lastPress + 1, 0, { answers: [{ answer: '' }], answersNumber: 1, clues: [{ clue: '' }], cluesNumber: 1, onGuess: this.sectionsData[0].value, changeSectionWhenWrong: false, onWrong: '', component: 'CompleteClues', componentName: 'Pistas' })
@@ -765,12 +767,13 @@ export default {
       this.data[index].lowerLimit = lowerLimit
       this.data[index].upperLimit = upperLimit
     },
-    saveMemoryCards (numberOfPairs, maxNumberOfMoves, sectionNoMoreMoves, sectionSolved, changeSectionWhenWrong, index) {
+    saveMemoryCards (numberOfPairs, maxNumberOfMoves, sectionNoMoreMoves, sectionSolved, changeSectionWhenWrong, customized, index) {
       this.data[index].numberOfPairs = numberOfPairs
       this.data[index].maxNumberOfMoves = maxNumberOfMoves
       this.data[index].sectionNoMoreMoves = sectionNoMoreMoves
       this.data[index].sectionSolved = sectionSolved
       this.data[index].changeSectionWhenWrong = changeSectionWhenWrong
+      this.data[index].customized = customized
     },
     saveClues (answers, answersNumber, clues, cluesNumber, onGuess, changeSectionWhenWrong, onWrong, index) {
       this.data[index].answers = answers

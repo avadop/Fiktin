@@ -14,6 +14,13 @@
         <b-form-input v-model="maxNumberOfMoves" type="range" :step="2" :min="numberOfPairs * 2" max="100" @change="save()"/>
       </b-col>
     </b-row>
+    <b-row v-if="customized === true">
+      <b-button style="width: 20px; margin-right:50px;" class="my-1" variant="danger-dark" @click="cardsNotCustomized()"><b-icon style="heigh:50px;width:50px;" variant="danger" icon="x"></b-icon></b-button>
+    </b-row>
+    <div v-else>
+      <span @click="customized = true, save()" style="color: darkgreen; font-weight: bold; cursor: pointer;"> Customizar tarjetas</span>
+      <span style="font-size: 13px; padding-bottom: 15px;"> (En caso de no activar esta opción, las tarjetas tendrán sus valores por defecto)</span>
+    </div>
     <b-row>
       <b-col cols="5"><span>Sección a la que quieres saltar si se resuelve el puzzle: </span></b-col>
       <b-col><b-form-select size="sm" @change="save()" v-model="sectionSolved" :options="sections"></b-form-select></b-col>
@@ -61,7 +68,8 @@ export default {
     sectionNoMoreMovesAux: String,
     sectionSolvedAux: String,
     changeSectionWhenWrongAux: Boolean,
-    index: Number
+    index: Number,
+    customizedAux: Boolean
   },
   data () {
     return {
@@ -72,6 +80,7 @@ export default {
       sectionNoMoreMoves: this.sectionNoMoreMovesAux,
       sectionSolved: this.sectionSolvedAux,
       changeSectionWhenWrong: this.changeSectionWhenWrongAux,
+      customized: this.customizedAux,
 
       show: false,
       numberOfMovesPreview: 0,
@@ -119,6 +128,9 @@ export default {
     changeSectionWhenWrongAux: function () {
       this.refresh()
     },
+    customizedAux: function () {
+      this.refresh()
+    },
     index: function () {
       this.refresh()
     }
@@ -135,6 +147,7 @@ export default {
       this.sectionNoMoreMoves = this.sectionNoMoreMovesAux
       this.sectionSolved = this.sectionSolvedAux
       this.changeSectionWhenWrong = this.changeSectionWhenWrongAux
+      this.customized = this.customizedAux
 
       this.deepClone()
       this.checkContent()
@@ -184,11 +197,15 @@ export default {
     save () {
       if (this.sectionNoMoreMoves === undefined) this.sectionNoMoreMoves = ''
       if (this.sectionSolved === undefined) this.sectionSolved = ''
-      this.$emit('save', parseInt(this.numberOfPairs, 10), parseInt(this.maxNumberOfMoves, 10), this.sectionNoMoreMoves, this.sectionSolved, this.changeSectionWhenWrong, this.index)
+      this.$emit('save', parseInt(this.numberOfPairs, 10), parseInt(this.maxNumberOfMoves, 10), this.sectionNoMoreMoves, this.sectionSolved, this.changeSectionWhenWrong, this.customized, this.index)
     },
     noWrongSection () {
       this.changeSectionWhenWrong = false
       this.sectionNoMoreMoves = ''
+      this.save()
+    },
+    cardsNotCustomized () {
+      this.customized = false
       this.save()
     },
     shufflePreview () {
