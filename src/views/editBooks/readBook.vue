@@ -184,7 +184,7 @@ export default {
       return this.book.userID === store.state.userID
     },
     goEdit () {
-      this.$router.replace({ name: 'editBook', params: { book: this.book, bookID: this.bookID } })
+      this.$router.replace({ name: 'editBook' })
     },
     goBack () {
       store.commit('closeBook')
