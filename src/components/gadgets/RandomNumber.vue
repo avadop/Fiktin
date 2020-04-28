@@ -220,7 +220,7 @@ export default {
     },
     generateRandomPreview () {
       this.numberPreview = Math.floor(Math.random() * (parseInt(this.upperLimit, 10) - parseInt(this.lowerLimit, 10) + 1) + parseInt(this.lowerLimit, 10))
-      this.numberPreview = parseInt(this.number, 10) // Hacemos un parseInt por si acaso
+      this.numberPreview = parseInt(this.numberPreview, 10) // Hacemos un parseInt por si acaso
       this.pressedPreview = true
     }
   }
