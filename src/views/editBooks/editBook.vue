@@ -196,6 +196,23 @@
               :auxOnWrong="text.onWrong"
               :index="index"
               @clues="saveClues"/>
+
+            <CustomBoxes v-if="text.component === 'CustomBox'"
+              :auxCustomBoxesData="temporalCustomBoxes"
+              :auxName="text.name"
+              :auxMode="text.mode"
+              :auxType="text.type"
+              :auxValue="text.value"
+              :auxDefaultValue="text.defaultValue"
+              :auxTitle="text.title"
+              :auxPrevText="text.prevText"
+              :auxNextText="text.nextText"
+              :index="index"
+              @read="checkRead"
+              @write="checkWrite"
+              @update="checkUpdate"
+              @save="saveCustomBox"
+              @saveLimited="saveLimitedCustomBox"/>
           </div>
         </div>
       </div>
@@ -263,30 +280,40 @@
         <div/>
         <span class="clickable" @click="addClues()"><b-icon icon="puzzle-fill"/> Pistas</span>
         <hr>
+
+        <span class="clickable" @click="addCustomBox()"><b-icon icon="pencil"/> Casilla personalizada</span>
+        <hr>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+// Firebase
 import { sectionsCollection, booksCollection } from '@/firebase.js'
 import { store } from '@/store/index.js'
 
+// Modals
 import SectionManagementModal from '@/components/modals/SectionManagementModal.vue'
 import LoadingModal from '@/components/modals/LoadingModal.vue'
+
+// Texto plano
 import Normal from '@/components/gadgets/Normal.vue'
 import Header1 from '@/components/gadgets/Header1.vue'
 import Header2 from '@/components/gadgets/Header2.vue'
 import Header3 from '@/components/gadgets/Header3.vue'
 
+// Texto escondido
 import ExpandableText from '@/components/gadgets/ExpandableText.vue'
 import PopupText from '@/components/gadgets/PopupText.vue'
 import Hyperlink from '@/components/gadgets/Hyperlink.vue'
 import Spoiler from '@/components/gadgets/Spoiler.vue'
 
+// Multimedia
 import PictureGadget from '@/components/gadgets/PictureGadget.vue'
 import VideoGadget from '@/components/gadgets/VideoGadget.vue'
 
+// Cambios de secciones
 import ChangeSection from '@/components/gadgets/ChangeSection.vue'
 import RepeatSection from '@/components/gadgets/RepeatSection.vue'
 import DecisionMaking from '@/components/gadgets/DecisionMaking.vue'
@@ -295,6 +322,9 @@ import Sequence from '@/components/gadgets/Sequence.vue'
 import RandomNumber from '@/components/gadgets/RandomNumber.vue'
 import MemoryCards from '@/components/gadgets/MemoryCards.vue'
 import CompleteClues from '@/components/gadgets/CompleteClues.vue'
+
+// Texto personalizable
+import CustomBoxes from '@/components/gadgets/CustomBoxes.vue'
 
 export default {
   name: 'editBook',
@@ -321,8 +351,9 @@ export default {
     Sequence,
     RandomNumber,
     MemoryCards,
-    CompleteClues
+    CompleteClues,
 
+    CustomBoxes
   },
   data () {
     return {
@@ -332,6 +363,7 @@ export default {
       sectionID: '', // ID de la sección actual
       nextSectionID: store.state.openedBook.sections[0], // ID de la sección que deseamos cargar
       sectionsData: [],
+      temporalCustomBoxes: [],
       loading: false,
       showManagementSectionModal: false,
       boldActive: 0,
@@ -362,7 +394,11 @@ export default {
       this.loading = true
       this.lastPress = -1
       this.sectionsData = []
+      this.temporalCustomBoxes = []
       this.data = []
+      await booksCollection.doc(this.bookID).get().then(doc => {
+        this.temporalCustomBoxes = doc.data().customBoxes
+      })
       for (var i = 0; i < this.book.sections.length; ++i) {
         await sectionsCollection.doc(this.book.sections[i]).get().then(doc => {
           if (doc.exists) {
@@ -393,6 +429,7 @@ export default {
       }
     },
     itemDelete (index) {
+      if (this.data[index].component === 'CustomBox' && this.data[index].mode === 'write') this.checkRead(this.data[index].name)
       this.data.splice(index, 1)
       if (this.data.length === 0) this.lastPress = -1
     },
@@ -455,6 +492,17 @@ export default {
           changeSectionWhenWrong: this.data[index].changeSectionWhenWrong,
           component: 'MemoryCards',
           componentName: 'Tarjetas de memoria' })
+      } else if (this.data[index].component === 'CompleteClues') {
+        var e = []
+        var f = []
+        var l
+        for (l = 0; l < this.data[index].answers.length; ++l) {
+          e.push({ answer: this.data[index].answers[l].answer })
+        }
+        for (l = 0; l < this.data[index].clues.length; ++l) {
+          f.push({ clue: this.data[index].clues[l].clue })
+        }
+        this.data.splice(index + 1, 0, { answers: e, answersNumber: this.data[index].answersNumber, clues: f, cluesNumber: this.data[index].cluesNumber, onGuess: this.data[index].onGuess, changeSectionWhenWrong: this.data[index].changeSectionWhenWrong, onWrong: this.data[index].onWrong, component: 'CompleteClues', componentName: 'Pistas' })
       }
     },
     async updateBookSections (newSections) {
@@ -527,6 +575,9 @@ export default {
     },
     addClues () {
       this.data.splice(this.lastPress + 1, 0, { answers: [{ answer: '' }], answersNumber: 1, clues: [{ clue: '' }], cluesNumber: 1, onGuess: this.sectionsData[0].value, changeSectionWhenWrong: false, onWrong: '', component: 'CompleteClues', componentName: 'Pistas' })
+    },
+    addCustomBox () {
+      this.data.splice(this.lastPress + 1, 0, { name: '', mode: 'write', type: 'string', value: '', defaultValue: '', title: '', prevText: '', nextText: '', component: 'CustomBox', componentName: 'Casilla personalizada' })
     },
     checkStyles () {
       // En caso de acceder sin ningún componente (medida de seguridad. La ejecución no debería entrar aquí)
@@ -691,6 +742,37 @@ export default {
       this.openModalVideo = false
       this.openModalPicture = false
     },
+    checkRead (name) {
+      // Si se cambia el modo de la casilla personalizada a lectura, se llama a este método.
+      // Como todos los nombres son únicos, nunca se borrará un valor que se use en otros sitios
+      // Esto además se garantiza ya que si el nombre no es válido, la casilla personalizada manda '' como nombre
+      // Sin embargo, si el nombre es válido, manda dicho nombre
+      if (name !== '') {
+        var end = false
+        for (var i = 0; i < this.temporalCustomBoxes.length && !end; ++i) {
+          if (this.temporalCustomBoxes[i].name === name) {
+            this.temporalCustomBoxes.splice(i, 1)
+            end = true
+          }
+        }
+      }
+    },
+    checkWrite (name, type, initialValue, defaultValue) {
+      // Si se crea una casilla personalizada con un nombre válido, se llama a este método
+      // Para ello, crea una nueva casilla con los datos dados
+      // Si se quiere actualizar una casilla, primero se llama a checkRead para borrarla y después añadirla aquí
+      if (name !== '') this.temporalCustomBoxes.push({ name: name, type: type, value: initialValue, defaultValue: defaultValue })
+    },
+    checkUpdate (oldName, name, type, initialValue, defaultValue) {
+      var end = false
+      for (var i = 0; i < this.temporalCustomBoxes.length && !end; ++i) {
+        if (this.temporalCustomBoxes[i].name === oldName) {
+          var aux = { name: name, type: type, value: initialValue, defaultValue: defaultValue }
+          this.$set(this.temporalCustomBoxes, i, aux)
+          end = true
+        }
+      }
+    },
     openManagementSectionModal () {
       this.showManagementSectionModal = !this.showManagementSectionModal
     },
@@ -698,6 +780,9 @@ export default {
       if (this.sectionName !== '') {
         await sectionsCollection.doc(this.sectionID).update({
           gadgets: this.data
+        })
+        await booksCollection.doc(this.bookID).update({
+          customBoxes: this.temporalCustomBoxes
         })
       } else {
         window.alert('Para guardar una sección, debes darla un nombre primero')
@@ -776,6 +861,22 @@ export default {
       this.data[index].onGuess = onGuess
       this.data[index].changeSectionWhenWrong = changeSectionWhenWrong
       this.data[index].onWrong = onWrong
+    },
+    saveCustomBox (name, mode, type, value, defaultValue, title, prevText, nextText, index) {
+      this.data[index].name = name
+      this.data[index].mode = mode
+      this.data[index].type = type
+      this.data[index].value = value
+      this.data[index].defaultValue = defaultValue
+      this.data[index].title = title
+      this.data[index].prevText = prevText
+      this.data[index].nextText = nextText
+    },
+    saveLimitedCustomBox (mode, type, value, defaultValue, index) {
+      this.data[index].mode = mode
+      this.data[index].type = type
+      this.data[index].value = value
+      this.data[index].defaultValue = defaultValue
     },
     goBack () {
       this.$router.replace({ name: 'readBook', params: { book: this.book } })
