@@ -72,6 +72,17 @@
           :onGuess="text.onGuess"
           :onWrong="text.onWrong"
           @answered="loadSection"/>
+        <CustomBoxesReading style="min-height: 24px;" v-if="text.component === 'CustomBox' && text.name != ''"
+          :name="text.name"
+          :mode="text.mode"
+          :type="text.type"
+          :value="text.value"
+          :defaultValue="text.defaultValue"
+          :title="text.title"
+          :prevText="text.prevText"
+          :nextText="text.nextText"
+          :customBoxes="customBoxes"
+          @saveWrite="saveCustomBox"/>
       </div>
     </div>
     <div v-else>
@@ -81,7 +92,7 @@
 </template>
 
 <script>
-import { librariesCollection, sectionsCollection } from '@/firebase.js'
+import { librariesCollection, sectionsCollection, booksCollection } from '@/firebase.js'
 import { store } from '@/store/index.js'
 import LoadingModal from '@/components/modals/LoadingModal.vue'
 import ChangeSectionReading from '@/components/readingGadgets/ChangeSectionReading.vue'
@@ -95,6 +106,7 @@ import SequenceReading from '@/components/readingGadgets/SequenceReading.vue'
 import MemoryCardsReading from '@/components/readingGadgets/MemoryCardsReading.vue'
 import SpoilerReading from '@/components/readingGadgets/SpoilerReading.vue'
 import CompleteCluesReading from '@/components/readingGadgets/CompleteCluesReading.vue'
+import CustomBoxesReading from '@/components/readingGadgets/CustomBoxesReading.vue'
 
 export default {
   name: 'readBook',
@@ -110,7 +122,8 @@ export default {
     SequenceReading,
     MemoryCardsReading,
     SpoilerReading,
-    CompleteCluesReading
+    CompleteCluesReading,
+    CustomBoxesReading
   },
   data () {
     return {
@@ -122,7 +135,8 @@ export default {
       sectionsData: [],
       sectionName: '',
       book: store.state.openedBook,
-      bookID: store.state.openBookID
+      bookID: store.state.openBookID,
+      customBoxes: []
     }
   },
   mounted () {
@@ -135,6 +149,9 @@ export default {
     async loadBook () {
       this.loading = true
       this.sectionsData = []
+      await booksCollection.doc(this.bookID).get().then(doc => {
+        this.customBoxes = doc.data().customBoxes
+      })
       for (var i = 0; i < this.book.sections.length; ++i) {
         await sectionsCollection.doc(this.book.sections[i]).get().then(doc => {
           if (doc.exists) {
@@ -178,6 +195,11 @@ export default {
     // Los que su html se pueda poner directamente se añaden aqui
     basicGadget (value) {
       return value.componentName === 'Título' || value.componentName === 'Texto normal' || value.componentName === 'Multimedia' || value.component === 'Hyperlink'
+    },
+    saveCustomBox (value, index) {
+      var aux = this.customBoxes[index]
+      aux.value = value
+      this.$set(this.customBoxes, index, aux)
     },
     isBookOfLoggedUser () {
       return this.book.userID === store.state.userID

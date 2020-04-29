@@ -284,7 +284,8 @@ export default {
           cover: doc1.data().cover,
           tags: doc1.data().tags,
           userID: doc1.data().user_id,
-          sections: doc1.data().sections
+          sections: doc1.data().sections,
+          customBoxes: doc1.data().customBoxes
         }
       })
       await userCollection.doc(a).get().then(doc2 => {

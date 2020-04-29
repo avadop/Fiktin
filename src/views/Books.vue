@@ -118,6 +118,8 @@ export default {
               sections: doc.data().sections,
               ID: doc.id,
               confirmDelete: false
+              customBoxes: doc.data().customBoxes,
+              ID: doc.id
             })
           }
         })
