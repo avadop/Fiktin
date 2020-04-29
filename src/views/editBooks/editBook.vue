@@ -359,6 +359,7 @@ export default {
     return {
       book: store.state.openedBook,
       bookID: store.state.openBookID,
+
       sectionName: '', // Nombre de la sección
       sectionID: '', // ID de la sección actual
       nextSectionID: store.state.openedBook.sections[0], // ID de la sección que deseamos cargar
