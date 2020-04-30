@@ -185,6 +185,9 @@
               :sectionSolvedAux="text.sectionSolved"
               :changeSectionWhenWrongAux="text.changeSectionWhenWrong"
               :customizedAux="text.customized"
+              :typeChosenAux="text.typeChosen"
+              :customWordsAux="text.customWords"
+              :customColorsAux="text.customColors"
               :index="index"
               @save="saveMemoryCards"/>
             <CompleteClues v-if="text.component === 'CompleteClues'"
@@ -458,6 +461,9 @@ export default {
           sectionSolved: this.data[index].sectionSolved,
           changeSectionWhenWrong: this.data[index].changeSectionWhenWrong,
           customized: this.data[index].customized,
+          typeChosen: this.data[index].typeChosen,
+          customWords: this.data[index].customWords,
+          customColors: this.data[index].customColors,
           component: 'MemoryCards',
           componentName: 'Tarjetas de memoria' })
       }
@@ -528,7 +534,17 @@ export default {
       this.data.splice(this.lastPress + 1, 0, { lowerLimit: 0, upperLimit: 10, conditions: [], numberOfConditions: 0, component: 'RandomNumber', componentName: 'Número aleatorio' })
     },
     addMemoryCards () {
-      this.data.splice(this.lastPress + 1, 0, { numberOfPairs: 2, maxNumberOfMoves: 6, sectionNoMoreMoves: '', sectionSolved: '', changeSectionWhenWrong: false, customized: false, component: 'MemoryCards', componentName: 'Tarjetas de memoria' })
+      this.data.splice(this.lastPress + 1, 0, { numberOfPairs: 2,
+        maxNumberOfMoves: 6,
+        sectionNoMoreMoves: '',
+        sectionSolved: '',
+        changeSectionWhenWrong: false,
+        customized: false,
+        typeChosen: '',
+        customWords: [],
+        customColors: [],
+        component: 'MemoryCards',
+        componentName: 'Tarjetas de memoria' })
     },
     addClues () {
       this.data.splice(this.lastPress + 1, 0, { answers: [{ answer: '' }], answersNumber: 1, clues: [{ clue: '' }], cluesNumber: 1, onGuess: this.sectionsData[0].value, changeSectionWhenWrong: false, onWrong: '', component: 'CompleteClues', componentName: 'Pistas' })
@@ -768,13 +784,16 @@ export default {
       this.data[index].lowerLimit = lowerLimit
       this.data[index].upperLimit = upperLimit
     },
-    saveMemoryCards (numberOfPairs, maxNumberOfMoves, sectionNoMoreMoves, sectionSolved, changeSectionWhenWrong, customized, index) {
+    saveMemoryCards (numberOfPairs, maxNumberOfMoves, sectionNoMoreMoves, sectionSolved, changeSectionWhenWrong, customized, typeChosen, customWords, customColors, index) {
       this.data[index].numberOfPairs = numberOfPairs
       this.data[index].maxNumberOfMoves = maxNumberOfMoves
       this.data[index].sectionNoMoreMoves = sectionNoMoreMoves
       this.data[index].sectionSolved = sectionSolved
       this.data[index].changeSectionWhenWrong = changeSectionWhenWrong
       this.data[index].customized = customized
+      this.data[index].typeChosen = typeChosen
+      this.data[index].customWords = customWords
+      this.data[index].customColors = customColors
     },
     saveClues (answers, answersNumber, clues, cluesNumber, onGuess, changeSectionWhenWrong, onWrong, index) {
       this.data[index].answers = answers
