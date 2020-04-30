@@ -230,6 +230,7 @@ export default {
   text-align: justify;
   margin-top: 50px;
   margin: auto;
+  margin-bottom: 50px;
   width: 60%;
   border: 1px solid;
   padding: 20px;

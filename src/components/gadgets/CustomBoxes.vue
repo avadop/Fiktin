@@ -44,6 +44,16 @@
         </b-col>
       </b-row>
     </div>
+    <div v-else-if="mode == 'modifyWrite'">
+      <b-row style="margin-bottom: 5px;">
+        <b-col cols=4><span>Modificar la casilla: </span></b-col>
+        <b-col><b-form-select id="select-read" v-model="name" :options="aux" @change="save"/></b-col>
+      </b-row>
+      <b-row style="margin-bottom: 5px;">
+        <b-col><span>Título de la casilla (máx 50 caracteres): </span></b-col>
+        <b-col><b-form-input v-model="title" type="text" placeholder="Título" :formatter="formatTitle" @blur="save" size="sm"/></b-col>
+      </b-row>
+    </div>
   </div>
 </template>
 
@@ -69,8 +79,8 @@ export default {
       oldName: '', // Usado para buscar en el array de casillas personalizadas del editor
       mode: 'write',
       oldMode: 'write', // Si hacemos blur de los botones, al pulsarlos de nuevo se ejecutan las funciones asociadas a ellos, por lo que es necesario controlarlo, que es de lo que se encarga esta variable
-      modeOptions: [{ value: 'read', text: 'Leer' }, { value: 'write', text: 'Escribir' }],
-      modeOptionsDisabled: [{ value: 'read', text: 'Leer', disabled: true }, { value: 'write', text: 'Escribir' }],
+      modeOptions: [{ value: 'read', text: 'Leer' }, { value: 'write', text: 'Escribir' }, { value: 'modifyWrite', text: 'Modificar escribir' }],
+      modeOptionsDisabled: [{ value: 'read', text: 'Leer', disabled: true }, { value: 'write', text: 'Escribir' }, { value: 'modifyWrite', text: 'Modificar escribir', disabled: true }],
       type: 'string',
       oldType: 'string', // Si hacemos blur de los botones, al pulsarlos de nuevo se ejecutan las funciones asociadas a ellos, por lo que es necesario controlarlo, que es de lo que se encarga esta variable
       typeOptions: [{ value: 'string', text: 'Texto' }, { value: 'number', text: 'Número' }],
@@ -143,15 +153,17 @@ export default {
       this.nextText = this.auxNextText
       this.deepClone()
       this.hardRefresh()
+      this.nameStateAux()
     },
     hardRefresh () {
-      if (this.auxCustomBoxesData.length <= 0 && this.mode === 'read') {
+      if (this.auxCustomBoxesData.length <= 0 && (this.mode === 'read' || this.mode === 'modifyWrite')) {
         this.name = ''
         this.oldName = ''
         this.mode = 'write'
         this.type = 'string'
         this.value = ''
-      } else if (this.auxCustomBoxesData.length > 0 && this.mode === 'read') {
+      } else if (this.auxCustomBoxesData.length > 0 && (this.mode === 'read' || this.mode === 'modifyWrite')) {
+        this.oldName = ''
         var change = true
         for (var i = 0; i < this.aux.length && change; ++i) {
           if (this.name === this.aux[i].value) change = false
@@ -165,28 +177,30 @@ export default {
         for (var i = 0; i < this.auxCustomBoxesData.length; ++i) {
           if (this.name !== this.auxCustomBoxesData[i].name) this.aux.push({ value: this.auxCustomBoxesData[i].name, text: this.auxCustomBoxesData[i].name })
         }
-      } else if (this.mode === 'read') {
+      } else if (this.mode === 'read' || this.mode === 'modifyWrite') {
         for (var j = 0; j < this.auxCustomBoxesData.length; ++j) {
           this.aux.push({ value: this.auxCustomBoxesData[j].name, text: this.auxCustomBoxesData[j].name })
         }
       }
     },
     nameStateAux () {
-      for (var i = 0; i < this.aux.length; ++i) {
-        if (this.name === '' || (this.name === this.aux[i].value && this.name !== this.oldName)) {
+      if (this.mode === 'write') {
+        for (var i = 0; i < this.aux.length; ++i) {
+          if (this.name === '' || (this.name === this.aux[i].value && this.name !== this.oldName)) {
+            this.validName = false
+            return false
+          }
+        }
+        if (this.aux.length === 0 && this.name === '') {
           this.validName = false
           return false
         }
-      }
-      if (this.aux.length === 0 && this.name === '') {
-        this.validName = false
-        return false
       }
       this.validName = true
       return true
     },
     checkMode (value) {
-      if (value === 'read' && this.oldMode === 'write') {
+      if (value === 'read' && this.oldMode !== 'read') {
         this.validName = true
         this.$emit('read', this.oldName)
         this.value = ''
@@ -207,7 +221,7 @@ export default {
           this.validName = false
         }
         this.save()
-      } else if (value === 'write' && this.oldMode === 'read') {
+      } else if (value === 'write' && this.oldMode !== 'write') {
         this.name = ''
         if (this.validName) this.$emit('write', this.name, this.type, this.value, this.defaultValue)
         this.oldName = this.name
@@ -220,6 +234,27 @@ export default {
         this.mode = 'write'
         this.oldMode = 'write'
         this.validName = false
+        this.save()
+      } else if (value === 'modifyWrite' && this.oldMode !== 'modifyWrite') {
+        this.validName = true
+        this.$emit('read', this.oldName)
+        this.value = ''
+        this.defaultValue = this.aux[0].defaultValue
+        this.title = ''
+        this.name = this.aux[0].value
+        this.prevText = ''
+        this.nextText = ''
+        this.oldName = ''
+        this.mode = 'modifyWrite'
+        this.oldMode = 'modifyWrite'
+        if (this.auxCustomBoxesData.length === 0) {
+          this.mode = 'write'
+          this.name = ''
+          this.type = 'string'
+          this.value = ''
+          this.defaultValue = ''
+          this.validName = false
+        }
         this.save()
       }
     },
@@ -249,6 +284,16 @@ export default {
       this.saveLimited(value)
       this.$emit('update', this.oldName, this.name, value, this.value, this.defaultValue)
     },
+    findValues () {
+      var found = false
+      for (var i = 0; i < this.auxCustomBoxesData.length && !found; ++i) {
+        if (this.auxCustomBoxesData[i].name === this.name) {
+          this.defaultValue = this.auxCustomBoxesData[i].defaultValue
+          this.type = this.auxCustomBoxesData[i].type
+          found = true
+        }
+      }
+    },
     formatName (value) {
       return String(value).substring(0, 20)
     },
@@ -266,7 +311,8 @@ export default {
       return String(value).substring(0, 1000)
     },
     save () {
-      if (this.type === 'number') this.defaultValue = this.defaultValue.toString()
+      if (this.mode === 'modifyWrite') this.findValues()
+      else if (this.type === 'number') this.defaultValue = this.defaultValue.toString()
       if (this.title === '') this.title = this.name
       this.$emit('save', this.name, this.mode, this.type, this.value, this.defaultValue, this.title, this.prevText, this.nextText, this.index)
     },
