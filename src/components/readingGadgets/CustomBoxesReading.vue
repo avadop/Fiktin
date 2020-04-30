@@ -5,7 +5,7 @@
       <span class="textColor">{{ valueShow }}</span>
       <span>{{ nextText }}</span>
     </div>
-    <div v-else-if="mode == 'write'" class="write">
+    <div v-else-if="mode == 'write' || mode == 'modifyWrite'" class="write">
       <div style="margin-bottom: 3px;">
         <span style="font-size: 24px;">{{ title }}: </span>
       </div>
@@ -55,6 +55,8 @@ export default {
           if (this.mode === 'read') {
             if (this.customBoxes[i].value !== '') this.valueShow = this.customBoxes[i].value
             else this.valueShow = this.customBoxes[i].defaultValue
+          } else if (this.mode === 'write' || this.mode === 'modifyWrite') {
+            this.writeVar = this.customBoxes[i].value // writeVar puede ser vacío, por eso no se comprueba como en 'read'
           }
           this.index = i
           end = true
