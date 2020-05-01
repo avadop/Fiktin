@@ -8,7 +8,7 @@
         <label>Texto principal</label>
         <b-form-textarea
           v-model="mainText"
-          :state="mainText.length <= 1000 && mainText.length > 0"
+          :state="mainText.length <= 2000 && mainText.length > 0"
           aria-describedby="input-live-help input-live-feedback"
           placeholder="Introduce el texto que quieres que se muestre..."
           rows="3"
@@ -25,7 +25,7 @@
         <label>Texto expandible</label>
         <b-form-textarea
           v-model="expandedText"
-          :state="expandedText.length <= 1000 && expandedText.length > 0"
+          :state="expandedText.length <= 2000 && expandedText.length > 0"
           aria-describedby="input-live-help input-live-feedback"
           placeholder="Introduce el texto que se mostrara al expandir..."
           rows="3"
