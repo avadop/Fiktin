@@ -82,7 +82,8 @@ export default {
                 userID: doc1.data().user_id,
                 nick: doc2.data().nick,
                 name: doc2.data().name,
-                sections: doc1.data().sections
+                sections: doc1.data().sections,
+                customBoxes: doc1.data().customBoxes
               })
             })
           }

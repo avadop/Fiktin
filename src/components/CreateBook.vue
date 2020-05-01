@@ -209,7 +209,8 @@ export default {
         description: this.description,
         published: this.published,
         user_id: this.userID,
-        sections: [sections[0].id]
+        sections: [sections[0].id],
+        customBoxes: []
       }).then(docRef => {
         bookID = docRef.id
       })
