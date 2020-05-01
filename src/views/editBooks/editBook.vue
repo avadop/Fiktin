@@ -90,6 +90,8 @@
               :index="index"
               :mainTextAux="text.mainText"
               :popupTextAux="text.popupText"
+              :htmlTextAux="text.htmlText"
+              :pictureAux="text.picture"
               :lastPressed="lastPress"
               @html="savePopupText"/>
             <Hyperlink v-if="text.component=='Hyperlink'"
@@ -182,6 +184,10 @@
               :sectionNoMoreMovesAux="text.sectionNoMoreMoves"
               :sectionSolvedAux="text.sectionSolved"
               :changeSectionWhenWrongAux="text.changeSectionWhenWrong"
+              :customizedAux="text.customized"
+              :typeChosenAux="text.typeChosen"
+              :customWordsAux="text.customWords"
+              :customColorsAux="text.customColors"
               :index="index"
               @save="saveMemoryCards"/>
             <CompleteClues v-if="text.component === 'CompleteClues'"
@@ -254,7 +260,7 @@
 
         <span class="clickable" @click="addExandableText()"><b-icon icon="layers-half"/> Texto expandible</span>
         <div/>
-        <span class="clickable" @click="addPopupText()"><b-icon icon="files-alt"/> Texto emergente</span>
+        <span class="clickable" @click="addPopupText()"><b-icon icon="files-alt"/> Anotaciones</span>
         <div/>
         <span class="clickable" @click="addHyperlink()"><b-icon icon="link"/> Hipervínculo</span>
         <div/>
@@ -442,7 +448,7 @@ export default {
       else if (this.data[index].component === 'Header3') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Header3', componentName: 'Título' })
 
       else if (this.data[index].component === 'ExpandableText') this.data.splice(index + 1, 0, { mainText: this.data[index].mainText, expandedText: this.data[index].expandedText, component: 'ExpandableText', componentName: 'Texto expandible' })
-      else if (this.data[index].component === 'PopupText') this.data.splice(index + 1, 0, { mainText: this.data[index].mainText, popupText: this.data[index].popupText, component: 'PopupText', componentName: 'Texto emergente' })
+      else if (this.data[index].component === 'PopupText') this.data.splice(index + 1, 0, { mainText: this.data[index].mainText, popupText: this.data[index].popupText, htmlText: this.data[index].htmlText, picture: this.data[index].picture, component: 'PopupText', componentName: 'Texto emergente' })
       else if (this.data[index].component === 'Hyperlink') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, mainText: this.data[index].mainText, hyperlinkText: this.data[index].hyperlinkText, component: 'Hyperlink', componentName: 'Hipervínculo' })
       else if (this.data[index].component === 'Spoiler') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Spoiler', componentName: 'Spoiler' })
 
@@ -491,6 +497,10 @@ export default {
           sectionNoMoreMoves: this.data[index].sectionNoMoreMoves,
           sectionSolved: this.data[index].sectionSolved,
           changeSectionWhenWrong: this.data[index].changeSectionWhenWrong,
+          customized: this.data[index].customized,
+          typeChosen: this.data[index].typeChosen,
+          customWords: this.data[index].customWords,
+          customColors: this.data[index].customColors,
           component: 'MemoryCards',
           componentName: 'Tarjetas de memoria' })
       } else if (this.data[index].component === 'CompleteClues') {
@@ -522,7 +532,7 @@ export default {
       this.data.splice(this.lastPress + 1, 0, { mainText: '', expandedText: '', component: 'ExpandableText', componentName: 'Texto expandible' })
     },
     addPopupText () {
-      this.data.splice(this.lastPress + 1, 0, { mainText: '', popupText: '', component: 'PopupText', componentName: 'Texto emergente' })
+      this.data.splice(this.lastPress + 1, 0, { mainText: '', popupText: '', htmlText: '', picture: '', component: 'PopupText', componentName: 'Texto emergente' })
     },
     addHyperlink () {
       this.data.splice(this.lastPress + 1, 0, { mainText: '', htmlText: '', hyperlinkText: '', component: 'Hyperlink', componentName: 'Hipervínculo' })
@@ -572,7 +582,17 @@ export default {
       this.data.splice(this.lastPress + 1, 0, { lowerLimit: 0, upperLimit: 10, conditions: [], numberOfConditions: 0, component: 'RandomNumber', componentName: 'Número aleatorio' })
     },
     addMemoryCards () {
-      this.data.splice(this.lastPress + 1, 0, { numberOfPairs: 2, maxNumberOfMoves: 6, sectionNoMoreMoves: '', sectionSolved: '', changeSectionWhenWrong: false, component: 'MemoryCards', componentName: 'Tarjetas de memoria' })
+      this.data.splice(this.lastPress + 1, 0, { numberOfPairs: 2,
+        maxNumberOfMoves: 6,
+        sectionNoMoreMoves: '',
+        sectionSolved: '',
+        changeSectionWhenWrong: false,
+        customized: false,
+        typeChosen: '',
+        customWords: [],
+        customColors: [],
+        component: 'MemoryCards',
+        componentName: 'Tarjetas de memoria' })
     },
     addClues () {
       this.data.splice(this.lastPress + 1, 0, { answers: [{ answer: '' }], answersNumber: 1, clues: [{ clue: '' }], cluesNumber: 1, onGuess: this.sectionsData[0].value, changeSectionWhenWrong: false, onWrong: '', component: 'CompleteClues', componentName: 'Pistas' })
@@ -793,9 +813,11 @@ export default {
       this.data[index].mainText = mainText
       this.data[index].expandedText = expandedText
     },
-    savePopupText (mainText, popupText, index) {
+    savePopupText (mainText, popupText, htmlText, picture, index) {
       this.data[index].mainText = mainText
       this.data[index].popupText = popupText
+      this.data[index].htmlText = htmlText
+      this.data[index].picture = picture
     },
     saveHyperlink (htmlText, mainText, hyperlinkText, index) {
       this.data[index].htmlText = htmlText
@@ -847,12 +869,16 @@ export default {
       this.data[index].lowerLimit = lowerLimit
       this.data[index].upperLimit = upperLimit
     },
-    saveMemoryCards (numberOfPairs, maxNumberOfMoves, sectionNoMoreMoves, sectionSolved, changeSectionWhenWrong, index) {
+    saveMemoryCards (numberOfPairs, maxNumberOfMoves, sectionNoMoreMoves, sectionSolved, changeSectionWhenWrong, customized, typeChosen, customWords, customColors, index) {
       this.data[index].numberOfPairs = numberOfPairs
       this.data[index].maxNumberOfMoves = maxNumberOfMoves
       this.data[index].sectionNoMoreMoves = sectionNoMoreMoves
       this.data[index].sectionSolved = sectionSolved
       this.data[index].changeSectionWhenWrong = changeSectionWhenWrong
+      this.data[index].customized = customized
+      this.data[index].typeChosen = typeChosen
+      this.data[index].customWords = customWords
+      this.data[index].customColors = customColors
     },
     saveClues (answers, answersNumber, clues, cluesNumber, onGuess, changeSectionWhenWrong, onWrong, index) {
       this.data[index].answers = answers

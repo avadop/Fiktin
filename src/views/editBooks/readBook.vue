@@ -55,13 +55,18 @@
           :expandedText="text.expandedText"/>
         <PopupTextReading v-if="text.component === 'PopupText'"
           :mainText="text.mainText"
-          :popupText="text.popupText"/>
+          :popupText="text.popupText"
+          :htmlText="text.htmlText"/>
         <MemoryCardsReading v-if="text.component === 'MemoryCards'"
           :numberOfPairs="text.numberOfPairs"
           :maxNumberOfMoves="text.maxNumberOfMoves"
           :sectionNoMoreMoves="text.sectionNoMoreMoves"
           :sectionSolved="text.sectionSolved"
           :changeSectionWhenWrong="text.changeSectionWhenWrong"
+          :customized="text.customized"
+          :typeChosen="text.typeChosen"
+          :customWords="text.customWords"
+          :customColors="text.customColors"
           @answered="loadSection"/>
         <SpoilerReading v-if="text.component === 'Spoiler'"
           :htmlTextAux="text.htmlText"/>

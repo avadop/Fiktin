@@ -13,7 +13,7 @@
       <b-col cols="5"><span>Sección a la que quieres saltar: </span></b-col>
       <b-col><b-form-select size="sm" @change="save()" v-model="selectedSectionID" :options="aux"></b-form-select></b-col>
     </b-row>
-    <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="preparePreview()">Preview</b-button>
+    <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="preparePreview()">Previsualizar</b-button>
 
     <b-modal v-model="showPreview" hide-footer hide-header centered >
       <h5>Cambio de seccion</h5>

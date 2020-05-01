@@ -11,9 +11,34 @@
     <b-row style="padding-bottom: 10px;">
       <b-col cols="4"><span>Número de movimientos disponibles: {{ maxNumberOfMoves }}</span></b-col>
       <b-col>
-        <b-form-input v-model="maxNumberOfMoves" type="range" :step="2" :min="numberOfPairs * 2" max="100" @change="save()"/>
+        <b-form-input v-model="maxNumberOfMoves" type="range" :step="2" :min="numberOfPairs * 2 + numberOfPairs + (numberOfPairs % 2)" max="200" @change="save()"/>
       </b-col>
     </b-row>
+    <div v-if="customized === true" style="padding-top: 5px; padding-bottom: 80px;">
+      <span style="padding-top: 15px;padding-right: 12px;">Elije el tipo de customizacion que deseas realizar</span>
+      <b-form-select size = "sm" style="width: 200px;" v-model="typeChosen" :options="customizationTypes" @change="save()"></b-form-select>
+      <div v-if="typeChosen === 'words'">
+        <div v-for="(n, index) in numberOfPairs" :key="index" >
+          <b-row style="margin-left:2px;"><span style="padding-top: 15px;">Pareja {{ n }}</span>
+          <b-form-input v-model="customWords[index*2]" style="width:230px; margin-left: 20px; margin-top: 10px;" :formatter="limit" placeholder="Texto 1" @change="save()"></b-form-input>
+          <b-form-input v-model="customWords[index*2+1]" style="width:230px; margin-left: 20px; margin-top: 10px;" :formatter="limit" placeholder="Texto 2" @change="save()"></b-form-input></b-row>
+        </div>
+      </div>
+      <div v-if="typeChosen === 'color'">
+        <div v-for="(n, index) in numberOfPairs" :key="index" >
+          <b-row style="margin-left:2px;"><span style="padding-top: 15px;">Pareja {{ n }}</span>
+          <b-form-input v-if="customColors[index] === undefined" v-model="customColors[index]" type="color" style="width: 57%; margin-left: 20px; margin-top: 10px;" @change="save()"></b-form-input>
+          <b-form-input v-else v-model="customColors[index]" type="color" style="width: 78%; margin-left: 20px; margin-top: 10px;" @change="save()"></b-form-input>
+          <span v-if="customColors[index] === undefined" style="color:red; padding-left: 8px; padding-top: 15px;">Elige algún color</span></b-row>
+        </div>
+      </div>
+      <b-button size="sm" style=" heigth:7px; margin-top: 10px; float: right;"  variant="outline-secondary" block @click="cardsNotCustomized()">Cancelar</b-button>
+    </div>
+    <div v-else style="padding-bottom: 10px;">
+      <span @click="customized = true, save()" style="color: darkgreen; font-weight: bold; cursor: pointer;"> Customizar tarjetas</span>
+      <span style="font-size: 13px; padding-bottom: 15px;"> (En caso de no activar esta opción, las tarjetas tendrán sus valores por defecto)</span>
+    </div>
+
     <b-row>
       <b-col cols="5"><span>Sección a la que quieres saltar si se resuelve el puzzle: </span></b-col>
       <b-col><b-form-select size="sm" @change="save()" v-model="sectionSolved" :options="sections"></b-form-select></b-col>
@@ -27,17 +52,23 @@
       <span @click="changeSectionWhenWrong = true, save()" style="color: darkblue; font-weight: bold; cursor: pointer;"> Agregar salto de seccion al quedarse sin movimientos</span>
       <span style="font-size: 13px;"> (En caso de no activar esta opción, si el lector se queda sin movimientos se quedará en la página que está)</span>
     </div>
-    <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="show = true, shufflePreview()">Preview</b-button>
+    <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="show = true, shufflePreview()">Previsualizar</b-button>
 
     <b-modal v-model="show" hide-footer hide-header centered>
       <div class="d-block text-left">
         <h5>Tarjetas de memoria</h5>
         <p>¡Intenta emparejar todas las tarjetas!</p>
       </div>
-      <b-row style="margin-left: 15px;">
+      <b-row v-if="customized === true && typeChosen === 'words'" style="margin-left: 15px;">
+        <div v-for="(cardText, indexText) in cards" :key="indexText">
+          <b-button v-if="cardText.flipped === false" class="card-text" style="margin-bottom: 10px;"  :disabled="numberOfCardsFlipped === 2 || (numberOfMovesPreview === maxNumberOfMoves)" @click="flipCardPreview(indexText)"></b-button>
+          <b-button v-else variant="info" class="memory-card-text" style="margin-bottom: 10px; font-weight: bold; font-size: 20px;">{{ cardText.text }}</b-button>
+        </div>
+     </b-row>
+      <b-row v-else style="margin-left: 15px;">
         <div v-for="(card, index) in cards" :key="index">
           <b-button v-if="card.flipped === false" :disabled="numberOfCardsFlipped === 2 || (numberOfMovesPreview === maxNumberOfMoves)" style="height: 75px; width: 75px; margin: 10px; margin-top: 0px;" @click="flipCardPreview(index)"></b-button>
-          <b-button v-else :variant="card.image" style="height: 75px; width: 75px; margin: 10px; margin-top: 0px;"></b-button>
+          <b-button v-else class="memory-card-color" :style="card.color"></b-button>
         </div>
       </b-row>
       <p v-if="numberOfMovesPreview === maxNumberOfMoves && this.pairsMissing > 0" style="color: red;">Te has quedado sin movimientos :(</p>
@@ -61,7 +92,11 @@ export default {
     sectionNoMoreMovesAux: String,
     sectionSolvedAux: String,
     changeSectionWhenWrongAux: Boolean,
-    index: Number
+    index: Number,
+    customizedAux: Boolean,
+    typeChosenAux: String,
+    customWordsAux: Array,
+    customColorsAux: Array
   },
   data () {
     return {
@@ -72,22 +107,28 @@ export default {
       sectionNoMoreMoves: this.sectionNoMoreMovesAux,
       sectionSolved: this.sectionSolvedAux,
       changeSectionWhenWrong: this.changeSectionWhenWrongAux,
+      customized: this.customizedAux,
+      customizationTypes: [{ value: 'color', text: 'Colores' }, { value: 'words', text: 'Palabras' }],
+      typeChosen: this.typeChosenAux,
+      customWords: this.customWordsAux,
+      customColors: this.customColorsAux,
 
       show: false,
       numberOfMovesPreview: 0,
       pairsMissing: this.numberOfPairs,
-      cardTypes: [{ image: 'primary' },
-        { image: 'danger' },
-        { image: 'success' },
-        { image: 'warning' },
-        { image: 'dark' },
-        { image: 'info' },
-        { image: 'light' },
-        { image: 'outline-success' },
-        { image: 'outline-warning' },
-        { image: 'outline-danger' },
-        { image: 'outline-primary' },
-        { image: 'outline-dark' }],
+      cardTypes: [{ color: '#4CAF50' }, // verde
+        { color: '#008CBA' }, // azul
+        { color: '#FF9713' }, // naranja
+        { color: '#EE2A1C' }, // rojo
+        { color: '#A97FCB' }, // lila
+        { color: '#F12CDF' }, // fuxia
+        { color: '#18FCC5' }, // aguamarina
+        { color: '#5E22F1' }, // purpura
+        { color: '#F0A899' }, // naranjita
+        { color: '#074F1D' }, // verde oscuro
+        { color: '#5F380A' }, // marron
+        { color: '#DEF122' } // verde lima
+      ],
       cards: [],
       numberOfCardsFlipped: 0,
       cardClickedBefore: '',
@@ -105,7 +146,7 @@ export default {
       this.refresh()
     },
     numberOfPairs: function () {
-      if (this.maxNumberOfMoves < this.numberOfPairs * 2) this.maxNumberOfMoves = this.numberOfPairs * 2
+      if (this.maxNumberOfMoves < this.numberOfPairs * 2) this.maxNumberOfMoves = this.numberOfPairs * 2 + this.numberOfPairs + (this.numberOfPairs % 2)
     },
     maxNumberOfMovesAux: function () {
       this.refresh()
@@ -117,6 +158,18 @@ export default {
       this.refresh()
     },
     changeSectionWhenWrongAux: function () {
+      this.refresh()
+    },
+    customizedAux: function () {
+      this.refresh()
+    },
+    typeChosenAux: function () {
+      this.refresh()
+    },
+    customWordsAux: function () {
+      this.refresh()
+    },
+    customColorsAux: function () {
       this.refresh()
     },
     index: function () {
@@ -135,6 +188,10 @@ export default {
       this.sectionNoMoreMoves = this.sectionNoMoreMovesAux
       this.sectionSolved = this.sectionSolvedAux
       this.changeSectionWhenWrong = this.changeSectionWhenWrongAux
+      this.customized = this.customizedAux
+      this.typeChosen = this.typeChosenAux
+      this.customWords = this.customWordsAux
+      this.customColors = this.customColorsAux
 
       this.deepClone()
       this.checkContent()
@@ -184,11 +241,16 @@ export default {
     save () {
       if (this.sectionNoMoreMoves === undefined) this.sectionNoMoreMoves = ''
       if (this.sectionSolved === undefined) this.sectionSolved = ''
-      this.$emit('save', parseInt(this.numberOfPairs, 10), parseInt(this.maxNumberOfMoves, 10), this.sectionNoMoreMoves, this.sectionSolved, this.changeSectionWhenWrong, this.index)
+      this.$emit('save', parseInt(this.numberOfPairs, 10), parseInt(this.maxNumberOfMoves, 10), this.sectionNoMoreMoves, this.sectionSolved, this.changeSectionWhenWrong, this.customized, this.typeChosen, this.customWords, this.customColors, this.index)
     },
     noWrongSection () {
       this.changeSectionWhenWrong = false
       this.sectionNoMoreMoves = ''
+      this.save()
+    },
+    cardsNotCustomized () {
+      this.customized = false
+      this.typeChosen = ''
       this.save()
     },
     shufflePreview () {
@@ -198,14 +260,17 @@ export default {
       this.numberOfCardsFlipped = 0
       this.cards = []
 
-      for (var i = 0; i < this.numberOfPairs * 2; ++i) this.cards.push({ image: '', flipped: Boolean })
+      for (var i = 0; i < this.numberOfPairs * 2; ++i) this.cards.push({ color: '', flipped: Boolean, text: '', value: 0 })
       var value = 1
       var j = 0
       while (j < this.numberOfPairs * 2) {
         var index = Math.floor(Math.random() * (this.numberOfPairs * 2))
-        if (this.cards[index].image === '') {
-          this.cards[index].image = this.cardTypes[value - 1].image
+        if (this.cards[index].value === 0) {
+          if (this.customized && this.typeChosen === 'words') this.cards[index].text = this.customWords[j]
+          else if (this.customized && this.typeChosen === 'color') this.cards[index].color = 'background-color: ' + this.customColors[value - 1] + ';'
+          else this.cards[index].color = 'background-color: ' + this.cardTypes[value - 1].color + ';'
           this.cards[index].flipped = false
+          this.cards[index].value = value
           j++
           if (j % 2 === 0) value++
         }
@@ -217,12 +282,12 @@ export default {
       this.numberOfMovesPreview++
 
       if (this.numberOfCardsFlipped === 1) this.cardClickedBefore = index
-      if (this.numberOfCardsFlipped === 2 && (this.cards[index].image === this.cards[this.cardClickedBefore].image)) {
+      if (this.numberOfCardsFlipped === 2 && (this.cards[index].value === this.cards[this.cardClickedBefore].value)) {
         this.numberOfCardsFlipped = 0
         this.pairsMissing--
         if (this.pairsMissing === 0) this.solved = true
       }
-      if (this.numberOfCardsFlipped === 2 && (this.cards[index].image !== this.cards[this.cardClickedBefore].image)) {
+      if (this.numberOfCardsFlipped === 2 && (this.cards[index].value !== this.cards[this.cardClickedBefore].value)) {
         setTimeout(() => { this.refreshPreview(index) }, 1000)
       }
     },
@@ -230,6 +295,9 @@ export default {
       this.cards[index].flipped = false
       this.cards[this.cardClickedBefore].flipped = false
       this.numberOfCardsFlipped = 0
+    },
+    limit (value) {
+      return String(value).substring(0, 15)
     }
   }
 }
@@ -242,5 +310,33 @@ export default {
 }
 .title {
   font-weight: bold;
+}
+</style>
+
+<style>
+.card-color {
+  height: 75px;
+  width: 75px;
+  margin: 10px;
+  margin-top: 0px;
+}
+.card-text {
+  height: 50px;
+  width: 200px;
+  margin: 8px;
+  margin-top: 0px;
+}
+.memory-card-color {
+  height: 75px;
+  width: 75px;
+  margin: 10px;
+  margin-top: 0px;
+  border: none;
+}
+.memory-card-text {
+  height: 50px;
+  width: 200px;
+  margin: 8px;
+  margin-top: 0px;
 }
 </style>

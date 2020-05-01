@@ -8,7 +8,7 @@
       </b-col>
     </b-row>
     <span>La sección que se va a repetir es: {{ sectionName }}.</span>
-    <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="preparePreview()">Preview</b-button>
+    <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="preparePreview()">Previsualizar</b-button>
 
     <b-modal v-model="showPreview" hide-footer hide-header centered >
       <h5>Repetir seccion</h5>

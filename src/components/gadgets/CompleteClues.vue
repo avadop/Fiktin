@@ -45,6 +45,29 @@
         </b-row>
       </div>
     </div>
+    <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="preparePreview()">Previsualizar</b-button>
+
+    <b-modal v-model="showPreview" hide-footer hide-header centered >
+      <h5>¡Completa las pistas!</h5>
+      <div>
+        <div v-for="(element, index) in auxClues" :key="index">
+          <span>Pista {{ index + 1}}: {{ element.clue }}</span>
+        </div>
+      </div>
+      <div>
+        <div v-for="(element, index) in dataPreview" :key="index">
+          <b-form-select v-model="dataPreview[index]" :options="optionsPreview" size="sm"/>
+        </div>
+      </div>
+      <div>
+        <button style="margin-top: 10px;" @click="checkPreview()">Comprobar respuestas</button>
+        <p v-if="solvedPreview === true" style="padding-top: 10px; color: green;"> ¡Has resuelto el problema!</p>
+        <p v-if="solvedPreview === false" style="padding-top: 10px; color: red;"> ¡Fallaste! Buena suerte la proxima vez</p>
+      </div>
+      <div class="d-flex justify-content-center">
+        <b-button id="button-modal-ok" class="mt-1" variant="secondary" block @click="showPreview = false, solvedPreview = null">Ok</b-button>
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -74,7 +97,12 @@ export default {
       changeSectionWhenWrong: false,
       onWrong: '',
       options: [],
-      valid: true
+      valid: true,
+
+      showPreview: false,
+      dataPreview: [],
+      optionsPreview: [],
+      solvedPreview: null
     }
   },
   watch: {
@@ -234,6 +262,25 @@ export default {
       this.cluesNumber = parseInt(this.cluesNumber, 10)
       this.numberOfConditions = parseInt(this.numberOfConditions, 10)
       this.$emit('clues', this.answers, this.answersNumber, this.clues, this.cluesNumber, this.onGuess, this.changeSectionWhenWrong, this.onWrong, this.index)
+    },
+    preparePreview () {
+      this.showPreview = true
+      this.dataPreview = []
+      this.optionsPreview = []
+      for (var j = 0; j < this.clues.length; ++j) {
+        this.optionsPreview.push({ value: this.clues[j].clue, text: this.clues[j].clue })
+      }
+      for (var i = 0; i < this.answers.length; ++i) {
+        this.dataPreview.push(this.clues[0].clue)
+      }
+    },
+    checkPreview () {
+      var wrong = false
+      for (var i = 0; i < this.answers.length && !wrong; ++i) {
+        if (this.answers[i].answer !== this.dataPreview[i]) wrong = true
+      }
+      if (!wrong) this.solvedPreview = true
+      else if (wrong) this.solvedPreview = false
     }
   }
 }
@@ -242,6 +289,7 @@ export default {
 <style scoped>
 .border {
   padding: 10px;
+  padding-bottom: 54px;
 }
 .title {
   font-weight: bold;
