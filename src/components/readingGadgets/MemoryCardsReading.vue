@@ -2,10 +2,16 @@
   <div>
     <h5>Tarjetas de memoria</h5>
     <p>¡Intenta emparejar todas las tarjetas!</p>
-    <b-row style="margin-left: 15px;">
+    <b-row v-if="customized === true && typeChosen === 'words'" style="margin-left: 15px;">
+      <div v-for="(cardText, indexText) in cards" :key="indexText">
+          <b-button v-if="cardText.flipped === false" class="card-text" style="margin-bottom: 10px;"  :disabled="numberOfCardsFlipped === 2 || (numberOfMoves === maxNumberOfMoves)" @click="flipCard(indexText)"></b-button>
+          <b-button v-else variant="info" class="memory-card-text" style="margin-bottom: 10px; font-weight: bold; font-size: 20px;">{{ cardText.text }}</b-button>
+      </div>
+    </b-row>
+    <b-row v-else style="margin-left: 15px;">
       <div v-for="(card, index) in cards" :key="index">
-          <b-button v-if="card.flipped === false" :disabled="numberOfCardsFlipped === 2 || (numberOfMoves === maxNumberOfMoves)" style="height: 75px; width: 75px; margin: 10px; margin-top: 0px;" @click="flipCard(index)"></b-button>
-          <b-button v-else :variant="card.image" style="height: 75px; width: 75px; margin: 10px; margin-top: 0px;"></b-button>
+          <b-button v-if="card.flipped === false" class="card-color" :disabled="numberOfCardsFlipped === 2 || (numberOfMoves === maxNumberOfMoves)" @click="flipCard(index)"></b-button>
+          <b-button v-else class="memory-card-color" :style="card.color"></b-button>
       </div>
     </b-row>
     <p v-if="numberOfMoves === maxNumberOfMoves && this.numberOfPairsMissing > 0" style="color: red;">Te has quedado sin movimientos :(</p>
@@ -23,22 +29,27 @@ export default {
     maxNumberOfMoves: Number,
     sectionNoMoreMoves: String,
     sectionSolved: String,
-    changeSectionWhenWrong: Boolean
+    changeSectionWhenWrong: Boolean,
+    customized: Boolean,
+    typeChosen: String,
+    customWords: Array,
+    customColors: Array
   },
   data () {
     return {
-      cardTypes: [{ image: 'primary' },
-        { image: 'danger' },
-        { image: 'success' },
-        { image: 'warning' },
-        { image: 'dark' },
-        { image: 'info' },
-        { image: 'light' },
-        { image: 'outline-success' },
-        { image: 'outline-warning' },
-        { image: 'outline-danger' },
-        { image: 'outline-primary' },
-        { image: 'outline-dark' }],
+      cardTypes: [{ color: '#4CAF50' }, // verde
+        { color: '#008CBA' }, // azul
+        { color: '#FF9713' }, // naranja
+        { color: '#EE2A1C' }, // rojo
+        { color: '#A97FCB' }, // lila
+        { color: '#F12CDF' }, // fuxia
+        { color: '#18FCC5' }, // aguamarina
+        { color: '#5E22F1' }, // purpura
+        { color: '#F0A899' }, // naranjita
+        { color: '#074F1D' }, // verde oscuro
+        { color: '#5F380A' }, // marron
+        { color: '#DEF122' } // verde lima
+      ],
       cards: [],
       numberOfCardsFlipped: 0,
       cardClickedBefore: '',
@@ -52,14 +63,18 @@ export default {
   },
   methods: {
     shuffleCards () {
-      for (var i = 0; i < this.numberOfPairs * 2; ++i) this.cards.push({ image: '', flipped: Boolean })
+      for (var i = 0; i < this.numberOfPairs * 2; ++i) this.cards.push({ color: '', flipped: Boolean, text: '', value: 0 })
       var value = 1
       var j = 0
+
       while (j < this.numberOfPairs * 2) {
         var index = Math.floor(Math.random() * (this.numberOfPairs * 2))
-        if (this.cards[index].image === '') {
-          this.cards[index].image = this.cardTypes[value - 1].image
+        if (this.cards[index].value === 0) {
+          if (this.customized && this.typeChosen === 'words') this.cards[index].text = this.customWords[j]
+          else if (this.customized && this.typeChosen === 'color') this.cards[index].color = 'background-color: ' + this.customColors[value - 1] + ';'
+          else this.cards[index].color = 'background-color: ' + this.cardTypes[value - 1].color + ';'
           this.cards[index].flipped = false
+          this.cards[index].value = value
           j++
           if (j % 2 === 0) value++
         }
@@ -71,7 +86,7 @@ export default {
       this.numberOfMoves++
 
       if (this.numberOfCardsFlipped === 1) this.cardClickedBefore = index
-      if (this.numberOfCardsFlipped === 2 && (this.cards[index].image === this.cards[this.cardClickedBefore].image)) {
+      if (this.numberOfCardsFlipped === 2 && (this.cards[index].value === this.cards[this.cardClickedBefore].value)) {
         this.numberOfCardsFlipped = 0
         this.numberOfPairsMissing--
         if (this.numberOfPairsMissing === 0) this.solved = true
@@ -84,7 +99,7 @@ export default {
       if (this.numberOfMoves === this.maxNumberOfMoves && this.numberOfPairsMissing > 0) {
         setTimeout(() => { this.checkAnswer() }, 700)
       }
-      if (this.numberOfCardsFlipped === 2 && (this.cards[index].image !== this.cards[this.cardClickedBefore].image)) {
+      if (this.numberOfCardsFlipped === 2 && (this.cards[this.cardClickedBefore].value !== this.cards[index].value)) {
         setTimeout(() => { this.refresh(index) }, 1000)
       }
     },
@@ -104,3 +119,31 @@ export default {
   }
 }
 </script>
+
+<style>
+.card-color {
+  height: 75px;
+  width: 75px;
+  margin: 10px;
+  margin-top: 0px;
+}
+.card-text {
+  height: 50px;
+  width: 200px;
+  margin: 8px;
+  margin-top: 0px;
+}
+.memory-card-color {
+  height: 75px;
+  width: 75px;
+  margin: 10px;
+  margin-top: 0px;
+  border: none;
+}
+.memory-card-text {
+  height: 50px;
+  width: 200px;
+  margin: 8px;
+  margin-top: 0px;
+}
+</style>

@@ -13,13 +13,13 @@
       <b-row style="padding-bottom: 10px;">
         <b-col cols="6"><span>Número de campos dados: {{ sequence.length }}</span></b-col>
         <b-col>
-          <b-form-input v-model="numberOfSequence" type="range" min="1" max="5" @change="modifySequence(), save()"/>
+          <b-form-input v-model="numberOfSequence" type="range" min="1" max="8" @change="modifySequence(), save()"/>
         </b-col>
       </b-row>
       <div class="table" v-for="(element, index) in sequence" :key="index">
-        <b-row>
+        <b-row >
           <b-col cols="3"><span>Elemento {{ index + 1 }}: </span></b-col>
-          <b-col><b-form-input v-model="element.text" size="sm" :formatter="limit" placeholder="Texto dado de máximo de 10 caracteres" @blur="save()"/></b-col>
+          <b-col><b-form-input v-model="element.text" size="sm" :formatter="limit" placeholder="Texto dado máximo de 20 caracteres" @blur="save()"/></b-col>
         </b-row>
       </div>
     </div>
@@ -33,7 +33,7 @@
       <div class="table" v-for="(element, index) in solution" :key="index">
         <b-row>
           <b-col cols="3"><span>Solución {{ index + 1 }}: </span></b-col>
-          <b-col><b-form-input v-model="element.text" size="sm" trim :formatter="limit" placeholder="Solución de máximo de 10 caracteres" @blur="save()"/></b-col>
+          <b-col><b-form-input v-model="element.text" size="sm" trim :formatter="limit" placeholder="Solución de máximo de 20 caracteres" @blur="save()"/></b-col>
         </b-row>
       </div>
     </div>
@@ -50,7 +50,7 @@
         <b-col><b-form-select size="sm" @change="save()" v-model="wrongSection" :options="aux"></b-form-select></b-col>
       </b-row>
     </div>
-    <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="preparePreview()">Preview</b-button>
+    <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="preparePreview()">Previsualizar</b-button>
 
     <b-modal v-model="showPreview" hide-footer hide-header centered >
       <div style="margin: 10px;">
@@ -248,8 +248,7 @@ export default {
       }
     },
     limit (value) {
-      var aux = String(value).substring(0, 10)
-      return aux.toLowerCase()
+      return String(value).substring(0, 20)
     },
     wrong () {
       this.changeSectionWhenWrong = !this.changeSectionWhenWrong

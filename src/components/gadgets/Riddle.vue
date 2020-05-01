@@ -39,7 +39,7 @@
         <span @click="changeSectionWhenWrong = true" style="color: darkblue; font-weight: bold; cursor: pointer;"> Agregar salto de seccion al fallar la respuesta</span>
         <span style="font-size: 13px;"> (En caso de no activar esta opción, si el lector falla la respuesta se quedará en la página que está)</span>
       </div>
-      <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="show = true, numberOfTriesPreview = parseInt(numberOfTries,10)">Preview</b-button>
+      <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="show = true, numberOfTriesPreview = parseInt(numberOfTries,10)">Previsualizar</b-button>
     </div>
 
     <b-modal v-model="show" hide-footer hide-header centered>
