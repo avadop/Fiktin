@@ -62,7 +62,7 @@
       <b-row v-if="customized === true && typeChosen === 'words'" style="margin-left: 15px;">
         <div v-for="(cardText, indexText) in cards" :key="indexText">
           <b-button v-if="cardText.flipped === false" class="card-text" style="margin-bottom: 10px;"  :disabled="numberOfCardsFlipped === 2 || (numberOfMovesPreview === maxNumberOfMoves)" @click="flipCardPreview(indexText)"></b-button>
-          <b-button v-else class="memory-card-text" style="margin-bottom: 10px; font-weight: bold; font-size: 20px;">{{ cardText.text }}</b-button>
+          <b-button v-else variant="info" class="memory-card-text" style="margin-bottom: 10px; font-weight: bold; font-size: 20px;">{{ cardText.text }}</b-button>
         </div>
      </b-row>
       <b-row v-else style="margin-left: 15px;">
