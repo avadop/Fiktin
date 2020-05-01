@@ -33,7 +33,7 @@
           :formatter="limit"
           @change="save()"
         ></b-form-textarea>
-        <span v-if="mainText.length > 1900" style="color: red;">Estas cerca del limite de caracteres, llevas {{ this.mainText.length}} /2000</span>
+        <span v-if="mainText.length > 900" style="color: red;">Estas cerca del limite de caracteres, llevas {{ this.mainText.length}} /1000</span>
         <b-form-invalid-feedback v-else-if="mainText.length < 0" id="input-live-feedback">
           No se puede dejar este campo vacio
         </b-form-invalid-feedback>
