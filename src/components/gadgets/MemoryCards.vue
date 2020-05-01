@@ -20,8 +20,8 @@
       <div v-if="typeChosen === 'words'">
         <div v-for="(n, index) in numberOfPairs" :key="index" >
           <b-row style="margin-left:2px;"><span style="padding-top: 15px;">Pareja {{ n }}</span>
-          <b-form-input v-model="customWords[index*2]" style="width:230px; margin-left: 20px; margin-top: 10px;" placeholder="Texto 1" @change="save()"></b-form-input>
-          <b-form-input v-model="customWords[index*2+1]" style="width:230px; margin-left: 20px; margin-top: 10px;" placeholder="Texto 2" @change="save()"></b-form-input></b-row>
+          <b-form-input v-model="customWords[index*2]" style="width:230px; margin-left: 20px; margin-top: 10px;" :formatter="limit" placeholder="Texto 1" @change="save()"></b-form-input>
+          <b-form-input v-model="customWords[index*2+1]" style="width:230px; margin-left: 20px; margin-top: 10px;" :formatter="limit" placeholder="Texto 2" @change="save()"></b-form-input></b-row>
         </div>
       </div>
       <div v-if="typeChosen === 'color'">
@@ -34,7 +34,7 @@
       </div>
       <b-button size="sm" style=" heigth:7px; margin-top: 10px; float: right;"  variant="outline-secondary" block @click="cardsNotCustomized()">Cancelar</b-button>
     </div>
-    <div v-else>
+    <div v-else style="padding-bottom: 10px;">
       <span @click="customized = true, save()" style="color: darkgreen; font-weight: bold; cursor: pointer;"> Customizar tarjetas</span>
       <span style="font-size: 13px; padding-bottom: 15px;"> (En caso de no activar esta opción, las tarjetas tendrán sus valores por defecto)</span>
     </div>
@@ -59,10 +59,16 @@
         <h5>Tarjetas de memoria</h5>
         <p>¡Intenta emparejar todas las tarjetas!</p>
       </div>
-      <b-row style="margin-left: 15px;">
+      <b-row v-if="customized === true && typeChosen === 'words'" style="margin-left: 15px;">
+        <div v-for="(cardText, indexText) in cards" :key="indexText">
+          <b-button v-if="cardText.flipped === false" class="card-text" style="margin-bottom: 10px;"  :disabled="numberOfCardsFlipped === 2 || (numberOfMovesPreview === maxNumberOfMoves)" @click="flipCardPreview(indexText)"></b-button>
+          <b-button v-else class="memory-card-text" style="margin-bottom: 10px; font-weight: bold; font-size: 20px;">{{ cardText.text }}</b-button>
+        </div>
+     </b-row>
+      <b-row v-else style="margin-left: 15px;">
         <div v-for="(card, index) in cards" :key="index">
           <b-button v-if="card.flipped === false" :disabled="numberOfCardsFlipped === 2 || (numberOfMovesPreview === maxNumberOfMoves)" style="height: 75px; width: 75px; margin: 10px; margin-top: 0px;" @click="flipCardPreview(index)"></b-button>
-          <b-button v-else class="memory-card" :style="card.color"></b-button>
+          <b-button v-else class="memory-card-color" :style="card.color"></b-button>
         </div>
       </b-row>
       <p v-if="numberOfMovesPreview === maxNumberOfMoves && this.pairsMissing > 0" style="color: red;">Te has quedado sin movimientos :(</p>
@@ -245,8 +251,6 @@ export default {
     cardsNotCustomized () {
       this.customized = false
       this.typeChosen = ''
-      this.customWords = []
-      this.customColors = []
       this.save()
     },
     shufflePreview () {
@@ -256,14 +260,17 @@ export default {
       this.numberOfCardsFlipped = 0
       this.cards = []
 
-      for (var i = 0; i < this.numberOfPairs * 2; ++i) this.cards.push({ color: '', flipped: Boolean })
+      for (var i = 0; i < this.numberOfPairs * 2; ++i) this.cards.push({ color: '', flipped: Boolean, text: '', value: 0 })
       var value = 1
       var j = 0
       while (j < this.numberOfPairs * 2) {
         var index = Math.floor(Math.random() * (this.numberOfPairs * 2))
-        if (this.cards[index].color === '') {
-          this.cards[index].color = 'background-color: ' + this.cardTypes[value - 1].color + ';'
+        if (this.cards[index].value === 0) {
+          if (this.customized && this.typeChosen === 'words') this.cards[index].text = this.customWords[j]
+          else if (this.customized && this.typeChosen === 'color') this.cards[index].color = 'background-color: ' + this.customColors[value - 1] + ';'
+          else this.cards[index].color = 'background-color: ' + this.cardTypes[value - 1].color + ';'
           this.cards[index].flipped = false
+          this.cards[index].value = value
           j++
           if (j % 2 === 0) value++
         }
@@ -275,12 +282,12 @@ export default {
       this.numberOfMovesPreview++
 
       if (this.numberOfCardsFlipped === 1) this.cardClickedBefore = index
-      if (this.numberOfCardsFlipped === 2 && (this.cards[index].color === this.cards[this.cardClickedBefore].color)) {
+      if (this.numberOfCardsFlipped === 2 && (this.cards[index].value === this.cards[this.cardClickedBefore].value)) {
         this.numberOfCardsFlipped = 0
         this.pairsMissing--
         if (this.pairsMissing === 0) this.solved = true
       }
-      if (this.numberOfCardsFlipped === 2 && (this.cards[index].color !== this.cards[this.cardClickedBefore].color)) {
+      if (this.numberOfCardsFlipped === 2 && (this.cards[index].value !== this.cards[this.cardClickedBefore].value)) {
         setTimeout(() => { this.refreshPreview(index) }, 1000)
       }
     },
@@ -288,6 +295,9 @@ export default {
       this.cards[index].flipped = false
       this.cards[this.cardClickedBefore].flipped = false
       this.numberOfCardsFlipped = 0
+    },
+    limit (value) {
+      return String(value).substring(0, 15)
     }
   }
 }
@@ -304,11 +314,29 @@ export default {
 </style>
 
 <style>
-.memory-card {
+.card-color {
+  height: 75px;
+  width: 75px;
+  margin: 10px;
+  margin-top: 0px;
+}
+.card-text {
+  height: 50px;
+  width: 200px;
+  margin: 8px;
+  margin-top: 0px;
+}
+.memory-card-color {
   height: 75px;
   width: 75px;
   margin: 10px;
   margin-top: 0px;
   border: none;
+}
+.memory-card-text {
+  height: 50px;
+  width: 200px;
+  margin: 8px;
+  margin-top: 0px;
 }
 </style>

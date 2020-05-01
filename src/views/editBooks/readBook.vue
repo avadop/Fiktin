@@ -63,6 +63,10 @@
           :sectionNoMoreMoves="text.sectionNoMoreMoves"
           :sectionSolved="text.sectionSolved"
           :changeSectionWhenWrong="text.changeSectionWhenWrong"
+          :customized="text.customized"
+          :typeChosen="text.typeChosen"
+          :customWords="text.customWords"
+          :customColors="text.customColors"
           @answered="loadSection"/>
         <SpoilerReading v-if="text.component === 'Spoiler'"
           :htmlTextAux="text.htmlText"/>
