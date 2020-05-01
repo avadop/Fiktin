@@ -9,13 +9,13 @@
         <b-form-input
           type="text"
           v-model="hyperlinkText"
-          :state="hyperlinkText.length >= 3 && hyperlinkText.length <= 100"
+          :state="hyperlinkText.length >= 3 && hyperlinkText.length <= 200"
           aria-describedby="input-live-help input-live-feedback"
           placeholder="Enlace del hipervínculo"
           @change="save()"
         ></b-form-input>
-        <b-form-invalid-feedback v-if="mainText.length >= 100" id="input-live-feedback">
-          Superada longitud máxima de 100 caracteres
+        <b-form-invalid-feedback v-if="mainText.length >= 200" id="input-live-feedback">
+          Superada longitud máxima de 200 caracteres
         </b-form-invalid-feedback>
         <b-form-invalid-feedback v-else-if="mainText.length < 0" id="input-live-feedback">
           No se puede dejar este campo vacio
@@ -30,11 +30,10 @@
           placeholder="Introduce el texto que se mostrará..."
           rows="3"
           max-rows="6"
+          :formatter="limit"
           @change="save()"
         ></b-form-textarea>
-        <b-form-invalid-feedback v-if="mainText.length >= 1000" id="input-live-feedback">
-          Superada longitud máxima de 1000 caracteres
-        </b-form-invalid-feedback>
+        <span v-if="mainText.length > 1900" style="color: red;">Estas cerca del limite de caracteres, llevas {{ this.mainText.length}} /2000</span>
         <b-form-invalid-feedback v-else-if="mainText.length < 0" id="input-live-feedback">
           No se puede dejar este campo vacio
         </b-form-invalid-feedback>
@@ -85,6 +84,9 @@ export default {
     save: async function () {
       var htmlText = '<a href="' + this.hyperlinkText + '" target="_blank">' + this.mainText + '</a>'
       this.$emit('html', htmlText, this.mainText, this.hyperlinkText, this.index)
+    },
+    limit (value) {
+      return String(value).substring(0, 1000)
     }
   }
 }

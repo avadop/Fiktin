@@ -13,11 +13,10 @@
           placeholder="Introduce el texto que quieres que se muestre..."
           rows="3"
           max-rows="6"
+          :formatter="limit"
           @change="save()"
         ></b-form-textarea>
-        <b-form-invalid-feedback v-if="mainText.length >= 1000" id="input-live-feedback">
-          Superada longitud máxima de 1000 caracteres
-        </b-form-invalid-feedback>
+        <span v-if="mainText.length > 1900" style="color: red;">Estas cerca del limite de caracteres, llevas {{ this.mainText.length}} /2000</span>
         <b-form-invalid-feedback v-else-if="mainText.length < 0" id="input-live-feedback">
           No se puede dejar este campo vacio
         </b-form-invalid-feedback>
@@ -31,11 +30,10 @@
           placeholder="Introduce el texto que se mostrara al expandir..."
           rows="3"
           max-rows="6"
+          :formatter="limit"
           @change="save()"
         ></b-form-textarea>
-        <b-form-invalid-feedback v-if="expandedText.length >= 1000" id="input-live-feedback">
-          Superada longitud máxima de 1000 caracteres
-        </b-form-invalid-feedback>
+        <span v-if="expandedText.length > 1900" style="color: red;">Estas cerca del limite de caracteres, llevas {{ this.expandedText.length}} /2000</span>
         <b-form-invalid-feedback v-else-if="expandedText.length < 0" id="input-live-feedback">
           No se puede dejar este campo vacio
         </b-form-invalid-feedback>
@@ -87,6 +85,9 @@ export default {
     },
     save: async function () {
       this.$emit('html', this.mainText, this.expandedText, this.index)
+    },
+    limit (value) {
+      return String(value).substring(0, 2000)
     }
   }
 }

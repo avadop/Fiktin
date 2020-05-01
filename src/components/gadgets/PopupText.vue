@@ -17,9 +17,6 @@
           @change="save()"
         ></b-form-textarea>
         <span v-if="mainText.length > 1900" style="color: red;">Estas cerca del limite de caracteres, llevas {{ this.mainText.length}} /2000</span>
-        <b-form-invalid-feedback v-if="mainText.length >= 2000" id="input-live-feedback">
-          Superada longitud máxima de 1000 caracteres
-        </b-form-invalid-feedback>
         <b-form-invalid-feedback v-else-if="mainText.length < 0" id="input-live-feedback">
           No se puede dejar este campo vacio
         </b-form-invalid-feedback>
@@ -38,9 +35,6 @@
           @change="save()"
         ></b-form-textarea>
         <span v-if="popupText.length > 1900" style="color: red;">Estas cerca del limite de caracteres, llevas {{ this.popupText.length}} /2000</span>
-        <b-form-invalid-feedback v-if="popupText.length >= 2000" id="input-live-feedback">
-          Superada longitud máxima de 2000 caracteres
-        </b-form-invalid-feedback>
         <b-form-invalid-feedback v-else-if="popupText.length < 0" id="input-live-feedback">
           No se puede dejar este campo vacio
         </b-form-invalid-feedback>
