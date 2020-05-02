@@ -9,7 +9,7 @@
         <NewUser @switch-create="switchCreate" @switchCreate="switchCreate"/>
       </div>
       <div v-else>
-        <LogIn @loggedIn="logIn" @switchCreate="switchCreate"/>
+        <LogIn :url="urlLogIn" @loggedIn="logIn" @switchCreate="switchCreate"/>
       </div>
     </div>
   <!-- </modal> -->
@@ -27,6 +27,9 @@ export default {
   components: {
     NewUser,
     LogIn
+  },
+  props: {
+    urlLogIn: String
   },
   data () {
     return {

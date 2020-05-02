@@ -41,6 +41,9 @@ import { store } from '@/store/index.js'
 
 export default {
   name: 'LogIn',
+  props: {
+    url: String
+  },
   data () {
     return {
       nick: '',
@@ -62,7 +65,7 @@ export default {
           this.nick = ''
           this.password = ''
           this.$emit('loggedIn')
-          this.$router.push('/home')
+          this.$router.push(this.url)
         } else {
           window.alert('Contraseña incorrecta')
         }
