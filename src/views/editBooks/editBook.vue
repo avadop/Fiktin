@@ -1017,15 +1017,15 @@ export default {
 .document {
   margin:auto;
   /*margin-bottom: 20mm;*/
-  width: 210mm;
   /*height: 297mm;*/
-  padding: 20mm;
   /*top: 20mm;*/
+  width: 210mm;
+  padding: 20mm;
   border: 1px rgb(168, 168, 168) solid;
   background: white;
   overflow-y: auto;
   text-align: left;
-  height: calc(100vh - 4rem);
+  /*height: calc(100vh - 4rem);*/
 }
 /* Right sidebar*/
 .bd-toc {
