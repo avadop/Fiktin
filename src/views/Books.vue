@@ -118,8 +118,6 @@ export default {
               customBoxes: doc.data().customBoxes,
               ID: doc.id,
               confirmDelete: false
-              customBoxes: doc.data().customBoxes,
-              ID: doc.id
             })
           }
         })
