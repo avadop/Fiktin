@@ -116,10 +116,9 @@ export default {
               published: doc.data().published,
               userID: doc.data().user_id,
               sections: doc.data().sections,
+              customBoxes: doc.data().customBoxes,
               ID: doc.id,
               confirmDelete: false
-              customBoxes: doc.data().customBoxes,
-              ID: doc.id
             })
           }
         })
