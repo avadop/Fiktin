@@ -1,26 +1,36 @@
 <template>
-  <div class="border">
+  <b-card>
     <h6 class="title">Toma de decisiones</h6>
+    <br>
     <span style="color: red;" v-if="!valid">No hay más secciones a las que saltar. Este gadget no se verá al leer el libro</span>
     <b-row style="padding-bottom: 10px;">
-      <b-col cols="4"><span>Número de opciones: {{ numberOfOptions }}</span></b-col>
+      <b-col cols="4"><span>Nº de opciones: {{ numberOfOptions }}</span></b-col>
       <b-col>
         <b-form-input v-if="aux.length > 0" v-model="numberOfOptions" type="range" min="2" max="10" @change="modify(), save()"/>
         <b-form-input v-else disabled v-model="numberOfOptions" type="range" min="2" max="10" @change="modify(), save()"/>
       </b-col>
     </b-row>
-    <div class="table" v-for="(element, index) in decisions" :key="index">
-      <b-row style="padding-bottom: 10px;">
-        <b-col cols="3"><span>Texto (opcional): </span></b-col>
-        <b-col>
+    <div v-for="(element, index) in decisions" :key="index">
+      <hr>
+      <b-col>
+        <b-row>
+          <b-col>
+          <span>Texto (opcional): </span>
+          </b-col>
+          <b-col>
+            <span>Sección:</span>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col>
           <b-form-input size="sm" style="margin-bottom: 6px;" @blur="save()" v-model="element.plainText" :formatter="formatMaxText" placeholder="Escribe un mensaje si quieres (max 2000 caracteres)"></b-form-input>
           <span v-if="element.plainText.length > 1800" style="color: red;">Estas cerca del limite de caracteres, llevas {{ element.plainText.length }} /2000</span>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col cols="5"><span>Sección a la que quieres saltar: </span></b-col>
-        <b-col><b-form-select size="sm" @change="save()" v-model="element.action" :options="aux"></b-form-select></b-col>
-      </b-row>
+          </b-col>
+          <b-col>
+          <b-form-select size="sm" @change="save()" v-model="element.action" :options="aux"></b-form-select>
+          </b-col>
+        </b-row>
+      </b-col>
     </div>
     <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="preparePreview()">Previsualizar</b-button>
 
@@ -34,7 +44,7 @@
         <b-button id="button-modal-ok" class="mt-1" variant="secondary" block @click="showPreview = false">Ok</b-button>
       </div>
     </b-modal>
-  </div>
+  </b-card>
 </template>
 
 <script>
