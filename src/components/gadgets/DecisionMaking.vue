@@ -10,27 +10,29 @@
         <b-form-input v-else disabled v-model="numberOfOptions" type="range" min="2" max="10" @change="modify(), save()"/>
       </b-col>
     </b-row>
-    <div v-for="(element, index) in decisions" :key="index">
-      <hr>
+    <b-row>
+      <b-col cols="3">
+      </b-col>
       <b-col>
-        <b-row>
-          <b-col>
-          <span>Texto (opcional): </span>
-          </b-col>
-          <b-col>
-            <span>Sección:</span>
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col>
+        <span>Texto (opcional):</span>
+      </b-col>
+      <b-col>
+        <span>Sección:</span>
+      </b-col>
+    </b-row>
+    <div v-for="(element, index) in decisions" :key="index">
+      <b-row>
+        <b-col cols="3">
+          <span>Decisión {{index}}:</span>
+        </b-col>
+        <b-col>
           <b-form-input size="sm" style="margin-bottom: 6px;" @blur="save()" v-model="element.plainText" :formatter="formatMaxText" placeholder="Escribe un mensaje si quieres (max 2000 caracteres)"></b-form-input>
           <span v-if="element.plainText.length > 1800" style="color: red;">Estas cerca del limite de caracteres, llevas {{ element.plainText.length }} /2000</span>
-          </b-col>
-          <b-col>
+        </b-col>
+        <b-col>
           <b-form-select size="sm" @change="save()" v-model="element.action" :options="aux"></b-form-select>
-          </b-col>
-        </b-row>
-      </b-col>
+        </b-col>
+      </b-row>
     </div>
     <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="preparePreview()">Previsualizar</b-button>
 
