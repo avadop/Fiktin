@@ -10,6 +10,7 @@
         <b-form-input v-else disabled v-model="numberOfOptions" type="range" min="2" max="10" @change="modify(), save()"/>
       </b-col>
     </b-row>
+    <hr>
     <b-row>
       <b-col cols="3">
       </b-col>

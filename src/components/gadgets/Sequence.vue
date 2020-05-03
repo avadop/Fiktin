@@ -1,53 +1,49 @@
 <template>
-  <div class="border">
+  <b-card>
     <h6 class="title">Completar la secuencia</h6>
     <span style="color: red;" v-if="!valid">No hay más secciones a las que saltar. Este gadget solo mostrará la secuencia en la lectura</span>
+    <br>
+    <b-row class="right">
+      <b-col cols="5"><span>Cambio de sección al acertar: </span></b-col>
+      <b-col><b-form-select size="sm" @change="save()" v-model="rightSection" :options="aux"></b-form-select></b-col>
+    </b-row>
+    <b-row class="right" style="padding-left: 10px">
+      <b-button variant="outline-dark" size="sm" v-if="!changeSectionWhenWrong" @click="wrong(), save()">Cambiar de sección al fallar</b-button>
+      <b-button variant="outline-dark" size="sm" v-else @click="wrong(), save()">Continuar lectura al fallar</b-button>
+      <b-col v-if="changeSectionWhenWrong" style="padding-top: 5px;"><b-form-select size="sm" @change="save()" v-model="wrongSection" :options="aux"></b-form-select></b-col>
+    </b-row>
+    <hr>
     <b-row style="padding-bottom: 10px;">
-      <b-col cols="4"><span>Número de intentos: {{ numberOfTries }}</span></b-col>
+      <b-col cols="4"><span>Nº de intentos: {{ numberOfTries }}</span></b-col>
       <b-col>
         <b-form-input v-if="aux.length > 0" v-model="numberOfTries" type="range" min="1" max="10" @change="save()"/>
         <b-form-input v-else disabled v-model="numberOfTries" type="range" min="1" max="10" @change="save()"/>
       </b-col>
     </b-row>
-    <div class = "table">
+    <hr>
+    <div>
       <b-row style="padding-bottom: 10px;">
-        <b-col cols="6"><span>Número de campos dados: {{ sequence.length }}</span></b-col>
+        <b-col cols="6"><span>Nº de campos dados: {{ sequence.length }}</span></b-col>
         <b-col>
           <b-form-input v-model="numberOfSequence" type="range" min="1" max="8" @change="modifySequence(), save()"/>
         </b-col>
       </b-row>
-      <div class="table" v-for="(element, index) in sequence" :key="index">
-        <b-row >
-          <b-col cols="3"><span>Elemento {{ index + 1 }}: </span></b-col>
-          <b-col><b-form-input v-model="element.text" size="sm" :formatter="limit" placeholder="Texto dado máximo de 20 caracteres" @blur="save()"/></b-col>
-        </b-row>
-      </div>
+      <b-row v-for="(element, index) in sequence" :key="index" style="padding-bottom: 10px;">
+        <b-col cols="3"><span>Elemento {{ index + 1 }}: </span></b-col>
+        <b-col><b-form-input v-model="element.text" size="sm" :formatter="limit" placeholder="Texto dado máximo de 20 caracteres" @blur="save()"/></b-col>
+      </b-row>
     </div>
-    <div class="table">
+    <hr>
+    <div>
       <b-row style="padding-bottom: 10px;">
-        <b-col cols="6"><span>Número de campos a solucionar: {{ solution.length }}</span></b-col>
+        <b-col cols="6"><span>Nº de campos a solucionar: {{ solution.length }}</span></b-col>
         <b-col>
           <b-form-input v-model="numberOfSolution" type="range" min="1" max="5" @change="modifySolution(), save()"/>
         </b-col>
       </b-row>
-      <div class="table" v-for="(element, index) in solution" :key="index">
-        <b-row>
-          <b-col cols="3"><span>Solución {{ index + 1 }}: </span></b-col>
-          <b-col><b-form-input v-model="element.text" size="sm" trim :formatter="limit" placeholder="Solución de máximo de 20 caracteres" @blur="save()"/></b-col>
-        </b-row>
-      </div>
-    </div>
-    <b-row class="right">
-      <b-col cols="5"><span>Cambio de sección al acertar: </span></b-col>
-      <b-col><b-form-select size="sm" @change="save()" v-model="rightSection" :options="aux"></b-form-select></b-col>
-    </b-row>
-    <div>
-      <button v-if="!changeSectionWhenWrong" @click="wrong(), save()">Sin cambio de sección</button>
-      <button v-else @click="wrong(), save()">Con cambio de sección</button>
-      <span style="padding-left: 10px;">Si marcas esta casilla, cuando no se acierte en la respuesta se irá a la sección por seleccionar</span>
-      <b-row v-if="changeSectionWhenWrong">
-        <b-col cols="5"><span>Cambio de sección al fallar: </span></b-col>
-        <b-col><b-form-select size="sm" @change="save()" v-model="wrongSection" :options="aux"></b-form-select></b-col>
+      <b-row v-for="(element, index) in solution" :key="index" style="padding-bottom: 10px;">
+        <b-col cols="3"><span>Solución {{ index + 1 }}: </span></b-col>
+        <b-col><b-form-input v-model="element.text" size="sm" trim :formatter="limit" placeholder="Solución de máximo de 20 caracteres" @blur="save()"/></b-col>
       </b-row>
     </div>
     <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="preparePreview()">Previsualizar</b-button>
@@ -56,18 +52,15 @@
       <div style="margin: 10px;">
         <h5>Completa la secuencia: </h5>
         <div class="d-block text-center">
-          <div class="d-flex">
-            <div class="d-flex">
-              <div v-for="(seq, sequenceIndex) in sequence" :key="sequenceIndex">
-                <div  style="margin-top:8px;">
-                  <span style="margin-right:10px; margin-left: 10px; font-size: 22px;">{{ seq.text }}</span>
-                </div>
-              </div>
+          <div>
+            <div class="row">
+              <span v-for="(seq, sequenceIndex) in sequence" :key="sequenceIndex" style="margin-right:10px; margin-left: 10px; font-size: 22px;">
+                {{ seq.text }}
+              </span>
             </div>
-            <div class="d-flex">
-              <div v-for="(text, answerIndex) in solution" :key="answerIndex">
-                <b-form-input style="margin-top:5px; margin-right:5px; margin-left: 5px; width: 115px;" v-model="answersPreview[answerIndex]" trim  :formatter="limit" placeholder="Respuesta"></b-form-input>
-              </div>
+            <div class="row">
+              <b-form-input v-for="(text, answerIndex) in solution" :key="answerIndex" style="margin-top:5px; margin-right:5px; margin-left: 5px; width: 115px;" v-model="answersPreview[answerIndex]" trim  :formatter="limit" placeholder="Respuesta">
+              </b-form-input>
               <b-button style="width: 100px;" :disabled="numberOfTriesPreview === 0 || answersPreview.length !== solution.length" variant="primary" block @click="tryPreview()">Probar</b-button>
             </div>
           </div>
@@ -80,7 +73,7 @@
         <b-button id="button-modal-ok" class="mt-1" variant="secondary" block @click="showPreview = false, correctPreview = null">Ok</b-button>
       </div>
     </b-modal>
-  </div>
+  </b-card>
 </template>
 
 <script>
