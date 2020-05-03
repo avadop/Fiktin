@@ -7,15 +7,16 @@
         <b-form-input size="sm" :formatter="limit" @blur="save()" v-model="text" placeholder="Escribe un mensaje si quieres (max 2000 caracteres)"></b-form-input>
       </b-col>
     </b-row>
-    <span>La sección que se va a repetir es: {{ sectionName }}.</span>
     <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="preparePreview()">Previsualizar</b-button>
 
     <b-modal v-model="showPreview" hide-footer hide-header centered >
       <h5>Repetir seccion</h5>
       <div class="d-flex justify-content-center">
-        <span v-html="htmlTextPreview"/>
-        <button style="margin-left: 10px;" v-if="htmlTextPreview.length != 13" @click="clicked = true">Repetir</button>
-        <button v-else @click="clicked = true">Repetir</button>
+        <span class="clickable" v-html="htmlTextPreview" @click="clicked = true"/>
+        <span>
+          <b-icon class="h4 clickable" variant="info" style="margin-left: 10px;" v-if="htmlTextPreview.length !== 13" icon="arrow-repeat" @click="clicked = true"/>
+          <b-icon class="h4 clickable" variant="info" v-else icon="arrow-repeat" @click="clicked = true"/>
+        </span>
       </div>
       <p v-if="clicked === true" style="padding-left: 15px;">recarga de seccion: {{ sectionName }} </p>
       <div class="d-flex justify-content-center">
@@ -78,6 +79,12 @@ export default {
 </script>
 
 <style scoped>
+.clickable {
+  cursor: pointer;
+}
+.clickable:hover {
+  text-decoration: underline;
+}
 .border {
   padding: 10px;
   padding-bottom: 54px;
