@@ -49,7 +49,7 @@
     <b-modal v-model="showPreview" hide-footer hide-header centered >
       <div style="margin-bottom: 15px;">
         <h5>Numero aleatorio</h5>
-        <button v-if="!pressedPreview" @click="generateRandomPreview()" >Generar</button>
+        <b-button v-if="!pressedPreview" @click="generateRandomPreview()" variant="outline-info"><b-icon icon="question-diamond"/></b-button>
         <span v-else>El número generado es {{ this.numberPreview }}</span>
       </div>
       <div class="d-flex justify-content-center">
