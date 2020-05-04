@@ -1,9 +1,6 @@
 <template>
-  <div class="border" style="padding: 11px; margin: 8px;">
-    <div class="d-block text-left">
-      <h5 style="margin-bottom: 10px; font-size: 24px;">Adivinanza</h5>
-    </div>
-    <div class="d-block text-center">
+  <div>
+    <b-card>
       <p> {{ riddleText }}</p>
       <div class="d-flex">
         <b-form-input style="margin-top:5px;" v-model="tryText" trim  :formatter="formatAnswer" placeholder="Respuesta"></b-form-input>
@@ -12,9 +9,9 @@
       </div>
       <span v-if="correctPreview === false" style="color: red"> ¡Has fallado! </span>
       <span v-else-if="correctPreview === true" style="color: green"> ¡Has acertado! </span>
-      <span> Te quedan {{ numberOfTries }} intentos</span><br/>
-      <b> {{ text }} </b>
-    </div>
+      <p style="font-size: 14px"> Te quedan {{ numberOfTries }} intentos</p>
+      <b v-if="text != ''"> {{ text }} </b>
+    </b-card>
   </div>
 </template>
 
