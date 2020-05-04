@@ -1016,7 +1016,7 @@ export default {
 /* Documento de texto */
 .document {
   margin:auto;
-  /*margin-bottom: 20mm;*/
+  margin-bottom: 20mm;
   /*height: 297mm;*/
   /*top: 20mm;*/
   width: 210mm;
