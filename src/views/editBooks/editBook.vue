@@ -13,6 +13,9 @@
         <div class="col" style="padding-top: 15px;">
           <b-button variant="light" size="sm" @click="openManagementSectionModal()"><b-icon icon="gear"/></b-button>
         </div>
+        <div class="col" style="padding-top: 15px;">
+          <b-button variant="light" size="sm" @click="showPreviewSection = true" style="font-size: 16px;">Previsualizar sección</b-button>
+        </div>
         <SectionManagementModal v-if="showManagementSectionModal" :name="sectionName" :id="sectionID" :book_title="book.title" :book_author_ID="book.userID" :sectionsList="book.sections" @update="updateBookSections" @load="refresh" @saveActual="save" @cancel="openManagementSectionModal"/>
         <b-button variant="outline-dark" v-b-tooltip.hover title="Descargar" hidden><b-icon icon="cloud-download" @mouseup="save()"></b-icon></b-button>
         <b-button variant="outline-dark" v-b-tooltip.hover title="Guardar" @click="save()"><b-icon icon="cloud-upload"></b-icon></b-button>
@@ -291,6 +294,15 @@
         <hr>
       </div>
     </div>
+
+    <b-modal v-model="showPreviewSection" centered hide-header hide-footer no-close-on-backdrop>
+      <h4 style="padding-bottom: 8px;">Previsualizar sección</h4>
+      <p style="text-align: justify;">Para previsualizar la sección actual es necesario guardar los cambios realizados. Si no quiere guardar los cambios realizados le recomendamos que cancele hasta que esté seguro de su decisión.</p>
+      <div class="d-flex justify-content-center">
+        <b-button variant="outline-secondary" style="width: 150px;" @click="showPreviewSection = false">Cancelar</b-button>
+        <b-button variant="primary" style="width: 150px;" @click="sectionPreview()">Aceptar</b-button>
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -390,11 +402,12 @@ export default {
       picture: false,
       video: false,
       openModalPicture: false,
-      openModalVideo: false
+      openModalVideo: false,
+      showPreviewSection: false
     }
   },
   mounted () {
-    this.refresh(this.book.sections[0])
+    this.refresh(store.state.sectionID)
   },
   methods: {
     refresh: async function (sectionID) {
@@ -403,6 +416,7 @@ export default {
       this.sectionsData = []
       this.temporalCustomBoxes = []
       this.data = []
+      store.commit('changeSection', sectionID)
       await booksCollection.doc(this.bookID).get().then(doc => {
         this.temporalCustomBoxes = doc.data().customBoxes
       })
@@ -905,8 +919,15 @@ export default {
       this.data[index].value = value
       this.data[index].defaultValue = defaultValue
     },
+    sectionPreview () {
+      this.save()
+      this.showPreviewSection = false
+      store.commit('changeSection', this.sectionID)
+      store.commit('switchSectionPreview', true)
+      this.$router.push({ name: 'readBook' })
+    },
     goBack () {
-      this.$router.replace({ name: 'readBook', params: { book: this.book } })
+      this.$router.replace({ name: 'readBook' })
     },
     goBackAndSave () {
       this.save()

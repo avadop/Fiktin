@@ -7,7 +7,7 @@
         <div class="col" style="max-width: 300px;">
           <h3 style="padding-top: 15px;">
             {{ book.title }}
-            <b-button v-if="isBookOfLoggedUser()" variant="light" @click="goEdit()" :disabled="book.published===true"><b-icon icon="pencil"/></b-button>
+            <b-button v-if="isBookOfLoggedUser() && isNotPreview()" variant="light" @click="goEdit()" :disabled="book.published===true"><b-icon icon="pencil"/></b-button>
           </h3>
         </div>
         <div class="col" style="padding-top: 20px;">
@@ -146,8 +146,7 @@ export default {
   },
   mounted () {
     if (this.bookID !== undefined) this.addBookToLibrary()
-    this.currentSectionID = this.book.sections[0]
-    this.loadSection(this.book.sections[0])
+    this.loadSection(store.state.sectionID)
     this.loadBook()
   },
   methods: {
@@ -172,6 +171,7 @@ export default {
     async loadSection (sectionID) {
       this.loading = true
       this.currentSectionID = sectionID
+      store.commit('changeSection', sectionID)
       this.sectionGadgets = []
       this.sectionName = ''
       await sectionsCollection.doc(sectionID).get().then(doc => {
@@ -214,8 +214,12 @@ export default {
       this.$router.replace({ name: 'editBook' })
     },
     goBack () {
-      store.commit('closeBook')
+      if (store.state.sectionPreview === false) store.commit('closeBook')
+      else store.commit('switchSectionPreview', false)
       this.$router.go(-1)
+    },
+    isNotPreview () {
+      return store.state.sectionPreview === false
     }
   }
 }
