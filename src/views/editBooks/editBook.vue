@@ -14,7 +14,7 @@
           <b-button variant="light" size="sm" @click="openManagementSectionModal()"><b-icon icon="gear"/></b-button>
         </div>
         <div class="col" style="padding-top: 15px;">
-          <b-button variant="light" size="sm" @click="sectionPreview()">Previsualizar sección</b-button>
+          <b-button variant="light" size="sm" @click="showPreviewSection = true" style="font-size: 16px;">Previsualizar sección</b-button>
         </div>
         <SectionManagementModal v-if="showManagementSectionModal" :name="sectionName" :id="sectionID" :book_title="book.title" :book_author_ID="book.userID" :sectionsList="book.sections" @update="updateBookSections" @load="refresh" @saveActual="save" @cancel="openManagementSectionModal"/>
         <b-button variant="outline-dark" v-b-tooltip.hover title="Descargar" hidden><b-icon icon="cloud-download" @mouseup="save()"></b-icon></b-button>
@@ -294,6 +294,15 @@
         <hr>
       </div>
     </div>
+
+    <b-modal v-model="showPreviewSection" centered hide-header hide-footer no-close-on-backdrop>
+      <h4 style="padding-bottom: 8px;">Previsualizar sección</h4>
+      <p style="text-align: justify;">Para previsualizar la sección actual es necesario guardar los cambios realizados. Si no quiere guardar los cambios realizados le recomendamos que cancele hasta que esté seguro de su decisión.</p>
+      <div class="d-flex justify-content-center">
+        <b-button variant="outline-secondary" style="width: 150px;" @click="showPreviewSection = false">Cancelar</b-button>
+        <b-button variant="primary" style="width: 150px;" @click="sectionPreview()">Aceptar</b-button>
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -393,7 +402,8 @@ export default {
       picture: false,
       video: false,
       openModalPicture: false,
-      openModalVideo: false
+      openModalVideo: false,
+      showPreviewSection: false
     }
   },
   mounted () {
@@ -909,6 +919,8 @@ export default {
       this.data[index].defaultValue = defaultValue
     },
     sectionPreview () {
+      this.save()
+      this.showPreviewSection = false
       store.commit('changeSection', this.sectionID)
       store.commit('switchSectionPreview', true)
       this.$router.push({ name: 'readBook' })
