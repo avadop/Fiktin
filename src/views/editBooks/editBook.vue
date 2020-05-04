@@ -13,6 +13,9 @@
         <div class="col" style="padding-top: 15px;">
           <b-button variant="light" size="sm" @click="openManagementSectionModal()"><b-icon icon="gear"/></b-button>
         </div>
+        <div class="col" style="padding-top: 15px;">
+          <b-button variant="light" size="sm" @click="sectionPreview()">Previsualizar sección</b-button>
+        </div>
         <SectionManagementModal v-if="showManagementSectionModal" :name="sectionName" :id="sectionID" :book_title="book.title" :book_author_ID="book.userID" :sectionsList="book.sections" @update="updateBookSections" @load="refresh" @saveActual="save" @cancel="openManagementSectionModal"/>
         <b-button variant="outline-dark" v-b-tooltip.hover title="Descargar" hidden><b-icon icon="cloud-download" @mouseup="save()"></b-icon></b-button>
         <b-button variant="outline-dark" v-b-tooltip.hover title="Guardar" @click="save()"><b-icon icon="cloud-upload"></b-icon></b-button>
@@ -904,6 +907,11 @@ export default {
       this.data[index].type = type
       this.data[index].value = value
       this.data[index].defaultValue = defaultValue
+    },
+    sectionPreview () {
+      store.commit('changeSection', this.sectionID)
+      store.commit('switchSectionPreview', true)
+      this.$router.push({ name: 'readBook' })
     },
     goBack () {
       this.$router.replace({ name: 'readBook', params: { book: this.book } })

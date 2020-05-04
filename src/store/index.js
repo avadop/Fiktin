@@ -10,7 +10,9 @@ export const store = new Vuex.Store({
     userNick: '',
     loggedIn: false,
     openBookID: '',
-    openedBook: null
+    openedBook: null,
+    sectionID: '',
+    sectionPreview: false
   },
   plugins: [createPersistedState()],
   mutations: {
@@ -31,9 +33,16 @@ export const store = new Vuex.Store({
     openBook (state, book) {
       state.openedBook = book
     },
+    changeSection (state, id) {
+      state.sectionID = id
+    },
     closeBook (state) {
       state.openBookID = ''
       state.openedBook = ''
+      state.sectionID = ''
+    },
+    switchSectionPreview (state, value) {
+      state.sectionPreview = value
     }
   },
   actions: {
