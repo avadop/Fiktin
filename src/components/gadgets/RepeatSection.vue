@@ -1,5 +1,5 @@
 <template>
-  <div class="border">
+  <b-card>
     <h6 class="title">Repetición de sección</h6>
     <b-row style="padding-bottom: 10px;">
       <b-col cols="3"><span>Texto (opcional): </span></b-col>
@@ -23,7 +23,7 @@
         <b-button id="button-modal-ok" class="mt-1" variant="secondary" block @click="showPreview = false">Ok</b-button>
       </div>
     </b-modal>
-  </div>
+  </b-card>
 </template>
 
 <script>

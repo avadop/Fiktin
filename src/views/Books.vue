@@ -63,7 +63,6 @@
     </b-card>
   </div>
 </template>
-
 <script>
 import ModifyBook from '@/components/ModifyBook.vue'
 import CreateBook from '@/components/CreateBook.vue'
