@@ -407,7 +407,7 @@ export default {
     }
   },
   mounted () {
-    this.refresh(this.book.sections[0])
+    this.refresh(store.state.sectionID)
   },
   methods: {
     refresh: async function (sectionID) {
@@ -416,6 +416,7 @@ export default {
       this.sectionsData = []
       this.temporalCustomBoxes = []
       this.data = []
+      store.commit('changeSection', sectionID)
       await booksCollection.doc(this.bookID).get().then(doc => {
         this.temporalCustomBoxes = doc.data().customBoxes
       })
@@ -926,7 +927,7 @@ export default {
       this.$router.push({ name: 'readBook' })
     },
     goBack () {
-      this.$router.replace({ name: 'readBook', params: { book: this.book } })
+      this.$router.replace({ name: 'readBook' })
     },
     goBackAndSave () {
       this.save()
