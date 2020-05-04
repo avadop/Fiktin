@@ -6,14 +6,7 @@
       </div>
       <span style="color: red;" v-if="!valid">No hay más secciones a las que saltar. Este gadget no se verá al leer el libro</span>
       <br>
-      <b-row style="padding-bottom: 10px;">
-        <b-col cols="4"><span>Nº de intentos: {{ numberOfTries }}</span></b-col>
-        <b-col>
-          <b-form-input v-if="aux.length > 0" v-model="numberOfTries" type="range" min="1" max="10" @change="save()"/>
-          <b-form-input v-else disabled v-model="numberOfTries" type="range" min="1" max="10" @change="save()"/>
-        </b-col>
-      </b-row>
-      <hr>
+      <!-- cambio de sección -->
       <b-row>
         <b-col cols="5"><span>Cambio de sección al acertar: </span></b-col>
         <b-col><b-form-select size="sm" @change="save()" v-model="rightSectionID" :options="aux"></b-form-select></b-col>
@@ -26,6 +19,16 @@
         <b-col v-if="changeSectionWhenWrong" style="padding-top: 5px;"><b-form-select size="sm" @change="save()" v-model="wrongSectionID" :options="aux"></b-form-select></b-col>
       </b-row>
       <hr>
+      <!-- num intentos -->
+      <b-row style="padding-bottom: 10px;">
+        <b-col cols="4"><span>Nº de intentos: {{ numberOfTries }}</span></b-col>
+        <b-col>
+          <b-form-input v-if="aux.length > 0" v-model="numberOfTries" type="range" min="1" max="10" @change="save()"/>
+          <b-form-input v-else disabled v-model="numberOfTries" type="range" min="1" max="10" @change="save()"/>
+        </b-col>
+      </b-row>
+      <hr>
+      <!-- pregunta -->
       <b-row style="padding-bottom: 10px;">
         <b-col cols="2"><span>Pregunta: </span></b-col>
         <b-col>
@@ -33,6 +36,7 @@
           <span v-if="riddleText.length > 1800" style="color: red;">Estas cerca del limite de caracteres, llevas {{ this.riddleText.length}} /2000</span>
         </b-col>
       </b-row>
+      <!-- respuesta -->
       <b-row style="padding-bottom: 10px;">
         <b-col cols="3"><span>Respuesta: </span></b-col>
         <b-col>

@@ -1,27 +1,58 @@
 <template>
-  <div class="border">
+  <b-card>
     <h6 class="title">Tarjetas de memoria</h6>
+    <br>
     <span style="color: red;" v-if="!valid">No hay más secciones a las que saltar. Este gadget no llevará a ninguna sección al resolver el puzzle</span>
+
+    <!-- Cambio de sección -->
+    <b-row>
+      <b-col cols="5"><span>Cambio de sección al acertar: </span></b-col>
+      <b-col><b-form-select size="sm" @change="save()" v-model="sectionSolved" :options="sections"></b-form-select></b-col>
+    </b-row>
+    <b-row class="right" style="padding-left: 10px">
+      <b-col cols="5">
+        <b-button variant="outline-dark" size="sm" v-if="!changeSectionWhenWrong" @click="changeSectionWhenWrong = true, save()">Cambiar de sección al fallar</b-button>
+        <b-button variant="outline-dark" size="sm" v-else @click="noWrongSection()">Continuar lectura al fallar</b-button>
+      </b-col>
+      <b-col v-if="changeSectionWhenWrong" style="padding-top: 5px;"><b-form-select size="sm" @change="save()" v-model="sectionNoMoreMoves" :options="sections"></b-form-select></b-col>
+    </b-row>
+    <hr>
+    <!-- num parejas -->
     <b-row style="padding-bottom: 10px;">
-      <b-col cols="4"><span>Número de parejas a desvelar: {{ numberOfPairs }}</span></b-col>
+      <b-col cols="4"><span>Nº de parejas: {{ numberOfPairs }}</span></b-col>
       <b-col>
         <b-form-input v-model="numberOfPairs" type="range" min="2" max="12" @change="save()"/>
       </b-col>
     </b-row>
+    <!-- num movimientos -->
     <b-row style="padding-bottom: 10px;">
-      <b-col cols="4"><span>Número de movimientos disponibles: {{ maxNumberOfMoves }}</span></b-col>
+      <b-col cols="4"><span>Nº de movimientos: {{ maxNumberOfMoves }}</span></b-col>
       <b-col>
         <b-form-input v-model="maxNumberOfMoves" type="range" :step="2" :min="numberOfPairs * 2 + numberOfPairs + (numberOfPairs % 2)" max="200" @change="save()"/>
       </b-col>
     </b-row>
-    <div v-if="customized === true" style="padding-top: 5px; padding-bottom: 80px;">
-      <span style="padding-top: 15px;padding-right: 12px;">Elije el tipo de customizacion que deseas realizar</span>
-      <b-form-select size = "sm" style="width: 200px;" v-model="typeChosen" :options="customizationTypes" @change="save()"></b-form-select>
+    <hr>
+    <!-- personalización -->
+    <b-row class="right" style="padding-left: 10px">
+      <b-col v-if="customized === true" style="padding-top: 10px">
+        <span>Tipo de customización</span>
+      </b-col>
+      <b-col v-if="customized === true" style="padding-top: 5px">
+        <b-form-select size = "sm" style="width: 200px;" v-model="typeChosen" :options="customizationTypes" @change="save()"></b-form-select>
+      </b-col>
+      <b-col cols="4" v-if="!customized">
+        <b-button variant="outline-dark" size="sm" @click="customized = true, save()">Customizar tarjetas</b-button>
+      </b-col>
+      <b-col cols="3" v-else>
+        <b-button variant="outline-dark" size="sm" @click="cardsNotCustomized()">Cancelar</b-button>
+      </b-col>
+    </b-row>
+    <div v-if="customized === true" style="padding-top: 5px;">
       <div v-if="typeChosen === 'words'">
         <div v-for="(n, index) in numberOfPairs" :key="index" >
           <b-row style="margin-left:2px;"><span style="padding-top: 15px;">Pareja {{ n }}</span>
-          <b-form-input v-model="customWords[index*2]" style="width:230px; margin-left: 20px; margin-top: 10px;" :formatter="limit" placeholder="Texto 1" @change="save()"></b-form-input>
-          <b-form-input v-model="customWords[index*2+1]" style="width:230px; margin-left: 20px; margin-top: 10px;" :formatter="limit" placeholder="Texto 2" @change="save()"></b-form-input></b-row>
+          <b-form-input v-model="customWords[index*2]" style="width:230px; margin-left: 20px; margin-top: 10px;" :formatter="limit" placeholder="Tarjeta 1" @change="save()"></b-form-input>
+          <b-form-input v-model="customWords[index*2+1]" style="width:230px; margin-left: 20px; margin-top: 10px;" :formatter="limit" placeholder="Tarjeta 2" @change="save()"></b-form-input></b-row>
         </div>
       </div>
       <div v-if="typeChosen === 'color'">
@@ -32,26 +63,8 @@
           <span v-if="customColors[index] === undefined" style="color:red; padding-left: 8px; padding-top: 15px;">Elige algún color</span></b-row>
         </div>
       </div>
-      <b-button size="sm" style=" heigth:7px; margin-top: 10px; float: right;"  variant="outline-secondary" block @click="cardsNotCustomized()">Cancelar</b-button>
-    </div>
-    <div v-else style="padding-bottom: 10px;">
-      <span @click="customized = true, save()" style="color: darkgreen; font-weight: bold; cursor: pointer;"> Customizar tarjetas</span>
-      <span style="font-size: 13px; padding-bottom: 15px;"> (En caso de no activar esta opción, las tarjetas tendrán sus valores por defecto)</span>
     </div>
 
-    <b-row>
-      <b-col cols="5"><span>Sección a la que quieres saltar si se resuelve el puzzle: </span></b-col>
-      <b-col><b-form-select size="sm" @change="save()" v-model="sectionSolved" :options="sections"></b-form-select></b-col>
-    </b-row><br/>
-    <b-row v-if="changeSectionWhenWrong === true">
-      <b-col cols="5"><span>Sección a la que quieres saltar si se falla la respuesta: </span></b-col>
-      <b-col><b-form-select size="sm" @change="save()" v-model="sectionNoMoreMoves" :options="sections"></b-form-select></b-col>
-      <b-button style="width: 20px; margin-right:50px;" class="my-1" variant="danger-dark" @click="noWrongSection()"><b-icon style="heigh:50px;width:50px;" variant="danger" icon="x"></b-icon></b-button>
-    </b-row>
-    <div v-else>
-      <span @click="changeSectionWhenWrong = true, save()" style="color: darkblue; font-weight: bold; cursor: pointer;"> Agregar salto de seccion al quedarse sin movimientos</span>
-      <span style="font-size: 13px;"> (En caso de no activar esta opción, si el lector se queda sin movimientos se quedará en la página que está)</span>
-    </div>
     <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="show = true, shufflePreview()">Previsualizar</b-button>
 
     <b-modal v-model="show" hide-footer hide-header centered>
@@ -78,7 +91,7 @@
         <b-button id="button-modal-ok" class="mt-1" variant="secondary" block @click="show = false">Ok</b-button>
       </div>
     </b-modal>
-  </div>
+  </b-card>
 </template>
 
 <script>
