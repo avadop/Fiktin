@@ -193,6 +193,7 @@ export default {
         }
       })
       a.unshift(this.bookID)
+      if (a.length > 20) a.splice(20, a.length - 20)
       await librariesCollection.doc(this.searchNick).update({
         array_keys: a
       })
