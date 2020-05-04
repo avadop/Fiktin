@@ -1,37 +1,49 @@
 <template>
-  <div class="border">
+  <b-card>
     <h6 class="title">Número aleatorio</h6>
+    <br>
     <span style="color: red;" v-if="!valid">No hay más secciones a las que saltar. Este gadget solo calculará el número aleatorio en la lectura</span>
+    <b-col>
+      <b-row>
+        <b-col>
+          <span>Límite inferior:</span>
+        </b-col>
+        <b-col>
+        <span>Límite superior:</span>
+        </b-col>
+      </b-row>
+    </b-col>
+    <b-col>
+      <b-row>
+        <b-col>
+          <b-form-input v-model="lowerLimit" type="number" placeholder="máximo 4 números" @change="modifyLimits(), modifyChangeNumber(), save()"/>
+        </b-col>
+        <b-col>
+          <b-form-input v-model="upperLimit" type="number" placeholder="máximo 4 números" @change="modifyLimits(), modifyChangeNumber(), save()"/>
+        </b-col>
+      </b-row>
+    </b-col>
+    <hr>
     <b-row style="padding-bottom: 10px;">
-      <b-col cols="4"><span>Límite inferior: {{ lowerLimit }}</span></b-col>
-      <b-col>
-        <b-form-input v-model="lowerLimit" type="number" placeholder="máximo 4 números" @change="modifyLimits(), modifyChangeNumber(), save()"/>
-      </b-col>
-    </b-row>
-    <b-row style="padding-bottom: 10px;">
-      <b-col cols="4"><span>Límite superior: {{ upperLimit }}</span></b-col>
-      <b-col>
-        <b-form-input v-model="upperLimit" type="number" placeholder="máximo 4 números" @change="modifyLimits(), modifyChangeNumber(), save()"/>
-      </b-col>
-    </b-row>
-    <b-row style="padding-bottom: 10px;">
-      <b-col cols="4"><span>Número de condiciones: {{ numberOfConditions }}</span></b-col>
+      <b-col cols="4"><span>Nº de condiciones: {{ numberOfConditions }}</span></b-col>
       <b-col>
         <b-form-input v-if="aux.length > 0" v-model="numberOfConditions" type="range" min="0" max="4" @change="modify(), save()"/>
         <b-form-input v-else disabled v-model="numberOfConditions" type="range" min="0" max="4" @change="modify(), save()"/>
       </b-col>
     </b-row>
-    <span style="color: orange;" v-if="numberOfConditions > 0">Aviso, la lectura de condiciones se realiza en orden. Si en la lectura se cumple la primera condición, no se comprueba el resto.</span>
-    <div class="table" v-for="(element, index) in conditions" :key="index">
-      <b-row>
-        <b-col cols="3"><span>Si el resultado es </span></b-col>
+    <!-- <span style="color: orange; font-size: 14px;" v-if="numberOfConditions > 0">Aviso: la lectura de condiciones se realiza en orden. Si en la lectura se cumple la primera condición, no se comprueba el resto.</span> -->
+    <b-row>
+      <!-- <b-col cols="3"><span>Si el resultado es </span></b-col> -->
+      <b-col><span>Condición</span></b-col>
+      <b-col><span>Valor</span></b-col>
+      <b-col><span>Sección</span></b-col>
+    </b-row>
+    <b-row v-for="(element, index) in conditions" :key="index" style="padding-bottom: 10px">
+        <!-- <b-col cols="3"><span>Si el resultado es </span></b-col> -->
         <b-col><b-form-select v-model="element.condition" :options="options" size="sm"/></b-col>
-        <b-col cols="1"><span>que </span></b-col>
         <b-col><b-form-input v-model="element.number" type="number" size="sm" @change="modifyChangeNumber(), save()"/></b-col>
-        <b-col cols="1"><span>ir a </span></b-col>
         <b-col><b-form-select size="sm" @change="save()" v-model="element.section" :options="aux"></b-form-select></b-col>
-      </b-row>
-    </div>
+    </b-row>
     <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="preparePreview()">Previsualizar</b-button>
 
     <b-modal v-model="showPreview" hide-footer hide-header centered >
@@ -44,7 +56,7 @@
         <b-button id="button-modal-ok" class="mt-1" variant="secondary" block @click="showPreview = false">Ok</b-button>
       </div>
     </b-modal>
-  </div>
+  </b-card>
 </template>
 
 <script>
