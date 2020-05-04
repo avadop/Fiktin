@@ -7,7 +7,7 @@
         <div class="col" style="max-width: 300px;">
           <h3 style="padding-top: 15px;">
             {{ book.title }}
-            <b-button v-if="isBookOfLoggedUser()" variant="light" @click="goEdit()" :disabled="book.published===true"><b-icon icon="pencil"/></b-button>
+            <b-button v-if="isBookOfLoggedUser() && isNotPreview()" variant="light" @click="goEdit()" :disabled="book.published===true"><b-icon icon="pencil"/></b-button>
           </h3>
         </div>
         <div class="col" style="padding-top: 20px;">
@@ -217,6 +217,9 @@ export default {
       if (store.state.sectionPreview === false) store.commit('closeBook')
       else store.commit('switchSectionPreview', false)
       this.$router.go(-1)
+    },
+    isNotPreview () {
+      return store.state.sectionPreview === false
     }
   }
 }
