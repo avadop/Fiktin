@@ -8,6 +8,7 @@
 
         <b-collapse v-if="loggedIn" id="nav-collapse" is-nav>
           <b-navbar-nav>
+            <b-nav-item><router-link to="/" class="nav-ref">Inicio</router-link></b-nav-item>
             <b-nav-item><router-link to="/books" class="nav-ref">Mis libros</router-link></b-nav-item>
             <b-nav-item><router-link to="/libraries" class="nav-ref">Bibliotecas </router-link></b-nav-item>
           </b-navbar-nav>
@@ -22,6 +23,7 @@
         <!-- Not logged In nav-bar-->
         <b-collapse v-else id="nav-collapse" is-nav>
           <b-navbar-nav>
+            <b-nav-item><router-link to="/" class="nav-ref">Inicio</router-link></b-nav-item>
             <b-nav-item @click="needLogIn('/books')"><div class="nav-ref">Mis libros</div></b-nav-item>
             <b-nav-item @click="needLogIn('/libraries')"><div class="nav-ref">Bibliotecas</div></b-nav-item>
           </b-navbar-nav>
