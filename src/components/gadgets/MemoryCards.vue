@@ -31,7 +31,7 @@
     <b-row style="padding-bottom: 10px;">
       <b-col cols="4"><span>Nº de movimientos: {{ maxNumberOfMoves }}</span></b-col>
       <b-col>
-        <b-form-input v-model="maxNumberOfMoves" type="range" :step="2" :min="numberOfPairs * 2 + numberOfPairs + (numberOfPairs % 2)" max="200" @change="save()"/>
+        <b-form-input v-model="maxNumberOfMoves" type="range" :step="2" :min="minMovesValue()" max="200" @change="save()"/>
       </b-col>
     </b-row>
     <hr>
@@ -160,7 +160,7 @@ export default {
       this.refresh()
     },
     numberOfPairs: function () {
-      if (this.maxNumberOfMoves < this.numberOfPairs * 2) this.maxNumberOfMoves = this.numberOfPairs * 2 + this.numberOfPairs + (this.numberOfPairs % 2)
+      if (this.maxNumberOfMoves < (parseInt(this.numberOfPairs, 10) * 2) + parseInt(this.numberOfPairs, 10) + (parseInt(this.numberOfPairs, 10) % 2)) this.maxNumberOfMoves = (parseInt(this.numberOfPairs, 10) * 2) + parseInt(this.numberOfPairs, 10) + (parseInt(this.numberOfPairs, 10) % 2)
     },
     maxNumberOfMovesAux: function () {
       this.refresh()
@@ -255,6 +255,7 @@ export default {
     save () {
       if (this.sectionNoMoreMoves === undefined) this.sectionNoMoreMoves = ''
       if (this.sectionSolved === undefined) this.sectionSolved = ''
+      if (this.maxNumberOfMoves > 200) this.maxNumberOfMoves = '200'
       this.$emit('save', parseInt(this.numberOfPairs, 10), parseInt(this.maxNumberOfMoves, 10), this.sectionNoMoreMoves, this.sectionSolved, this.changeSectionWhenWrong, this.customized, this.typeChosen, this.customWords, this.customColors, this.index)
     },
     noWrongSection () {
@@ -312,6 +313,9 @@ export default {
     },
     limit (value) {
       return String(value).substring(0, 15)
+    },
+    minMovesValue () {
+      return ((parseInt(this.numberOfPairs, 10) * 2) + parseInt(this.numberOfPairs, 10) + (parseInt(this.numberOfPairs, 10) % 2))
     }
   }
 }
