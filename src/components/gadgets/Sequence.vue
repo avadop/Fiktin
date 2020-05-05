@@ -1,6 +1,9 @@
 <template>
   <b-card>
-    <h6 class="title">Completar la secuencia</h6>
+    <div class="d-flex justify-content-start">
+      <h6 class="title">Completar la secuencia</h6>
+      <b-button class="ml-auto" variant="outline-info" @click="preparePreview()"><b-icon icon="eye"/></b-button>
+    </div>
     <span style="color: red;" v-if="!valid">No hay más secciones a las que saltar. Este gadget solo mostrará la secuencia en la lectura</span>
     <br>
     <b-row class="right">
@@ -46,7 +49,6 @@
         <b-col><b-form-input v-model="element.text" size="sm" trim :formatter="limit" placeholder="Solución de máximo de 20 caracteres" @blur="save()"/></b-col>
       </b-row>
     </div>
-    <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="preparePreview()">Previsualizar</b-button>
 
     <b-modal v-model="showPreview" hide-footer hide-header centered >
       <div style="margin: 10px;">

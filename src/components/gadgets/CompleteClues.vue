@@ -1,6 +1,9 @@
 <template>
   <b-card>
-    <h6 class="title">Completar pistas</h6>
+    <div class="d-flex justify-content-start">
+      <h6 class="title">Completar pistas</h6>
+      <b-button class="ml-auto" variant="outline-info" @click="preparePreview()"><b-icon icon="eye"/></b-button>
+    </div>
     <span style="color: red;" v-if="!valid">No hay más secciones a las que saltar. Este gadget no cambiará de secciones en la lectura en la lectura</span>
     <br>
     <b-row class="right">
@@ -47,7 +50,6 @@
         </b-row>
       </div>
     </div>
-    <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="preparePreview()">Previsualizar</b-button>
 
     <b-modal v-model="showPreview" hide-footer hide-header centered >
       <div v-for="(element, index) in dataPreview" :key="index" style="min-width: 200px; width: 200px; margin-top: 10px;">

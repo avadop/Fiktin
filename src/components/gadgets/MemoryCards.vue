@@ -1,6 +1,9 @@
 <template>
   <b-card>
-    <h6 class="title">Tarjetas de memoria</h6>
+    <div class="d-flex justify-content-start">
+      <h6 class="title">Tarjetas de memoria</h6>
+      <b-button class="ml-auto" variant="outline-info" @click="show = true, shufflePreview()"><b-icon icon="eye"/></b-button>
+    </div>
     <br>
     <span style="color: red;" v-if="!valid">No hay más secciones a las que saltar. Este gadget no llevará a ninguna sección al resolver el puzzle</span>
 
@@ -64,8 +67,6 @@
         </div>
       </div>
     </div>
-
-    <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="show = true, shufflePreview()">Previsualizar</b-button>
 
     <b-modal v-model="show" hide-footer hide-header centered>
       <div class="d-block text-left">

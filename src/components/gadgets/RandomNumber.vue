@@ -1,6 +1,9 @@
 <template>
   <b-card>
-    <h6 class="title">Número aleatorio</h6>
+    <div class="d-flex justify-content-start">
+      <h6 class="title">Número aleatorio</h6>
+      <b-button class="ml-auto" variant="outline-info" @click="preparePreview()"><b-icon icon="eye"/></b-button>
+    </div>
     <br>
     <span style="color: red;" v-if="!valid">No hay más secciones a las que saltar. Este gadget solo calculará el número aleatorio en la lectura</span>
     <b-col>
@@ -44,7 +47,6 @@
         <b-col><b-form-input v-model="element.number" type="number" size="sm" @change="modifyChangeNumber(), save()"/></b-col>
         <b-col><b-form-select size="sm" @change="save()" v-model="element.section" :options="aux"></b-form-select></b-col>
     </b-row>
-    <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="preparePreview()">Previsualizar</b-button>
 
     <b-modal v-model="showPreview" hide-footer hide-header centered >
       <div style="margin-bottom: 15px;">

@@ -1,13 +1,15 @@
 <template>
   <b-card>
-    <h6 class="title">Repetición de sección</h6>
+    <div class="d-flex justify-content-start">
+      <h6 class="title">Repetición de sección</h6>
+      <b-button class="ml-auto" variant="outline-info" @click="preparePreview()"><b-icon icon="eye"/></b-button>
+    </div>
     <b-row style="padding-bottom: 10px;">
       <b-col cols="3"><span>Texto (opcional): </span></b-col>
       <b-col>
         <b-form-input size="sm" :formatter="limit" @blur="save()" v-model="text" placeholder="Escribe un mensaje si quieres (max 2000 caracteres)"></b-form-input>
       </b-col>
     </b-row>
-    <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="preparePreview()">Previsualizar</b-button>
 
     <b-modal v-model="showPreview" hide-footer hide-header centered >
       <h5>Repetir seccion</h5>

@@ -5,7 +5,7 @@
       <span class="textColor">{{ valueShow }}</span>
       <span>{{ nextText }}</span>
     </div>
-    <div v-else-if="mode == 'write' || mode == 'modifyWrite'">
+    <div v-else-if="mode == 'write' || mode == 'modifyWrite'" class="write">
       <br>
       <b-row>
         <b-col cols="3" style="margin-bottom: 3px;">
@@ -86,7 +86,8 @@ export default {
 }
 .write {
   border: 1px solid gray;
-  padding: 10px;
+  padding-left: 20px;
   margin-bottom: 5px;
+  margin-top: 5px;
 }
 </style>

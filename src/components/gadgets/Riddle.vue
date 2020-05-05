@@ -1,8 +1,9 @@
 <template>
   <div>
     <b-card>
-      <div class="d-flex">
+      <div class="d-flex justify-content-start">
         <h6 class="title">Adivinanza</h6>
+        <b-button class="ml-auto" variant="outline-info" @click="show = true, numberOfTriesPreview = parseInt(numberOfTries,10)"><b-icon icon="eye"/></b-button>
       </div>
       <span style="color: red;" v-if="!valid">No hay más secciones a las que saltar. Este gadget no se verá al leer el libro</span>
       <br>
@@ -44,7 +45,6 @@
           <span v-if="answerText.length > 24" style="color: red;">Estas cerca del limite de caracteres, llevas {{ this.answerText.length}} /30</span>
         </b-col>
       </b-row>
-      <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="show = true, numberOfTriesPreview = parseInt(numberOfTries,10)">Previsualizar</b-button>
     </b-card>
 
     <b-modal v-model="show" hide-footer hide-header centered>
