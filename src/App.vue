@@ -35,7 +35,7 @@
           </b-navbar-nav>
         </b-collapse>
       </b-navbar>
-      <router-view/>
+      <router-view @deleteUser="deleteUser"/>
     </div>
 
     <b-modal v-model="modalLogOut" hide-footer hide-header no-close-on-backdrop>
@@ -90,6 +90,9 @@ export default {
       if (!this.loggedIn) {
         window.alert('Inicie sesión primero')
       } else this.modalLogOut = true
+    },
+    deleteUser: function () {
+      this.loggedIn = false
     }
   }
 }

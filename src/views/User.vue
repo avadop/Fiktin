@@ -102,6 +102,7 @@ export default {
           })
         })
       userCollection.doc(this.userKey).delete()
+      this.$emit('deleteUser')
       store.commit('logOut')
       this.$router.push('/')
     },
