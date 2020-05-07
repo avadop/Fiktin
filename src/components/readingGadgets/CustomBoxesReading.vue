@@ -6,14 +6,17 @@
       <span>{{ nextText }}</span>
     </div>
     <div v-else-if="mode == 'write' || mode == 'modifyWrite'" class="write">
-      <div style="margin-bottom: 3px;">
-        <span style="font-size: 24px;">{{ title }}: </span>
-      </div>
-      <b-form-input v-if="type == 'string'" v-model="writeVar" @input.native="updateValue" placeholder="Introduce un texto" :formatter="formatString" size="sm"/>
-      <b-form-input v-else-if="type == 'number'" type="number" v-model="writeVar" @input.native="updateValue" placeholder="Introduce número" :formatter="formatNumber" size="sm"/>
-      <div style="margin-top: 5px;" v-if="defaultValue.length > 0">
-        <span style="font-size: 14px;">Valor por defecto: <span class="textColor">{{ defaultValue }}</span>.</span>
-      </div>
+      <br>
+      <b-row>
+        <b-col cols="3" style="margin-bottom: 3px;">
+          <span> {{ title }}: </span>
+        </b-col>
+        <b-col cols="6">
+          <b-form-input v-if="type == 'string'" v-model="writeVar" @input.native="updateValue" :placeholder="defaultValue" :formatter="formatString" size="sm"/>
+          <b-form-input v-else-if="type == 'number'" type="number" v-model="writeVar" @input.native="updateValue" :placeholder="defaultValue" :formatter="formatNumber" size="sm"/>
+        </b-col>
+      </b-row>
+      <br>
     </div>
   </div>
 </template>
@@ -83,7 +86,8 @@ export default {
 }
 .write {
   border: 1px solid gray;
-  padding: 10px;
+  padding-left: 20px;
   margin-bottom: 5px;
+  margin-top: 5px;
 }
 </style>

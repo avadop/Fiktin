@@ -1,8 +1,18 @@
 <template>
   <div>
     <b-card>
-      <div class="d-block text-center">
-        <h5>Edite su texto emergente</h5>
+      <div class="d-flex justify-content-start">
+        <h6 class="title">Edite su texto emergente</h6>
+        <b-button class="ml-auto" variant="outline-info" @click="preview = !preview"><b-icon icon="eye"/></b-button>
+      </div>
+      <div v-show="preview">
+        <hr>
+        <span>{{ mainText }}<span @click="openPopupTextModal = !openPopupTextModal" style="cursor: pointer; color: #0a8df4;"> [...]</span></span>
+        <b-modal v-model="openPopupTextModal" hide-footer hide-header scrollable centered>
+          <p v-show="openPopupTextModal">{{popupText}}</p>
+          <div v-html="htmlText"></div>
+        </b-modal>
+        <hr>
       </div>
       <b-container fluid class="col">
         <label>Texto principal</label>
@@ -62,17 +72,6 @@
           </div>
         </div>
       </b-container>
-      <div class="d-flex justify-content-center">
-        <b-button variant="outline-secondary" @click="preview = !preview">Previsulizar</b-button>
-      </div>
-      <div v-show="preview">
-        <hr>
-        <span>{{ mainText }}<span @click="openPopupTextModal = !openPopupTextModal" style="cursor: pointer; color: #0a8df4;"> [...]</span></span>
-        <b-modal v-model="openPopupTextModal" hide-footer hide-header scrollable centered>
-          <p v-show="openPopupTextModal">{{popupText}}</p>
-          <div v-html="htmlText"></div>
-        </b-modal>
-      </div>
     </b-card>
   </div>
 </template>
@@ -173,3 +172,9 @@ export default {
   }
 }
 </script>
+
+<style>
+.title {
+  font-weight: bold;
+}
+</style>

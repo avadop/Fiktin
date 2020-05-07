@@ -1,14 +1,16 @@
 <template>
-  <div>
-    <span :id="'spoiler' + index" class="editme" v-html="plainTextAux" contenteditable @blur="saveSelection($event)"/>
-    <div class="d-flex justify-content-center">
-      <b-button variant="outline-secondary" @click="preview = !preview">Previsulizar</b-button>
+  <b-card>
+    <div class="d-flex justify-content-start">
+      <h6 class="title">Spoiler</h6>
+      <b-button class="ml-auto" variant="outline-info" @click="preview = !preview"><b-icon icon="eye"/></b-button>
     </div>
     <div v-show="preview">
       <hr>
       <div class="spoiler" v-html="htmlTextAux"></div>
+      <hr>
     </div>
-  </div>
+    <span :id="'spoiler' + index" class="editme" v-html="plainTextAux" contenteditable @blur="saveSelection($event)"/>
+  </b-card>
 </template>
 
 <script>
@@ -51,5 +53,8 @@ export default {
 }
 .spoiler:hover {
   color: white;
+}
+.title {
+  font-weight: bold;
 }
 </style>

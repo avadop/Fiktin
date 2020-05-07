@@ -2,18 +2,15 @@
   <div style="margin-top: 20px; margin-bottom: 20px;">
     <h5>Completa la secuencia: </h5>
     <div class="d-block text-center">
-      <div class="d-flex">
-        <div  class="d-flex">
-          <div v-for="(seq, sequenceIndex) in sequence" :key="sequenceIndex">
-            <div  style="margin-top:8px;">
-              <span style="margin-right:10px; margin-left: 10px; font-size: 22px;">{{ seq.text }}</span>
-            </div>
-          </div>
-          </div>
-          <div class="d-flex">
-          <div v-for="(text, index) in solution" :key="index">
-            <b-form-input style="margin-top:5px; margin-right:5px; margin-left: 5px; width: 115px;" v-model="answers[index]" trim  :formatter="limit" placeholder="Respuesta"></b-form-input>
-          </div>
+      <div>
+        <div  class="row">
+          <span v-for="(seq, sequenceIndex) in sequence" :key="sequenceIndex" style="margin-right:10px; margin-left: 10px; font-size: 22px;">
+            {{ seq.text }}
+          </span>
+        </div>
+        <div class="d-flex">
+          <b-form-input v-for="(text, index) in solution" :key="index" style="margin-top:5px; margin-right:5px; margin-left: 5px; width: 115px;" v-model="answers[index]" trim  :formatter="limit" placeholder="Respuesta">
+          </b-form-input>
           <b-button style="width: 100px;" :disabled="numberOfTries === 0 || answers.length !== solution.length" variant="primary" block @click="confirm()">Probar</b-button>
         </div>
       </div>

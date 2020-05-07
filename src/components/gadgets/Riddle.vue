@@ -1,10 +1,35 @@
 <template>
   <div>
-    <div class="border">
-      <div class="d-flex">
-        <h5 class="title">Adivinanza</h5>
+    <b-card>
+      <div class="d-flex justify-content-start">
+        <h6 class="title">Adivinanza</h6>
+        <b-button class="ml-auto" variant="outline-info" @click="show = true, numberOfTriesPreview = parseInt(numberOfTries,10)"><b-icon icon="eye"/></b-button>
       </div>
       <span style="color: red;" v-if="!valid">No hay más secciones a las que saltar. Este gadget no se verá al leer el libro</span>
+      <br>
+      <!-- cambio de sección -->
+      <b-row>
+        <b-col cols="5"><span>Cambio de sección al acertar: </span></b-col>
+        <b-col><b-form-select size="sm" @change="save()" v-model="rightSectionID" :options="aux"></b-form-select></b-col>
+      </b-row>
+      <b-row class="right" style="padding-left: 10px">
+        <b-col cols="5">
+          <b-button variant="outline-dark" size="sm" v-if="!changeSectionWhenWrong" @click="changeSectionWhenWrong = true, save()">Cambiar de sección al fallar</b-button>
+          <b-button variant="outline-dark" size="sm" v-else @click="noWrongSection()">Continuar lectura al fallar</b-button>
+        </b-col>
+        <b-col v-if="changeSectionWhenWrong" style="padding-top: 5px;"><b-form-select size="sm" @change="save()" v-model="wrongSectionID" :options="aux"></b-form-select></b-col>
+      </b-row>
+      <hr>
+      <!-- num intentos -->
+      <b-row style="padding-bottom: 10px;">
+        <b-col cols="4"><span>Nº de intentos: {{ numberOfTries }}</span></b-col>
+        <b-col>
+          <b-form-input v-if="aux.length > 0" v-model="numberOfTries" type="range" min="1" max="10" @change="save()"/>
+          <b-form-input v-else disabled v-model="numberOfTries" type="range" min="1" max="10" @change="save()"/>
+        </b-col>
+      </b-row>
+      <hr>
+      <!-- pregunta -->
       <b-row style="padding-bottom: 10px;">
         <b-col cols="2"><span>Pregunta: </span></b-col>
         <b-col>
@@ -12,35 +37,15 @@
           <span v-if="riddleText.length > 1800" style="color: red;">Estas cerca del limite de caracteres, llevas {{ this.riddleText.length}} /2000</span>
         </b-col>
       </b-row>
+      <!-- respuesta -->
       <b-row style="padding-bottom: 10px;">
-        <b-col cols="2"><span>Respuesta: </span></b-col>
+        <b-col cols="3"><span>Respuesta: </span></b-col>
         <b-col>
           <b-form-input trim style="margin-bottom: 10px;" @blur="save()" v-model="answerText" :formatter="formatAnswer" placeholder="Escribe la respuesta a tu adivinanza (max 30 caracteres)"></b-form-input>
           <span v-if="answerText.length > 24" style="color: red;">Estas cerca del limite de caracteres, llevas {{ this.answerText.length}} /30</span>
         </b-col>
       </b-row>
-      <b-row style="padding-bottom: 10px;">
-        <b-col cols="4"><span>Número de intentos: {{ numberOfTries }}</span></b-col>
-        <b-col>
-          <b-form-input v-if="aux.length > 0" v-model="numberOfTries" type="range" min="1" max="10" @change="save()"/>
-          <b-form-input v-else disabled v-model="numberOfTries" type="range" min="1" max="10" @change="save()"/>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col cols="5"><span>Sección a la que quieres saltar si se acierta la respuesta: </span></b-col>
-        <b-col><b-form-select size="sm" @change="save()" v-model="rightSectionID" :options="aux"></b-form-select></b-col>
-      </b-row><br/>
-      <b-row v-if="changeSectionWhenWrong === true">
-        <b-col cols="5"><span>Sección a la que quieres saltar si se falla la respuesta: </span></b-col>
-        <b-col><b-form-select size="sm" @change="save()" v-model="wrongSectionID" :options="aux"></b-form-select></b-col>
-        <b-button style="width: 20px; margin-right:50px;" class="my-1" variant="danger-dark" @click="noWrongSection()"><b-icon style="heigh:50px;width:50px;" variant="danger" icon="x"></b-icon></b-button>
-      </b-row>
-      <div v-else>
-        <span @click="changeSectionWhenWrong = true" style="color: darkblue; font-weight: bold; cursor: pointer;"> Agregar salto de seccion al fallar la respuesta</span>
-        <span style="font-size: 13px;"> (En caso de no activar esta opción, si el lector falla la respuesta se quedará en la página que está)</span>
-      </div>
-      <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="show = true, numberOfTriesPreview = parseInt(numberOfTries,10)">Previsualizar</b-button>
-    </div>
+    </b-card>
 
     <b-modal v-model="show" hide-footer hide-header centered>
       <div class="d-block text-left">

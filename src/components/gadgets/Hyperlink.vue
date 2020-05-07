@@ -1,8 +1,14 @@
 <template>
   <div>
     <b-card>
-      <div class="d-block text-center">
-        <h5>Edite su hipervínculo</h5>
+      <div class="d-flex justify-content-start">
+        <h6 class="title">Edite su hipervínculo</h6>
+        <b-button class="ml-auto" variant="outline-info" @click="preview = !preview"><b-icon icon="eye"/></b-button>
+      </div>
+      <div v-show="preview">
+        <hr>
+        <a :href="hyperlinkText" target="_blank">{{mainText}}</a>
+        <hr>
       </div>
       <b-container fluid class="col">
         <label>Hipervínculo</label>
@@ -38,13 +44,6 @@
           No se puede dejar este campo vacio
         </b-form-invalid-feedback>
       </b-container>
-      <div class="d-flex justify-content-center">
-        <b-button variant="outline-secondary" @click="preview = !preview">Previsulizar</b-button>
-      </div>
-      <div v-show="preview">
-        <hr>
-        <a :href="hyperlinkText" target="_blank">{{mainText}}</a>
-      </div>
     </b-card>
   </div>
 </template>
@@ -91,3 +90,9 @@ export default {
   }
 }
 </script>
+
+<style>
+.title {
+  font-weight: bold;
+}
+</style>

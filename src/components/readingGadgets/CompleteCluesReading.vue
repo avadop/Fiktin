@@ -1,22 +1,12 @@
 <template>
   <div style="margin-bottom: 15px; margin-top: 15px;">
-    <h5>Completa las pistas</h5>
-    <p>¡Adivina cual es la respuesta esperada!</p>
-    <div>
-      <div v-for="(element, index) in clues" :key="index">
-        <span>Pista {{ index + 1}}: {{ element.clue }}</span>
-      </div>
+    <div v-for="(element, index) in data" :key="index" style="min-width: 200px; width: 200px; margin-top: 10px;">
+      <b-form-select v-if="valid" v-model="data[index]" :options="options" size="sm"/>
+      <b-form-select v-else disabled v-model="data[index]" :options="options" size="sm"/>
     </div>
-    <div>
-      <div v-for="(element, index) in data" :key="index">
-        <b-form-select v-if="valid" v-model="data[index]" :options="options" size="sm"/>
-        <b-form-select v-else disabled v-model="data[index]" :options="options" size="sm"/>
-      </div>
-    </div>
-    <div>
-      <button v-if="valid" style="margin-top: 10px;" @click="check()">Comprobar respuestas</button>
-      <span v-else>Sigue leyendo!</span>
-    </div>
+    <p style="font-size: 14px">Selecciona las repuestas correcatas y pulsa solucionar</p>
+    <b-button v-if="valid" variant="outline-dark" @click="check()">Solucionar</b-button>
+    <span v-else>Sigue leyendo!</span>
   </div>
 </template>
 
