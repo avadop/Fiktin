@@ -529,6 +529,9 @@ export default {
           f.push({ clue: this.data[index].clues[l].clue })
         }
         this.data.splice(index + 1, 0, { answers: e, answersNumber: this.data[index].answersNumber, clues: f, cluesNumber: this.data[index].cluesNumber, onGuess: this.data[index].onGuess, changeSectionWhenWrong: this.data[index].changeSectionWhenWrong, onWrong: this.data[index].onWrong, component: 'CompleteClues', componentName: 'Pistas' })
+      } else if (this.data[index].component === 'CustomBox') {
+        if (this.data[index].mode === 'write') this.data.splice(this.lastPress + 1, 0, { name: this.data[index].name, mode: 'read', type: this.data[index].type, value: '', defaultValue: this.data[index].defaultValue, title: this.data[index].title, prevText: '', nextText: '', component: 'CustomBox', componentName: 'Casilla personalizada' })
+        else this.data.splice(this.lastPress + 1, 0, { name: this.data[index].name, mode: this.data[index].mode, type: this.data[index].type, value: '', defaultValue: this.data[index].defaultValue, title: this.data[index].title, prevText: this.data[index].prevText, nextText: this.data[index].nextText, component: 'CustomBox', componentName: 'Casilla personalizada' })
       }
     },
     async updateBookSections (newSections) {
@@ -820,8 +823,10 @@ export default {
         await booksCollection.doc(this.bookID).update({
           customBoxes: this.temporalCustomBoxes
         })
+        return true
       } else {
         window.alert('Para guardar una sección, debes darla un nombre primero')
+        return false
       }
     },
     saveExpandableText (mainText, expandedText, index) {
@@ -930,8 +935,8 @@ export default {
     goBack () {
       this.$router.replace({ name: 'readBook' })
     },
-    goBackAndSave () {
-      this.save()
+    async goBackAndSave () {
+      await this.save()
       this.goBack()
     }
   }
