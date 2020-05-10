@@ -211,7 +211,7 @@ export default {
       this.cover = ''
       this.published = 'not_published'
       this.modalCreate = false
-      setTimeout(() => { this.$emit('create') }, 200)
+      this.$emit('create')
     },
     cancelButton () {
       this.modalCreate = false
