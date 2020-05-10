@@ -96,7 +96,7 @@
 </template>
 
 <script>
-import { booksCollection, sectionsCollection, storageFirebase } from '../firebase.js'
+import { booksCollection, sectionsCollection, storageFirebase, defaultImageBook } from '../firebase.js'
 import { store } from '../store/index.js'
 
 export default {
@@ -159,7 +159,7 @@ export default {
       })
     },
     onUpdate: async function (bookId) {
-      if (this.auxCover != null) {
+      if (this.auxCover !== null) {
         const storage = storageFirebase.ref(`/${store.state.userNick.toLowerCase()}/books/${bookId}/cover/${this.selectedFile.name}`)
         const task = storage.put(this.selectedFile)
         await task.on('state_changed', snapshot => {
@@ -198,7 +198,8 @@ export default {
         published: this.published,
         user_id: this.userID,
         sections: [sections[0].id],
-        customBoxes: []
+        customBoxes: [],
+        cover: defaultImageBook
       }).then(docRef => {
         bookID = docRef.id
       })
@@ -210,7 +211,7 @@ export default {
       this.cover = ''
       this.published = 'not_published'
       this.modalCreate = false
-      this.$emit('create')
+      setTimeout(() => { this.$emit('create') }, 200)
     },
     cancelButton () {
       this.modalCreate = false

@@ -34,3 +34,6 @@ export const booksCollection = db.collection('books')
 export const librariesCollection = db.collection('libraries')
 export const tagsCollection = db.collection('tags')
 export const sectionsCollection = db.collection('sections')
+
+export const defaultImageBook = 'https://firebasestorage.googleapis.com/v0/b/fiktin-cac14.appspot.com/o/default_book_picture%2Fblack-and-white-book-cover-clip-art-book-of-images.jpg?alt=media&token=31470ce3-ad63-47c9-8b14-f19abddfde8c'
+export const defaultImageUser = 'https://firebasestorage.googleapis.com/v0/b/fiktin-cac14.appspot.com/o/default_user_picture%2Fusuario.jpg?alt=media&token=9dc00bba-5d07-4412-aef5-393e41000e4a'
