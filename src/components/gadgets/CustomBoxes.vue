@@ -1,14 +1,17 @@
 <template>
-  <div class="border">
+  <b-card>
     <h6 class="title">Casilla personalizada</h6>
+    <br>
     <span v-if="!validName" style="color: red;">Aviso: Si el nombre de la casilla no es válido, no se verá en la lectura</span>
     <b-form-group>
+      <span>Uso de la casilla: </span>
       <b-form-radio-group id="radio-modes" v-if="aux.length > 0" v-model="mode" :options="modeOptions" buttons button-variant="outline-primary" size="sm" @change="checkMode"/>
       <b-form-radio-group id="radio-modes" v-else v-model="mode" :options="modeOptionsDisabled" buttons button-variant="outline-primary" size="sm" @change="checkMode"/>
     </b-form-group>
+    <hr>
     <div v-if="mode == 'read'">
       <b-row style="margin-bottom: 5px;">
-        <b-col cols=4><span>Texto anterior (opcional). Máximo 1000 caracteres: </span></b-col>
+        <b-col cols=4><span>Texto anterior: </span></b-col>
         <b-col><b-form-textarea v-model="prevText" rows="3" no-resize placeholder="Texto anterior (opcional)" :formatter="formatText" @blur.native="save"/></b-col>
       </b-row>
       <b-row style="margin-bottom: 5px;">
@@ -16,27 +19,28 @@
         <b-col><b-form-select id="select-read" v-model="name" :options="aux" @change="save"/></b-col>
       </b-row>
       <b-row>
-        <b-col cols=4><span>Texto posterior (opcional). Máximo 1000 caracteres: </span></b-col>
+        <b-col cols=4><span>Texto posterior: </span></b-col>
         <b-col><b-form-textarea v-model="nextText" rows="3" no-resize placeholder="Texto posterior (opcional)" :formatter="formatText" @blur="save"/></b-col>
       </b-row>
     </div>
     <div v-else-if="mode == 'write'">
       <b-row style="margin-bottom: 5px;">
-        <b-col cols=6><span>Nombre único (máx. 20 caracteres): </span></b-col>
+        <b-col cols=6><span>Identificador único: </span></b-col>
         <b-col><b-form-input v-model="name" :state="nameState" @input.native="nameStateAux" placeholder="Nombre de la casilla" :formatter="formatName" size="sm" @blur="updateAux"/></b-col>
       </b-row>
       <b-row style="margin-bottom: 5px;">
-        <b-col><span>Título de la casilla (máx 50 caracteres): </span></b-col>
+        <b-col><span>Nombre para la lectura: </span></b-col>
         <b-col><b-form-input v-model="title" type="text" placeholder="Título" :formatter="formatTitle" @blur="save" size="sm"/></b-col>
       </b-row>
+      <hr>
       <b-form-group v-if="mode == 'write'">
         <span>Tipo de contenido: </span>
         <b-form-radio-group id="radio-type" v-model="type" :options="typeOptions" buttons button-variant="outline-primary" size="sm" @change="changeType"/>
       </b-form-group>
       <b-row>
         <b-col cols=6>
-          <span v-if="type == 'string'">Texto por defecto (máx. 30 caracteres): </span>
-          <span v-else-if="type == 'number'">Núm. por defecto (máx. 30 caracteres): </span>
+          <span v-if="type == 'string'">Valor por defecto: </span>
+          <span v-else-if="type == 'number'">Valor por defecto: </span>
         </b-col>
         <b-col>
           <b-form-input v-if="type == 'string'" v-model="defaultValue" type="text" placeholder="Texto por defecto" :formatter="formatString" @blur="updateAux" size="sm"/>
@@ -50,11 +54,11 @@
         <b-col><b-form-select id="select-read" v-model="name" :options="aux" @change="save"/></b-col>
       </b-row>
       <b-row style="margin-bottom: 5px;">
-        <b-col><span>Título de la casilla (máx 50 caracteres): </span></b-col>
+        <b-col><span>Nombre para la lectura: </span></b-col>
         <b-col><b-form-input v-model="title" type="text" placeholder="Título" :formatter="formatTitle" @blur="save" size="sm"/></b-col>
       </b-row>
     </div>
-  </div>
+  </b-card>
 </template>
 
 <script>

@@ -1,8 +1,15 @@
 <template>
   <div>
     <b-card>
-      <div class="d-block text-center">
-        <h5>Edite su texto expandible</h5>
+      <div class="d-flex justify-content-start">
+        <h6 class="title">Edite su texto expandible</h6>
+        <b-button class="ml-auto" variant="outline-info" @click="preview = !preview"><b-icon icon="eye"/></b-button>
+      </div>
+      <div v-show="preview">
+        <hr>
+        <p @click="show = !show" style="cursor: pointer;">{{ mainText }} <b-icon v-if="!show" icon="caret-down-fill"/><b-icon v-else icon="caret-up-fill"/></p>
+        <p class="container" v-show="show">{{expandedText}}</p>
+        <hr>
       </div>
       <b-container fluid class="col">
         <label>Texto principal</label>
@@ -38,14 +45,6 @@
           No se puede dejar este campo vacio
         </b-form-invalid-feedback>
       </b-container>
-      <div class="d-flex justify-content-center">
-        <b-button variant="outline-secondary" @click="preview = !preview">Previsualizar</b-button>
-      </div>
-      <div v-show="preview">
-        <hr>
-        <p @click="show = !show" style="cursor: pointer;">{{ mainText }} <b-icon v-if="!show" icon="caret-down-fill"/><b-icon v-else icon="caret-up-fill"/></p>
-        <p class="container" v-show="show">{{expandedText}}</p>
-      </div>
     </b-card>
   </div>
 </template>
@@ -99,5 +98,8 @@ export default {
   height: auto !important;
   background-color: #dfdfdf;
   border-radius: 5px;
+}
+.title {
+  font-weight: bold;
 }
 </style>

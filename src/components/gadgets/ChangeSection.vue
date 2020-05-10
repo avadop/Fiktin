@@ -1,33 +1,44 @@
 <template>
-  <div class="border">
-    <h6 class="title">Cambio de sección</h6>
+  <b-card>
+    <div class="d-flex justify-content-start">
+      <h6 class="title" style="margin-top: 10px; margin-left: 10px">Cambio de sección</h6>
+      <b-button class="ml-auto" variant="outline-info" @click="preparePreview()"><b-icon icon="eye"/></b-button>
+    </div>
+    <br>
     <span style="color: red;" v-if="!valid">No hay más secciones a las que saltar. Este gadget no se verá al leer el libro</span>
-    <b-row style="padding-bottom: 10px;">
-      <b-col cols="3"><span>Texto (opcional): </span></b-col>
+    <b-row>
+      <b-col>
+      <span>Texto (opcional): </span>
+      </b-col>
+      <b-col>
+        <span>Sección:</span>
+      </b-col>
+    </b-row>
+    <b-row>
       <b-col>
         <b-form-input size="sm" style="margin-bottom: 6px;" @blur="save()" v-model="text" :formatter="formatMaxText" placeholder="Escribe un mensaje si quieres (max 2000 caracteres)"></b-form-input>
         <span v-if="text.length > 1800" style="color: red;">Estas cerca del limite de caracteres, llevas {{ this.text.length}} /2000</span>
       </b-col>
+      <b-col>
+        <b-form-select size="sm" @change="save()" v-model="selectedSectionID" :options="aux"></b-form-select>
+      </b-col>
     </b-row>
-    <b-row>
-      <b-col cols="5"><span>Sección a la que quieres saltar: </span></b-col>
-      <b-col><b-form-select size="sm" @change="save()" v-model="selectedSectionID" :options="aux"></b-form-select></b-col>
-    </b-row>
-    <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="preparePreview()">Previsualizar</b-button>
 
     <b-modal v-model="showPreview" hide-footer hide-header centered >
       <h5>Cambio de seccion</h5>
       <div class="d-flex justify-content-center">
-        <span v-html="htmlTextPreview"/>
-        <button style="margin-left: 10px;" v-if="htmlTextPreview.length !== 13" @click="changePreview()">Cambiar</button>
-        <button v-else @click="changePreview()">Cambiar</button>
+        <span class="clickable" v-html="htmlTextPreview" @click="changePreview()"/>
+        <span>
+          <b-icon class="h4 clickable" variant="info" style="margin-left: 10px;" v-if="htmlTextPreview.length !== 13" icon="box-arrow-right" @click="changePreview()"/>
+          <b-icon class="h4 clickable" variant="info" v-else icon="box-arrow-right" @click="changePreview()"/>
+        </span>
       </div>
       <p v-if="clicked === true" style="padding-left: 15px;">Cambio a seccion: {{ sectionNamePreview }} </p>
       <div class="d-flex justify-content-center">
         <b-button id="button-modal-ok" class="mt-1" variant="secondary" block @click="showPreview = false">Ok</b-button>
       </div>
     </b-modal>
-  </div>
+  </b-card>
 </template>
 
 <script>
@@ -146,6 +157,12 @@ export default {
 </script>
 
 <style scoped>
+.clickable {
+  cursor: pointer;
+}
+.clickable:hover {
+  text-decoration: underline;
+}
 .border {
   padding: 10px;
   padding-bottom: 54px;

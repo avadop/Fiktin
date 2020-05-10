@@ -1,68 +1,68 @@
 <template>
   <div class="books">
+    <b-modal id="modal-create" size="xl" v-model="modalCreate" hide-footer hide-header no-close-on-backdrop>
+      <CreateBook @cancel="discardChangesBook" @create="saveChangesBook()"/>
+    </b-modal>
     <b-card class="background-card">
-      <div v-show = "!create" class="d-flex justify-content-end">
+      <div class="d-flex justify-content-end">
         <h4 class="mr-auto">Mis libros</h4>
-        <b-button variant="info" size="sm" class="m-md-2" @click="createButton">
+        <b-button variant="info" size="sm" class="m-md-2" v-b-modal.modal-create>
           <b-icon icon="plus"></b-icon> Crear libro
         </b-button>
       </div>
       <div class="d-flex justify-content-end">
-        <p v-show = "!create" class="mr-auto">Tienes {{ books.length }} libro(s).</p>
+        <p class="mr-auto">Tienes {{ books.length }} libro(s).</p>
       </div>
-      <CreateBook v-show="create" id="createBook" @cancel="discardChangesBook" @create="saveChangesBook()"/>
       <!-- lista de libros -->
       <div class="row">
-        <div v-show="!create" v-for="(book, idx) in books" :key="idx">
-          <div v-if="modifyID !== book.ID">
-            <b-card
-              tag="article"
-              style="max-width: 20rem; cursor: pointer;"
-              class="mb-2"
-            >
-              <div class="card-img-box">
-                <img class="card-img-top" :src="book.cover" alt="Portada" @click="openBook(book, idx)">
-              </div>
-              <br>
-              <h6 class="card-title"  @click="openBook(book, idx)">
-                {{upperCase(book.title)}} <a class="h5 mb-2" v-if="book.published"><b-icon icon="eye"></b-icon></a>
-                <a class="h5 mb-2" v-else><b-icon icon="eye-slash"></b-icon></a>
-              </h6>
-              <div class="d-flex justify-content-start">
-                <h6 class="autor-name" v-if="book.author == 'Nombre'">{{ name }}</h6>
-                <h6 class="autor-name" v-else>{{ nick }}</h6>
-              </div>
-              <div class="d-flex justify-content-start">
-                <b-card-text>
-                  {{ description(book.description) }}
-                </b-card-text>
-              </div>
-              <br>
-              <div class="text-small"><a href="" v-for="(tag, idt) in book.tags.slice(0, 3)" :key="idt">#{{ tag }} </a><a v-if="book.tags.length>3">...</a></div>
+        <div v-for="(book, idx) in books" :key="idx">
+          <b-card
+            tag="article"
+            style="max-width: 20rem; cursor: pointer;"
+            class="mb-2"
+          >
+            <div class="card-img-box">
+              <img class="card-img-top" :src="book.cover" alt="Portada" @click="openBook(book, idx)">
+            </div>
+            <br>
+            <h6 class="card-title"  @click="openBook(book, idx)">
+              {{upperCase(book.title)}} <a class="h5 mb-2" v-if="book.published"><b-icon icon="eye"></b-icon></a>
+              <a class="h5 mb-2" v-else><b-icon icon="eye-slash"></b-icon></a>
+            </h6>
+            <div class="d-flex justify-content-start">
+              <h6 class="autor-name" v-if="book.author == 'Nombre'">{{ name }}</h6>
+              <h6 class="autor-name" v-else>{{ nick }}</h6>
+            </div>
+            <div class="d-flex justify-content-start">
+              <b-card-text>
+                {{ description(book.description) }}
+              </b-card-text>
+            </div>
+            <br>
+            <div class="text-small"><a href="" v-for="(tag, idt) in book.tags.slice(0, 3)" :key="idt">#{{ tag }} </a><a v-if="book.tags.length>3">...</a></div>
 
-              <!-- Botones -->
-              <div>
-                <b-dropdown id="dropdown-1" variant="light" text="Opciones" class="mr-3 opt-button">
-                  <b-dropdown-item id="modifyButton" @click.stop="modifyBook(book)" v-show="modifyID !== book.ID">Modificar</b-dropdown-item>
-                  <b-dropdown-item @click.stop="addToLibraryButton(idx)">Añadir a bibliotecas</b-dropdown-item>
-                  <b-dropdown-divider></b-dropdown-divider>
-                  <b-dropdown-item variant="danger" v-if="modifyID !== book.ID" @click.stop="deleteBook(book.ID, idx)"><b-icon icon="trash-fill"></b-icon> Eliminar</b-dropdown-item>
-                </b-dropdown>
-              </div>
-              <AddToLibraryModal v-if="showModal===idx" :bookId="primaryKeys[idx]" @add="addToLibrary" @cancel="addToLibraryButton"/>
-            </b-card>
-          </div>
+            <!-- Botones -->
+            <div>
+              <b-dropdown id="dropdown-1" variant="light" text="Opciones" class="mr-3 opt-button">
+                <b-dropdown-item id="modifyButton" @click.stop="modifyBook(book)" v-show="modifyID !== book.ID">Modificar</b-dropdown-item>
+                <b-dropdown-item @click.stop="addToLibraryButton(idx)">Añadir a bibliotecas</b-dropdown-item>
+                <b-dropdown-divider></b-dropdown-divider>
+                <b-dropdown-item v-if="modifyID !== book.ID && !book.confirmDelete" variant="danger" @click="book.confirmDelete=true"><b-icon icon="trash-fill"></b-icon> Eliminar</b-dropdown-item>
+                <b-dropdown-item v-else-if="book.confirmDelete" variant="light" style="background-color: #dc3545 !important" @click.stop="deleteBook(book.ID, idx)"><b-icon icon="trash-fill"></b-icon> Eliminar</b-dropdown-item>
+              </b-dropdown>
+            </div>
+            <AddToLibraryModal v-if="showModal===idx" :bookId="primaryKeys[idx]" @add="addToLibrary" @cancel="addToLibraryButton"/>
+          </b-card>
 
           <!-- componente modificar libro -->
-          <div v-else>
-            <ModifyBook :bookAux="book" @delete="deleteBook(book.ID, idx)" @cancel="discardChangesBook" @save="saveChangesBook()"/>
-          </div>
+          <b-modal v-if="modifyID === book.ID" v-model="modalModify" size="xl" hide-footer hide-header no-close-on-backdrop>
+            <ModifyBook :bookAux="book"  @delete="deleteBook(book.ID, idx)" @cancel="discardChangesBook" @save="saveChangesBook()"/>
+          </b-modal>
         </div>
       </div>
     </b-card>
   </div>
 </template>
-
 <script>
 import ModifyBook from '@/components/ModifyBook.vue'
 import CreateBook from '@/components/CreateBook.vue'
@@ -76,12 +76,13 @@ export default {
     return {
       books: [],
       modifyID: null,
-      create: false,
       userID: store.state.userID,
       nick: '',
       name: '',
       primaryKeys: [],
-      showModal: -1
+      showModal: -1,
+      modalCreate: false,
+      modalModify: false
     }
   },
   components: {
@@ -115,7 +116,8 @@ export default {
               userID: doc.data().user_id,
               sections: doc.data().sections,
               customBoxes: doc.data().customBoxes,
-              ID: doc.id
+              ID: doc.id,
+              confirmDelete: false
             })
           }
         })
@@ -130,18 +132,18 @@ export default {
     },
     modifyBook: function (book) {
       this.modifyID = book.ID
+      this.modalModify = true
     },
     discardChangesBook: function () {
+      this.modalCreate = false
       this.modifyID = null
-      this.create = false
+      this.modalModify = false
     },
     saveChangesBook: function () {
+      this.modalCreate = false
+      this.modalModify = false
       this.modifyID = null
-      this.create = false
       this.refresh()
-    },
-    createButton: function () {
-      this.create = true
     },
     addToLibraryButton (idx) {
       this.showModal = idx

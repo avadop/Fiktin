@@ -1,74 +1,71 @@
 <template>
-  <div class="border">
-    <h6 class="title">Completar pistas</h6>
+  <b-card>
+    <div class="d-flex justify-content-start">
+      <h6 class="title">Completar pistas</h6>
+      <b-button class="ml-auto" variant="outline-info" @click="preparePreview()"><b-icon icon="eye"/></b-button>
+    </div>
     <span style="color: red;" v-if="!valid">No hay más secciones a las que saltar. Este gadget no cambiará de secciones en la lectura en la lectura</span>
+    <br>
     <b-row class="right">
       <b-col cols="5"><span>Cambio de sección al acertar: </span></b-col>
       <b-col><b-form-select size="sm" @change="save()" v-model="onGuess" :options="aux"></b-form-select></b-col>
     </b-row>
-    <div>
-      <button v-if="!changeSectionWhenWrong" @click="wrong(), save()">Sin cambio de sección</button>
-      <button v-else @click="wrong(), save()">Con cambio de sección</button>
-      <span style="padding-left: 10px;">Si marcas esta casilla, cuando no se acierte en la respuesta se irá a la sección por seleccionar</span>
-      <b-row v-if="changeSectionWhenWrong">
-        <b-col cols="5"><span>Cambio de sección al fallar: </span></b-col>
-        <b-col><b-form-select size="sm" @change="save()" v-model="onWrong" :options="aux"></b-form-select></b-col>
-      </b-row>
-    </div>
+    <b-row class="right" style="padding-left: 10px">
+      <b-button variant="outline-dark" size="sm" v-if="!changeSectionWhenWrong" @click="wrong(), save()">Cambiar de sección al fallar</b-button>
+      <b-button variant="outline-dark" size="sm" v-else @click="wrong(), save()">Continuar lectura al fallar</b-button>
+      <!-- <b-col><b-form-checkbox v-model="changeSectionWhenWrong" @change="save()">Cambio de sección al fallar</b-form-checkbox></b-col> -->
+      <b-col v-if="changeSectionWhenWrong" style="padding-top: 5px;"><b-form-select size="sm" @change="save()" v-model="onWrong" :options="aux"></b-form-select></b-col>
+    </b-row>
+    <hr>
+    <!-- Pistas -->
     <div>
       <b-row style="padding-bottom: 10px;">
-        <b-col cols="4"><span>Número de pistas: {{ cluesNumber }}</span></b-col>
+        <b-col cols="4"><span>Nº de pistas: {{ cluesNumber }}</span></b-col>
         <b-col>
           <b-form-input v-if="aux.length > 0" v-model="cluesNumber" type="range" min="1" max="5" @change="modifyClues(), save()" @blur="modifyOptions()"/>
         </b-col>
       </b-row>
-      <div class="table" v-for="(element, index) in clues" :key="index">
+      <div v-for="(element, index) in clues" :key="index" style="padding-bottom: 10px">
         <b-row>
-          <b-col cols="3"><span>pista {{ index + 1 }} con valor: </span></b-col>
+          <b-col cols="3"><span>Valor pista {{ index + 1 }}: </span></b-col>
           <b-col>
             <b-form-input v-model="element.clue" type="text" size="sm" @change="save()" @blur="modifyOptions()"/>
           </b-col>
         </b-row>
       </div>
     </div>
+    <hr>
+    <!-- Repuestas correctas -->
     <div>
       <b-row style="padding-bottom: 10px;">
-        <b-col cols="4"><span>Número de respuestas: {{ answersNumber }}</span></b-col>
+        <b-col cols="4"><span>Nº de respuestas: {{ answersNumber }}</span></b-col>
         <b-col>
           <b-form-input v-if="aux.length > 0" v-model="answersNumber" type="range" min="1" max="5" @change="modifyAnswers(), save()"/>
         </b-col>
       </b-row>
-      <div class="table" v-for="(element, index) in answers" :key="index">
+      <div v-for="(element, index) in answers" :key="index" style="padding-bottom: 10px">
         <b-row>
           <b-col cols="3"><span>Respuesta {{ index + 1 }}: </span></b-col>
           <b-col><b-form-select v-model="element.answer" :options="options" size="sm" @change="save()"/></b-col>
         </b-row>
       </div>
     </div>
-    <b-button size="sm" style="width: 150px; heigth:7px; margin-top: 10px; float: right;"  variant="secondary" block @click="preparePreview()">Previsualizar</b-button>
 
     <b-modal v-model="showPreview" hide-footer hide-header centered >
-      <h5>¡Completa las pistas!</h5>
-      <div>
-        <div v-for="(element, index) in auxClues" :key="index">
-          <span>Pista {{ index + 1}}: {{ element.clue }}</span>
-        </div>
+      <div v-for="(element, index) in dataPreview" :key="index" style="min-width: 200px; width: 200px; margin-top: 10px;">
+        <b-form-select v-model="dataPreview[index]" :options="optionsPreview" size="sm"/>
       </div>
+      <p style="font-size: 14px">Selecciona las repuestas correcatas y pulsa solucionar</p>
       <div>
-        <div v-for="(element, index) in dataPreview" :key="index">
-          <b-form-select v-model="dataPreview[index]" :options="optionsPreview" size="sm"/>
-        </div>
-      </div>
-      <div>
-        <button style="margin-top: 10px;" @click="checkPreview()">Comprobar respuestas</button>
+        <b-button v-if="valid" variant="outline-dark" @click="checkPreview()">Solucionar</b-button>
         <p v-if="solvedPreview === true" style="padding-top: 10px; color: green;"> ¡Has resuelto el problema!</p>
-        <p v-if="solvedPreview === false" style="padding-top: 10px; color: red;"> ¡Fallaste! Buena suerte la proxima vez</p>
+        <p v-if="solvedPreview === false" style="padding-top: 10px; color: red;"> ¡Fallaste! Más suerte la próxima vez</p>
       </div>
       <div class="d-flex justify-content-center">
         <b-button id="button-modal-ok" class="mt-1" variant="secondary" block @click="showPreview = false, solvedPreview = null">Ok</b-button>
       </div>
     </b-modal>
-  </div>
+  </b-card>
 </template>
 
 <script>
@@ -287,16 +284,7 @@ export default {
 </script>
 
 <style scoped>
-.border {
-  padding: 10px;
-  padding-bottom: 54px;
-}
 .title {
   font-weight: bold;
-}
-.table {
-  border: 1px solid rgb(218, 218, 218);
-  padding: 10px;
-  margin-bottom: 10px;
 }
 </style>

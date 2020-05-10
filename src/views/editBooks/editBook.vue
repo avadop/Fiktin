@@ -2,8 +2,9 @@
   <div>
     <LoadingModal v-if="loading"/>
     <div class="buttons">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
       <div class="row d-flex justify-content-end">
-        <b-button v-b-tooltip.hover title="Salir sin guardar" variant="light" @click="goBack()"><b-icon icon="chevron-left"></b-icon></b-button>
+        <b-button v-b-tooltip.hover title="Salir sin guardar" variant="light" @click="goBack()"><b-icon icon="chevron-left"/></b-button>
         <div class="col">
           <h3 class="mr-auto" style="padding-top: 15px;">{{ book.title }}</h3>
         </div>
@@ -17,8 +18,8 @@
           <b-button variant="light" size="sm" @click="showPreviewSection = true" style="font-size: 16px;">Previsualizar sección</b-button>
         </div>
         <SectionManagementModal v-if="showManagementSectionModal" :name="sectionName" :id="sectionID" :book_title="book.title" :book_author_ID="book.userID" :sectionsList="book.sections" @update="updateBookSections" @load="refresh" @saveActual="save" @cancel="openManagementSectionModal"/>
-        <b-button variant="outline-dark" v-b-tooltip.hover title="Descargar" hidden><b-icon icon="cloud-download" @mouseup="save()"></b-icon></b-button>
-        <b-button variant="outline-dark" v-b-tooltip.hover title="Guardar" @click="save()"><b-icon icon="cloud-upload"></b-icon></b-button>
+        <b-button variant="outline-dark" v-b-tooltip.hover title="Descargar" hidden><b-icon icon="cloud-download"></b-icon></b-button>
+        <b-button variant="outline-dark" v-b-tooltip.hover title="Guardar" @click="save()"><i class="fa fa-save" @mouseup="save()"/></b-button>
         <b-button variant="dark" @click="goBackAndSave()">Guardar y salir</b-button>
       </div>
     </div>
@@ -528,6 +529,9 @@ export default {
           f.push({ clue: this.data[index].clues[l].clue })
         }
         this.data.splice(index + 1, 0, { answers: e, answersNumber: this.data[index].answersNumber, clues: f, cluesNumber: this.data[index].cluesNumber, onGuess: this.data[index].onGuess, changeSectionWhenWrong: this.data[index].changeSectionWhenWrong, onWrong: this.data[index].onWrong, component: 'CompleteClues', componentName: 'Pistas' })
+      } else if (this.data[index].component === 'CustomBox') {
+        if (this.data[index].mode === 'write') this.data.splice(this.lastPress + 1, 0, { name: this.data[index].name, mode: 'read', type: this.data[index].type, value: '', defaultValue: this.data[index].defaultValue, title: this.data[index].title, prevText: '', nextText: '', component: 'CustomBox', componentName: 'Casilla personalizada' })
+        else this.data.splice(this.lastPress + 1, 0, { name: this.data[index].name, mode: this.data[index].mode, type: this.data[index].type, value: '', defaultValue: this.data[index].defaultValue, title: this.data[index].title, prevText: this.data[index].prevText, nextText: this.data[index].nextText, component: 'CustomBox', componentName: 'Casilla personalizada' })
       }
     },
     async updateBookSections (newSections) {
@@ -819,8 +823,10 @@ export default {
         await booksCollection.doc(this.bookID).update({
           customBoxes: this.temporalCustomBoxes
         })
+        return true
       } else {
         window.alert('Para guardar una sección, debes darla un nombre primero')
+        return false
       }
     },
     saveExpandableText (mainText, expandedText, index) {
@@ -929,8 +935,8 @@ export default {
     goBack () {
       this.$router.replace({ name: 'readBook' })
     },
-    goBackAndSave () {
-      this.save()
+    async goBackAndSave () {
+      await this.save()
       this.goBack()
     }
   }
@@ -1037,16 +1043,16 @@ export default {
 /* Documento de texto */
 .document {
   margin:auto;
-  /*margin-bottom: 20mm;*/
-  width: 210mm;
+  margin-bottom: 20mm;
   /*height: 297mm;*/
-  padding: 20mm;
   /*top: 20mm;*/
+  width: 210mm;
+  padding: 20mm;
   border: 1px rgb(168, 168, 168) solid;
   background: white;
   overflow-y: auto;
   text-align: left;
-  height: calc(100vh - 4rem);
+  /*height: calc(100vh - 4rem);*/
 }
 /* Right sidebar*/
 .bd-toc {

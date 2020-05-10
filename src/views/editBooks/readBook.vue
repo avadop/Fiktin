@@ -153,6 +153,7 @@ export default {
     async loadBook () {
       this.loading = true
       this.sectionsData = []
+      this.customBoxes = []
       await booksCollection.doc(this.bookID).get().then(doc => {
         this.customBoxes = doc.data().customBoxes
       })
