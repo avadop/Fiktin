@@ -143,7 +143,7 @@
 
 <script>
 
-import { userCollection, librariesCollection, storageFirebase } from '@/firebase.js'
+import { userCollection, librariesCollection, storageFirebase, defaultImageUser } from '@/firebase.js'
 
 export default {
   name: 'NewUser',
@@ -207,6 +207,7 @@ export default {
               if (this.samePasswords) {
                 var historial = this.newNick.toLowerCase() + '_historial'
                 var obras = this.newNick.toLowerCase() + '_mis_obras'
+                if (this.picture === null) this.picture = defaultImageUser
 
                 let doc = await userCollection.add({
                   nick: this.newNick,
@@ -240,7 +241,7 @@ export default {
                 this.newName = ''
                 this.newPassword2 = ''
                 this.picture = ''
-                this.$emit('switch-create')
+                this.$emit('switchCreate')
               } else {
                 window.alert('Contraseñas diferentes')
               }
@@ -293,6 +294,9 @@ export default {
 </script>
 
 <style>
+.new-user {
+  text-align: center;
+}
 .btn-secondary {
     color: #fff;
     background-color: #838c95;
