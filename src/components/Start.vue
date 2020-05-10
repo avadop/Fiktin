@@ -1,19 +1,13 @@
 <template>
 <div class = "start">
-  <!-- <b-card class="background-card"> -->
-  <!-- <modal name="start"> -->
-    <!-- <h6>Es necesario registrarse e iniciar sesion antes de acceder a la aplicacion</h6>
-    <br> -->
     <div id="options-menu">
       <div v-if="!create">
-        <NewUser @switch-create="switchCreate" @switchCreate="switchCreate"/>
+        <NewUser @switchCreate="switchCreate"/>
       </div>
       <div v-else>
         <LogIn :url="urlLogIn" @loggedIn="logIn" @switchCreate="switchCreate"/>
       </div>
     </div>
-  <!-- </modal> -->
-  <!-- </b-card> -->
 </div>
 </template>
 

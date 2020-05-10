@@ -240,7 +240,7 @@ export default {
                 this.newName = ''
                 this.newPassword2 = ''
                 this.picture = ''
-                this.$emit('switch-create')
+                this.$emit('switchCreate')
               } else {
                 window.alert('Contraseñas diferentes')
               }
@@ -293,6 +293,9 @@ export default {
 </script>
 
 <style>
+.new-user {
+  text-align: center;
+}
 .btn-secondary {
     color: #fff;
     background-color: #838c95;
