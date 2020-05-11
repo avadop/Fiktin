@@ -115,14 +115,12 @@
               :htmlTextAux="text.htmlText"
               :index="index"
               :pictureAux="text.url"
-              @cancel-picture="cancelMultimedia"
               @html="saveHTMLMultimedia"/>
             <VideoGadget v-if="text.component==='Video'"
               :index="index"
               :htmlTextAux="text.htmlText"
               :bookID="bookID"
               :videoAux="text.url"
-              @cancel-video="cancelMultimedia"
               @html="saveHTMLMultimedia"/>
 
             <ChangeSection v-if="text.component=='ChangeSection'"
@@ -396,10 +394,6 @@ export default {
       lastPress: -1,
       data: [],
 
-      picture: false,
-      video: false,
-      openModalPicture: false,
-      openModalVideo: false,
       showPreviewSection: false
     }
   },
@@ -753,22 +747,6 @@ export default {
       if (btn === 'Header1') this.header1Active = val
       if (btn === 'Header2') this.header2Active = val
       if (btn === 'Header3') this.header3Active = val
-    },
-    changeFileType (value) {
-      if (value === 'picture') {
-        this.picture = true
-        this.video = false
-        this.openModalPicture = true
-      } else if (value === 'video') {
-        this.video = true
-        this.picture = false
-        this.openModalVideo = true
-      }
-      this.checkStyles()
-    },
-    cancelMultimedia () {
-      this.openModalVideo = false
-      this.openModalPicture = false
     },
     checkRead (name) {
       // Si se cambia el modo de la casilla personalizada a lectura, se llama a este método.
