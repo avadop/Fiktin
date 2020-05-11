@@ -201,7 +201,7 @@ export default {
     },
     // Los que su html se pueda poner directamente se añaden aqui
     basicGadget (value) {
-      return value.componentName === 'Título' || value.componentName === 'Texto normal' || value.componentName === 'Multimedia' || value.component === 'Hyperlink'
+      return value.componentName === 'Título' || value.componentName === 'Texto normal' || value.component === 'Picture' || value.component === 'Hyperlink' || value.component === 'Video'
     },
     saveCustomBox (value, index) {
       var aux = this.customBoxes[index]

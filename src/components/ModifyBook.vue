@@ -159,7 +159,6 @@ export default {
         // downloadURL
         task.snapshot.ref.getDownloadURL().then((url) => {
           this.cover = url
-          console.log(this.cover)
         })
       })
     },

@@ -1,9 +1,16 @@
 <template>
   <div>
-     <b-modal v-if="(this.lastPressed === this.index)" id="modal-picture" v-model="openModal" hide-footer hide-header no-close-on-backdrop>
-        <div class="d-block text-center">
-          <h5>Elija la imagen que desea añadir</h5>
-        </div>
+    <b-card>
+    <div class="d-flex justify-content-start">
+        <h6 class="title">Elija la imagen que desea añadir</h6>
+        <b-button class="ml-auto" variant="outline-info" @click="preview = !preview"><b-icon icon="eye"/></b-button>
+      </div>
+      <div v-show="preview">
+        <hr>
+        <div v-html="htmlTextAux"/>
+        <hr>
+      </div>
+
         <b-container fluid class="col">
           <b-form-file
             @change="onFileSelected"
@@ -17,13 +24,8 @@
             <b-img v-if="this.picture !== ''" :src="this.picture" fluid width="250%"></b-img>
           </b-row>
         </b-container>
-        <div class="d-flex justify-content-center">
-          <b-button id="button-modal-return" class="mt-1" variant="outline-secondary" block @click="cancelar()">Cancelar</b-button>
-          <b-button id="button-modal-accept" class="mt-1" variant="primary" block @click="createButton" :disabled="picture === ''">Confirmar</b-button>
-        </div>
-      </b-modal>
-      <div v-if="htmlTextAux !== ''" v-html="htmlTextAux">
-      </div>
+    </b-card>
+
   </div>
 </template>
 
@@ -37,13 +39,18 @@ export default {
     index: Number,
     bookID: String,
     htmlTextAux: String,
-    openModal: Boolean,
-    lastPressed: Number
+    pictureAux: String
   },
   data () {
     return {
       selectedFile: '',
-      picture: ''
+      picture: this.pictureAux,
+      preview: false
+    }
+  },
+  watch: {
+    picture () {
+      this.save()
     }
   },
   methods: {
@@ -73,17 +80,9 @@ export default {
         })
       })
     },
-    createButton: async function () {
+    save: async function () {
       var htmlText = ('<img src="' + this.picture + '" width="460" height="300" style="padding-top: 13px; padding-bottom: 13px;">')
-      this.$emit('html', htmlText, this.index)
-    },
-    cancelar () {
-      this.$emit('cancel-picture')
-    }
-  },
-  computed: {
-    allowCreate () {
-      return this.picture === ''
+      this.$emit('html', htmlText, this.picture, this.index)
     }
   }
 }

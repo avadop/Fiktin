@@ -114,17 +114,13 @@
               :bookID="bookID"
               :htmlTextAux="text.htmlText"
               :index="index"
-              :openModal="openModalPicture"
-              :lastPressed="lastPress"
-              @cancel-picture="cancelMultimedia"
+              :pictureAux="text.url"
               @html="saveHTMLMultimedia"/>
             <VideoGadget v-if="text.component==='Video'"
               :index="index"
               :htmlTextAux="text.htmlText"
               :bookID="bookID"
-              :openModal="openModalVideo"
-              :lastPressed="lastPress"
-              @cancel-video="cancelMultimedia"
+              :videoAux="text.url"
               @html="saveHTMLMultimedia"/>
 
             <ChangeSection v-if="text.component=='ChangeSection'"
@@ -255,11 +251,9 @@
         </h5>
         <hr>
 
-        <span class="clickable" @click="addFile()"><b-icon icon="collection-play"/> Multimedia </span>
-        <h5>
-          <b-icon icon="image-fill" class="buttonNormal" @click="changeFileType('picture')">Añadir</b-icon>
-          <b-icon icon="camera-video-fill" class="buttonNormalRightBorder" @click="changeFileType('video')">Añadir</b-icon>
-        </h5>
+        <span class="clickable" @click="addPicture()"><b-icon icon="image-fill"/> Imagen </span>
+        <div/>
+        <span class="clickable" @click="addVideo()"><b-icon icon="camera-video-fill"/> Vídeo </span>
         <hr>
 
         <span class="clickable" @click="addExandableText()"><b-icon icon="layers-half"/> Texto expandible</span>
@@ -400,10 +394,6 @@ export default {
       lastPress: -1,
       data: [],
 
-      picture: false,
-      video: false,
-      openModalPicture: false,
-      openModalVideo: false,
       showPreviewSection: false
     }
   },
@@ -467,8 +457,8 @@ export default {
       else if (this.data[index].component === 'Hyperlink') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, mainText: this.data[index].mainText, hyperlinkText: this.data[index].hyperlinkText, component: 'Hyperlink', componentName: 'Hipervínculo' })
       else if (this.data[index].component === 'Spoiler') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Spoiler', componentName: 'Spoiler' })
 
-      else if (this.data[index].component === 'Picture') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, component: 'Picture', componentName: 'Multimedia' })
-      else if (this.data[index].component === 'Video') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, component: 'Video', componentName: 'Multimedia' })
+      else if (this.data[index].component === 'Picture') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, url: this.data[index].url, component: 'Picture', componentName: 'Imagen' })
+      else if (this.data[index].component === 'Video') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, url: this.data[index].url, component: 'Video', componentName: 'Vídeo' })
 
       else if (this.data[index].component === 'ChangeSection') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, next: this.data[index].next, component: 'ChangeSection', componentName: 'Cambio de sección' })
       else if (this.data[index].component === 'RepeatSection') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'RepeatSection', componentName: 'Repetición de sección' })
@@ -558,8 +548,11 @@ export default {
     addSpoiler () {
       this.data.splice(this.lastPress + 1, 0, { plainText: '', htmlText: '<span></span>', component: 'Spoiler', componentName: 'Spoiler' })
     },
-    addFile () {
-      this.data.splice(this.lastPress + 1, 0, { htmlText: '', component: 'Multimedia', componentName: 'Multimedia' })
+    addPicture () {
+      this.data.splice(this.lastPress + 1, 0, { htmlText: '', url: '', component: 'Picture', componentName: 'Imagen' })
+    },
+    addVideo () {
+      this.data.splice(this.lastPress + 1, 0, { htmlText: '', url: '', component: 'Video', componentName: 'Vídeo' })
     },
     addSectionChange () {
       if (this.sectionsData.length > 1) {
@@ -646,14 +639,6 @@ export default {
       // Título 3
       if (this.data[this.lastPress].component === 'Header3') this.changeButtons('Header3', 1)
       else this.changeButtons('Header3', 0)
-      // Multimedia
-      if (this.data[this.lastPress].componentName === 'Multimedia') {
-        if (this.picture === true) {
-          this.data[this.lastPress].component = 'Picture'
-        } else if (this.video === true) {
-          this.data[this.lastPress].component = 'Video'
-        }
-      }
     },
     checkDelete (index) {
       this.data.splice(index, 1)
@@ -763,24 +748,6 @@ export default {
       if (btn === 'Header2') this.header2Active = val
       if (btn === 'Header3') this.header3Active = val
     },
-    changeFileType (value) {
-      if (value === 'picture') {
-        this.picture = true
-        this.video = false
-        this.openModalPicture = true
-      } else if (value === 'video') {
-        this.video = true
-        this.picture = false
-        this.openModalVideo = true
-      }
-      this.checkStyles()
-    },
-    cancelMultimedia () {
-      this.video = false
-      this.image = false
-      this.openModalVideo = false
-      this.openModalPicture = false
-    },
     checkRead (name) {
       // Si se cambia el modo de la casilla personalizada a lectura, se llama a este método.
       // Como todos los nombres son únicos, nunca se borrará un valor que se use en otros sitios
@@ -844,12 +811,9 @@ export default {
       this.data[index].mainText = mainText
       this.data[index].hyperlinkText = hyperlinkText
     },
-    saveHTMLMultimedia (htmlText, index) {
+    saveHTMLMultimedia (htmlText, url, index) {
       this.data[index].htmlText = htmlText
-      this.image = false
-      this.video = false
-      this.openModalVideo = false
-      this.openModalPicture = false
+      this.data[index].url = url
     },
     saveHTML (htmlText, index) {
       this.data[index].htmlText = htmlText
