@@ -102,6 +102,7 @@ export default {
   methods: {
     refresh () {
       this.books = []
+      this.primaryKeys = []
       booksCollection.get().then(snapshot => {
         snapshot.forEach(doc => {
           if (doc.data().user_id === this.userID) {

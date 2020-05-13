@@ -1,6 +1,7 @@
 <template>
   <div>
     <LoadingModal v-if="loading"/>
+    <SavingModal v-if="saving"/>
     <div class="buttons">
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
       <div class="row d-flex justify-content-end">
@@ -9,7 +10,7 @@
           <h3 class="mr-auto" style="padding-top: 15px;">{{ book.title }}</h3>
         </div>
         <div class="col" style="padding-top: 15px;">
-          <b-form-select v-model="nextSectionID" :options="sectionsData" @change="save(), refresh(nextSectionID)"></b-form-select>
+          <b-form-select v-model="nextSectionID" :options="sectionsData" @change="changeSection(nextSectionID)"></b-form-select>
         </div>
         <div class="col" style="padding-top: 15px;">
           <b-button variant="light" size="sm" @click="openManagementSectionModal()"><b-icon icon="gear"/></b-button>
@@ -17,7 +18,7 @@
         <div class="col" style="padding-top: 15px;">
           <b-button variant="light" size="sm" @click="showPreviewSection = true" style="font-size: 16px;">Previsualizar sección</b-button>
         </div>
-        <SectionManagementModal v-if="showManagementSectionModal" :name="sectionName" :id="sectionID" :book_title="book.title" :book_author_ID="book.userID" :sectionsList="book.sections" @update="updateBookSections" @load="refresh" @saveActual="save" @cancel="openManagementSectionModal"/>
+        <SectionManagementModal v-if="showManagementSectionModal" :name="sectionName" :id="sectionID" :book_title="book.title" :book_author_ID="book.userID" :sectionsList="book.sections" @update="auxUpdateBookSections" @load="refresh" @saveActual="auxSave" @deleteCustomBoxes="auxDeleteCustomBoxes" @cancel="openManagementSectionModal"/>
         <b-button variant="outline-dark" v-b-tooltip.hover title="Descargar" hidden><b-icon icon="cloud-download"></b-icon></b-button>
         <b-button variant="outline-dark" v-b-tooltip.hover title="Guardar" @click="save()"><i class="fa fa-save" @mouseup="save()"/></b-button>
         <b-button variant="dark" @click="goBackAndSave()">Guardar y salir</b-button>
@@ -315,6 +316,7 @@ import { store } from '@/store/index.js'
 // Modals
 import SectionManagementModal from '@/components/modals/SectionManagementModal.vue'
 import LoadingModal from '@/components/modals/LoadingModal.vue'
+import SavingModal from '@/components/modals/SavingModal.vue'
 
 // Texto plano
 import Normal from '@/components/gadgets/Normal.vue'
@@ -350,6 +352,7 @@ export default {
   components: {
     SectionManagementModal,
     LoadingModal,
+    SavingModal,
     Normal,
     Header1,
     Header2,
@@ -385,6 +388,7 @@ export default {
       sectionsData: [],
       temporalCustomBoxes: [],
       loading: false,
+      saving: false,
       showManagementSectionModal: false,
       boldActive: 0,
       boldUse: false,
@@ -533,6 +537,9 @@ export default {
         if (this.data[index].mode === 'write') this.data.splice(this.lastPress + 1, 0, { name: this.data[index].name, mode: 'read', type: this.data[index].type, value: '', defaultValue: this.data[index].defaultValue, title: this.data[index].title, prevText: '', nextText: '', component: 'CustomBox', componentName: 'Casilla personalizada' })
         else this.data.splice(this.lastPress + 1, 0, { name: this.data[index].name, mode: this.data[index].mode, type: this.data[index].type, value: '', defaultValue: this.data[index].defaultValue, title: this.data[index].title, prevText: this.data[index].prevText, nextText: this.data[index].nextText, component: 'CustomBox', componentName: 'Casilla personalizada' })
       }
+    },
+    async auxUpdateBookSections (newSections) { // Auxiliar para garantizar la espera
+      await this.updateBookSections(newSections)
     },
     async updateBookSections (newSections) {
       this.book.sections = newSections
@@ -812,22 +819,42 @@ export default {
         }
       }
     },
-    openManagementSectionModal () {
-      this.showManagementSectionModal = !this.showManagementSectionModal
+    async auxDeleteCustomBoxes (a) {
+      await this.deleteCustomBoxes(a)
+    },
+    async deleteCustomBoxes (a) {
+      for (var i = 0; i < a.length; ++i) {
+        if (a[i].component === 'CustomBox' && a[i].mode === 'write') {
+          this.checkRead(a[i].name)
+        }
+      }
+      await this.silentSave()
+    },
+    async openManagementSectionModal () {
+      var aux = !this.showManagementSectionModal
+      if (aux) await this.save()
+      this.showManagementSectionModal = aux
+    },
+    async auxSave () { // Auxiliar para garantizar la espera
+      await this.save()
     },
     async save () {
+      this.saving = true
       if (this.sectionName !== '') {
-        await sectionsCollection.doc(this.sectionID).update({
-          gadgets: this.data
-        })
-        await booksCollection.doc(this.bookID).update({
-          customBoxes: this.temporalCustomBoxes
-        })
-        return true
+        await this.silentSave()
       } else {
         window.alert('Para guardar una sección, debes darla un nombre primero')
-        return false
       }
+      this.saving = false
+    },
+    async silentSave () { // Save sin notificar de que está guardando
+      // No comprobamos el nombre porque solo se llama en situaciones controladas
+      await sectionsCollection.doc(this.sectionID).update({
+        gadgets: this.data
+      })
+      await booksCollection.doc(this.bookID).update({
+        customBoxes: this.temporalCustomBoxes
+      })
     },
     saveExpandableText (mainText, expandedText, index) {
       this.data[index].mainText = mainText
@@ -931,6 +958,10 @@ export default {
       store.commit('changeSection', this.sectionID)
       store.commit('switchSectionPreview', true)
       this.$router.push({ name: 'readBook' })
+    },
+    async changeSection (ID) {
+      await this.save()
+      this.refresh(ID)
     },
     goBack () {
       this.$router.replace({ name: 'readBook' })

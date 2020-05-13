@@ -100,7 +100,6 @@ export default {
   methods: {
     refresh: async function () {
       this.loading = true
-      await this.$emit('saveActual', this.id)
       for (var i = 0; i < this.sectionsList.length; ++i) {
         await sectionsCollection.doc(this.sectionsList[i]).get().then(doc => {
           this.sectionsData.push({ id: doc.id, name: doc.data().name })
@@ -145,6 +144,8 @@ export default {
           gadgets: doc.data().gadgets,
           name: doc.data().name + '-copia' }
       })
+      // Si hay casillas personalizadas, las ponemos TODAS en modo lectura
+      a.gadgets = this.findCustomBoxes(a.gadgets)
       // Creamos una nueva sección con los datos recién descargados
       var b = await sectionsCollection.add({
         book_author_ID: a.book_author_ID,
@@ -166,6 +167,13 @@ export default {
       // No se pueden borrar secciones si es la única presente en el libro
       if (this.sectionsData.length > 1) {
         var c
+        var a
+        // Borramos los índices de escritura de las custom boxes
+        // Para ello, descargamos los gadgets de la sección a borrar
+        await sectionsCollection.doc(this.sectionsData[index].id).get().then(doc => {
+          a = doc.data().gadgets
+        })
+        this.$emit('deleteCustomBoxes', a)
         // Borramos la sección
         await sectionsCollection.doc(this.sectionsData[index].id).delete()
         // Si borramos la sección en la que nos encontramos, cargamos la del índice 0
@@ -236,6 +244,17 @@ export default {
         if (this.sectionsData[i].name.trim() === '') a = false
       }
       return a
+    },
+    findCustomBoxes (aux) {
+      for (var i = 0; i < aux.length; ++i) {
+        if (aux[i].component === 'CustomBox' && aux[i].mode === 'write') {
+          aux[i].mode = 'read'
+          aux[i].value = ''
+          aux[i].prevText = ''
+          aux[i].nextText = ''
+        }
+      }
+      return aux
     },
     hide () {
       this.$bvModal.hide('bv-modal-example')

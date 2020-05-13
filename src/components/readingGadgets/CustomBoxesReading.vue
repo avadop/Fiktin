@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="valid">
     <div v-if="mode == 'read'">
       <span>{{ prevText }}</span>
       <span class="textColor">{{ valueShow }}</span>
@@ -39,7 +39,8 @@ export default {
     return {
       valueShow: '',
       writeVar: '',
-      index: -1
+      index: -1,
+      valid: true
     }
   },
   watch: {
@@ -53,6 +54,7 @@ export default {
   methods: {
     refresh () {
       var end = false
+      this.valid = true
       for (var i = 0; i < this.customBoxes.length && !end; ++i) {
         if (this.name === this.customBoxes[i].name) {
           if (this.mode === 'read') {
@@ -64,6 +66,10 @@ export default {
           this.index = i
           end = true
         }
+      }
+      // Si la custom box no se ha encontrado en el array (por borrarla y no hacer un cambio de sección, por ejemplo)
+      if (!end) {
+        this.valid = false
       }
     },
     formatString (value) {
