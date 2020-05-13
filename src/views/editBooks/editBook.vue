@@ -9,7 +9,7 @@
         <div class="col">
           <h3 class="mr-auto" style="padding-top: 15px;">{{ book.title }}</h3>
         </div>
-        <div class="col" style="padding-top: 15px;">
+        <div class="col" style="padding-top: 15px; text-align: centre;">
           <b-form-select v-model="nextSectionID" :options="sectionsData" @change="changeSection(nextSectionID)"></b-form-select>
         </div>
         <div class="col" style="padding-top: 15px;">
@@ -1041,7 +1041,9 @@ export default {
   margin-bottom: 20mm;
   /*height: 297mm;*/
   /*top: 20mm;*/
-  width: 210mm;
+  width: 85%;
+  max-width: 210mm;
+  min-width: 130mm;
   padding: 20mm;
   border: 1px rgb(168, 168, 168) solid;
   background: white;
@@ -1053,6 +1055,7 @@ export default {
 .bd-toc {
   border-left: 1px solid rgba(0,0,0,.1);
   position: sticky;
+  right: 0;
   top: 4rem;
   height: calc(100vh - 4rem);
   overflow-y: auto;
