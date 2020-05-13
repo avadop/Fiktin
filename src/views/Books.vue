@@ -1,6 +1,6 @@
 <template>
   <div class="books">
-    <b-modal id="modal-create" size="xl" v-model="modalCreate" hide-footer hide-header no-close-on-backdrop>
+    <b-modal id="modal-create" size="xl" v-model="modalCreate" hide-footer hide-header no-close-on-backdrop centered>
       <CreateBook @cancel="discardChangesBook" @create="saveChangesBook()"/>
     </b-modal>
     <b-card class="background-card">

@@ -1,9 +1,15 @@
 <template>
   <div>
-     <b-modal v-if="(this.lastPressed === this.index)" id="modal-video" v-model="openModal" hide-footer hide-header no-close-on-backdrop>
-        <div class="d-block text-center">
-          <h5>Elija el video que desea añadir</h5>
-        </div>
+    <b-card>
+        <div class="d-flex justify-content-start">
+        <h6 class="title">Elija el video que desea añadir</h6>
+        <b-button class="ml-auto" variant="outline-info" @click="preview = !preview"><b-icon icon="eye"/></b-button>
+      </div>
+      <div v-show="preview">
+        <hr>
+        <div v-html="htmlTextAux"/>
+        <hr>
+      </div>
         <b-container fluid class="col">
           <b-form-file
             @change="onFileSelected"
@@ -29,13 +35,7 @@
             <iframe v-if="this.video !== ''" :src="this.video" fluid width="250%"></iframe>
           </b-row>
         </b-container>
-        <div class="d-flex justify-content-center">
-          <b-button id="button-modal-return" class="mt-1" variant="outline-secondary" block @click="cancelar()">Cancelar</b-button>
-          <b-button id="button-modal-accept" class="mt-1" variant="primary" block @click="createButton" :disabled="video === ''">Confirmar</b-button>
-        </div>
-      </b-modal>
-      <div v-if="htmlTextAux !== ''" v-html="htmlTextAux">
-      </div>
+    </b-card>
   </div>
 </template>
 
@@ -49,15 +49,20 @@ export default {
     index: Number,
     bookID: String,
     htmlTextAux: String,
-    openModal: Boolean,
-    lastPressed: Number
+    videoAux: String
   },
   data () {
     return {
       selectedFile: '',
-      video: '',
+      video: this.videoAux,
       autoplay: false,
-      loop: false
+      loop: false,
+      preview: false
+    }
+  },
+  watch: {
+    video () {
+      this.save()
     }
   },
   methods: {
@@ -87,7 +92,7 @@ export default {
         })
       })
     },
-    createButton: async function () {
+    save: async function () {
       var htmlText = '<video width="460" height="300" style="padding-top: 13px; padding-bottom: 13px;" controls'
       if (this.autoplay) {
         htmlText = htmlText + ' autoplay '
@@ -95,17 +100,11 @@ export default {
       if (this.loop) {
         htmlText = htmlText + ' loop '
       }
-      htmlText = htmlText + '><source src="' + this.video +
-        ' type="' + this.type + '">No se puede reproducir el video en este navegador</video>'
+      htmlText = htmlText + '><source src="' + this.video + '">No se puede reproducir el video en este navegador</video>'
 
       this.autoplay = false
       this.loop = false
-      this.$emit('html', htmlText, this.index)
-    },
-    cancelar () {
-      this.autoplay = false
-      this.loop = false
-      this.$emit('cancel-video')
+      this.$emit('html', htmlText, this.video, this.index)
     }
   }
 }
