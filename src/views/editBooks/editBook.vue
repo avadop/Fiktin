@@ -1041,7 +1041,9 @@ export default {
   margin-bottom: 20mm;
   /*height: 297mm;*/
   /*top: 20mm;*/
-  width: 210mm;
+  width: 85%;
+  max-width: 210mm;
+  min-width: 130mm;
   padding: 20mm;
   border: 1px rgb(168, 168, 168) solid;
   background: white;
