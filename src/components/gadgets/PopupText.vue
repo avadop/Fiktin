@@ -63,7 +63,7 @@
             ></b-form-file>
             <b-row class="my-1">
               <p v-if="this.selectedFile !== '' && this.picture === ''">Espere a que cargue la imagen</p>
-              <b-img v-if="this.picture !== ''" :src="this.picture" fluid width="250%"></b-img>
+              <b-img v-if="this.picture !== ''" :src="this.picture" style="min-height: 200px; max-height: 200px; width: auto;padding-top: 13px; padding-bottom: 13px;"></b-img>
             </b-row>
           </b-container>
           <div class="d-flex justify-content-center">
@@ -153,7 +153,7 @@ export default {
       })
     },
     uploadPicture: async function () {
-      this.htmlText = ('<img src="' + this.picture + '" width="460" height="300" style="padding-top: 13px; padding-bottom: 13px;">')
+      this.htmlText = ('<img src="' + this.picture + '" style="min-height: 200px; max-height: 200px; width: auto;padding-top: 13px; padding-bottom: 13px;">')
       this.save()
     },
     cancel () {
