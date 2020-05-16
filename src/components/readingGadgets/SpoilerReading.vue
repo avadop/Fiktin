@@ -1,5 +1,5 @@
 <template>
-  <div class="spoiler" v-html="htmlTextAux"/>
+  <div class="spoiler" style="word-wrap: break-word;" v-html="htmlTextAux"/>
 </template>
 
 <script>
