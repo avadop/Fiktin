@@ -260,11 +260,12 @@ export default {
   margin-left: 30px;
 }
 .readBook {
-  text-align: justify;
+  text-align: left;
   margin-top: 50px;
   margin: auto;
   margin-bottom: 50px;
-  width: 60%;
+  width: 210mm;
+  /*width: 60%;*/
   border: 1px solid;
   padding: 20px;
 }

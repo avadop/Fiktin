@@ -55,7 +55,7 @@
         </div>
       </div>
       <!-- hoja de edición -->
-      <div class="bd-content col-md-9 col-xl-8 col-12 pl-md-5">
+      <div class="bd-content col-md-9 col-xl-8 col-12">
         <!--Poniendo el contenteditable, keyup y click aquí, podemos controlar las flechas de una forma muy sencilla-->
         <div class="document" @keyup="checkStyles" @keydown.tab.prevent>
           <div class="editable" v-for="(text, index) in data" :key="index" @click="lastElementPressed(index), checkStyles()">
@@ -1041,10 +1041,11 @@ export default {
   margin-bottom: 20mm;
   /*height: 297mm;*/
   /*top: 20mm;*/
-  width: 85%;
+  width: 210mm;
+/*  width: 85%;
   max-width: 210mm;
-  min-width: 130mm;
-  padding: 20mm;
+  min-width: 130mm;*/
+  padding: 20px;
   border: 1px rgb(168, 168, 168) solid;
   background: white;
   overflow-y: auto;
