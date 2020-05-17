@@ -8,6 +8,7 @@
           <h3 style="padding-top: 15px;">
             {{ book.title }}
             <b-button v-if="isBookOfLoggedUser() && isNotPreview()" variant="light" @click="goEdit()" :disabled="book.published===true"><b-icon icon="pencil"/></b-button>
+            <b-button v-if="isBookOfLoggedUser() && isNotPreview()" variant="light" @click="togglePublic()"><b-icon v-if="book.published" icon="eye"/><b-icon v-else icon="eye-slash"/></b-button>
           </h3>
         </div>
         <div class="col" style="padding-top: 20px;">
@@ -213,6 +214,12 @@ export default {
     },
     goEdit () {
       this.$router.replace({ name: 'editBook' })
+    },
+    async togglePublic () {
+      this.book.published = !this.book.published
+      await booksCollection.doc(this.bookID).update({
+        published: this.book.published
+      })
     },
     goBack () {
       if (store.state.sectionPreview === false) store.commit('closeBook')
