@@ -17,9 +17,12 @@
       </div>
       <span style="color: red; padding-left: 10px;" v-if="isBookOfLoggedUser() && book.published===true">No se puede editar un libro si este se encuentra publicado</span>
     </div>
-    <div class="readBook" v-if="sectionExists">
+    <div v-if="emptyBook()">
+      <h4>Libro vacio</h4>
+    </div>
+    <div class="readBook" v-else-if="sectionExists">
       <div v-for="(text, index) in sectionGadgets" :key="index">
-        <span v-if="basicGadget(text)" v-html="text.htmlText"/>
+        <span v-if="basicGadget(text)" style="word-wrap: break-word;" v-html="text.htmlText"/>
         <ChangeSectionReading v-if="text.component === 'ChangeSection'"
           :htmlText="text.htmlText"
           :next="text.next"
@@ -228,6 +231,18 @@ export default {
     },
     isNotPreview () {
       return store.state.sectionPreview === false
+    },
+    emptyBook () {
+      if (this.sectionGadgets.length === 0) {
+        return true
+      }
+      var emptyGadgets = ['Normal', 'Header1', 'Header2', 'Header3', 'Picture', 'Video']
+      for (let gadget of this.sectionGadgets) {
+        if (emptyGadgets.includes(gadget.component) && (gadget.htmlText === '' || gadget.plainText === '')) {
+          return true
+        }
+      }
+      return false
     }
   }
 }
