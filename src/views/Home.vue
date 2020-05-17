@@ -9,14 +9,9 @@
         style="max-width: 20rem; cursor: pointer;"
         class="mb-2"
       >
-        <b-button-group class="mr-1 add-lib-button">
-          <b-button variant="light" @click.stop="addToLibraryButton(idx)">
-            <b-icon variant="warning" icon="bookmark-fill"></b-icon>
-          </b-button>
-          <b-button variant="light">
-            <b-icon variant="danger" icon="heart-fill"></b-icon>
-          </b-button>
-        </b-button-group>
+        <b-button variant="light" @click.stop="addToLibraryButton(idx)" class="mr-1 add-lib-button">
+          <b-icon variant="warning" icon="bookmark-fill"></b-icon>
+        </b-button>
         <div class="card-img-box">
           <img class="card-img-top" :src="book.cover" alt="Portada" @click="openBook(book, idx)">
         </div>
@@ -166,15 +161,16 @@ h1 {
 .add-lib-button, .text-small {
   position: absolute;
   left: 0;
-  right: 0;
   margin-left: auto;
   margin-right: auto;
 }
 .add-lib-button {
+  right: 10px;
   top: 10px;
-  width: 106px;
+  width: 50px;
 }
 .text-small {
+  right: 0;
   bottom: 20px;
   width: 200px;
 }
