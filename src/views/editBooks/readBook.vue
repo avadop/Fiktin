@@ -8,6 +8,7 @@
           <h3 style="padding-top: 15px;">
             {{ book.title }}
             <b-button v-if="isBookOfLoggedUser() && isNotPreview()" variant="light" @click="goEdit()" :disabled="book.published===true"><b-icon icon="pencil"/></b-button>
+            <b-button v-if="isBookOfLoggedUser() && isNotPreview()" variant="light" @click="togglePublic()"><b-icon v-if="book.published" icon="eye"/><b-icon v-else icon="eye-slash"/></b-button>
           </h3>
         </div>
         <div class="col" style="padding-top: 20px;">
@@ -16,9 +17,12 @@
       </div>
       <span style="color: red; padding-left: 10px;" v-if="isBookOfLoggedUser() && book.published===true">No se puede editar un libro si este se encuentra publicado</span>
     </div>
-    <div class="readBook" v-if="sectionExists">
+    <div v-if="emptyBook()">
+      <h4>Libro vacio</h4>
+    </div>
+    <div class="readBook" v-else-if="sectionExists">
       <div v-for="(text, index) in sectionGadgets" :key="index">
-        <span v-if="basicGadget(text)" v-html="text.htmlText"/>
+        <span v-if="basicGadget(text)" style="word-wrap: break-word;" v-html="text.htmlText"/>
         <ChangeSectionReading v-if="text.component === 'ChangeSection'"
           :htmlText="text.htmlText"
           :next="text.next"
@@ -214,6 +218,12 @@ export default {
     goEdit () {
       this.$router.replace({ name: 'editBook' })
     },
+    async togglePublic () {
+      this.book.published = !this.book.published
+      await booksCollection.doc(this.bookID).update({
+        published: this.book.published
+      })
+    },
     goBack () {
       if (store.state.sectionPreview === false) store.commit('closeBook')
       else store.commit('switchSectionPreview', false)
@@ -221,6 +231,18 @@ export default {
     },
     isNotPreview () {
       return store.state.sectionPreview === false
+    },
+    emptyBook () {
+      if (this.sectionGadgets.length === 0) {
+        return true
+      }
+      var emptyGadgets = ['Normal', 'Header1', 'Header2', 'Header3', 'Picture', 'Video']
+      for (let gadget of this.sectionGadgets) {
+        if (emptyGadgets.includes(gadget.component) && (gadget.htmlText === '' || gadget.plainText === '')) {
+          return true
+        }
+      }
+      return false
     }
   }
 }
@@ -238,11 +260,12 @@ export default {
   margin-left: 30px;
 }
 .readBook {
-  text-align: justify;
+  text-align: left;
   margin-top: 50px;
   margin: auto;
   margin-bottom: 50px;
-  width: 60%;
+  width: 210mm;
+  /*width: 60%;*/
   border: 1px solid;
   padding: 20px;
 }

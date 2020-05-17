@@ -1,6 +1,6 @@
 <template>
   <div>
-    <span :id="'text' + index" class="editme" contenteditable v-html="this.htmlTextAux" @blur="saveSelection($event, index)"/>
+    <span :id="'text' + index" class="editme" style="word-wrap: break-word;" contenteditable v-html="this.htmlTextAux" @blur="saveSelection($event, index)"/>
   </div>
 </template>
 

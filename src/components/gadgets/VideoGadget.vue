@@ -3,38 +3,33 @@
     <b-card>
         <div class="d-flex justify-content-start">
         <h6 class="title">Elija el video que desea añadir</h6>
-        <b-button class="ml-auto" variant="outline-info" @click="preview = !preview"><b-icon icon="eye"/></b-button>
       </div>
-      <div v-show="preview">
-        <hr>
-        <div v-html="htmlTextAux"/>
-        <hr>
-      </div>
-        <b-container fluid class="col">
-          <b-form-file
-            @change="onFileSelected"
-            class="my-2"
-            placeholder="Selecciona un video o arrastrala aquí..."
-            drop-placeholder="Arrastra aquí el video..."
-            accept="video/*"
-          ></b-form-file>
 
-          <div id="optionsCheckbox" label="Opciones de reproduccion">
-              <b-form-checkbox id="checkbox-autoplay" v-model="autoplay"
-                name="checkbox-autoplay" value="true" unchecked-value="false">
-                Autorreproducción
-              </b-form-checkbox>
-              <b-form-checkbox id="checkbox-loop" v-model="loop"
-                name="checkbox-loop" value="true" unchecked-value="false">
-                Bucle
-              </b-form-checkbox>
-          </div>
+      <b-container fluid class="col">
+        <b-form-file
+          @change="onFileSelected"
+          class="my-2"
+          placeholder="Selecciona un video o arrastrala aquí..."
+          drop-placeholder="Arrastra aquí el video..."
+          accept="video/*"
+        ></b-form-file>
 
-          <b-row class="my-1">
-            <p v-if="this.selectedFile !== '' && this.video === ''">Espere a que cargue el video</p>
-            <iframe v-if="this.video !== ''" :src="this.video" fluid width="250%"></iframe>
-          </b-row>
-        </b-container>
+        <div id="optionsCheckbox" label="Opciones de reproduccion">
+            <b-form-checkbox id="checkbox-autoplay" v-model="autoplay"
+              name="checkbox-autoplay" value="true" unchecked-value="false">
+              Autorreproducción
+            </b-form-checkbox>
+            <b-form-checkbox id="checkbox-loop" v-model="loop"
+              name="checkbox-loop" value="true" unchecked-value="false">
+              Bucle
+            </b-form-checkbox>
+        </div>
+
+        <b-row class="my-1">
+          <p v-if="this.selectedFile !== '' && this.video === ''">Espere a que cargue el video</p>
+          <iframe v-if="this.video !== ''" :src="this.video"></iframe>
+        </b-row>
+      </b-container>
     </b-card>
   </div>
 </template>
@@ -56,8 +51,7 @@ export default {
       selectedFile: '',
       video: this.videoAux,
       autoplay: false,
-      loop: false,
-      preview: false
+      loop: false
     }
   },
   watch: {

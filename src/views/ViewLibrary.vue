@@ -38,12 +38,12 @@
                   <!-- titulo y fecha -->
                   <div class="d-flex justify-content-start">
                     <h6 class="card-title" @click="openBook(book, index)">{{upperCase(book.title)}}</h6>
-                    <h6 class="ml-2 nBooks">(dd-mm-aaaa)</h6>
+                    <!-- <h6 class="ml-2 nBooks">(dd-mm-aaaa)</h6> -->
                   </div>
                   <!-- autor -->
-                  <div class="d-flex justify-content-start">
+                  <!-- <div class="d-flex justify-content-start">
                     <h6 class="author-name">{{ book.author }}</h6>
-                  </div>
+                  </div> -->
                   <!-- descripcion -->
                   <div class="d-flex justify-content-start">
                     <b-card-text v-if="book.description!==''">

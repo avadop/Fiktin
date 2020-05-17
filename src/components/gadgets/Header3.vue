@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3 :id="'header' + index" class="editme" contenteditable v-html="this.plainTextAux" @blur="saveSelection($event)"/>
+    <h3 :id="'header' + index" class="editme" style="word-wrap: break-word;" contenteditable v-html="this.plainTextAux" @blur="saveSelection($event)"/>
   </div>
 </template>
 

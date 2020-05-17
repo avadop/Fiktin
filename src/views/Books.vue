@@ -1,5 +1,5 @@
 <template>
-  <div class="books">
+  <div class="books" v-on:click="resetDels">
     <b-modal id="modal-create" size="xl" v-model="modalCreate" hide-footer hide-header no-close-on-backdrop centered>
       <CreateBook @cancel="discardChangesBook" @create="saveChangesBook()"/>
     </b-modal>
@@ -43,20 +43,21 @@
 
             <!-- Botones -->
             <div>
-              <b-dropdown id="dropdown-1" variant="light" text="Opciones" class="mr-3 opt-button">
-                <b-dropdown-item id="modifyButton" @click.stop="modifyBook(book)" v-show="modifyID !== book.ID">Modificar</b-dropdown-item>
-                <b-dropdown-item @click.stop="addToLibraryButton(idx)">Añadir a bibliotecas</b-dropdown-item>
-                <b-dropdown-divider></b-dropdown-divider>
-                <b-dropdown-item v-if="modifyID !== book.ID && !book.confirmDelete" variant="danger" @click="book.confirmDelete=true"><b-icon icon="trash-fill"></b-icon> Eliminar</b-dropdown-item>
-                <b-dropdown-item v-else-if="book.confirmDelete" variant="light" style="background-color: #dc3545 !important" @click.stop="deleteBook(book.ID, idx)"><b-icon icon="trash-fill"></b-icon> Eliminar</b-dropdown-item>
-              </b-dropdown>
+              <b-button-group class="mr-3 opt-button">
+                <b-button v-if="modifyID !== book.ID && !book.confirmDelete" variant="light" @click.stop="book.confirmDelete=true"><b-icon icon="trash-fill"/></b-button>
+                <b-button v-else-if="book.confirmDelete" variant="danger" style="background-color: #dc3545 !important" @click.stop="deleteBook(book.ID, idx)"><b-icon icon="trash-fill"/></b-button>
+                <b-dropdown id="dropdown-1" variant="light" text="Opciones">
+                  <b-dropdown-item id="modifyButton" @click.stop="modifyBook(book)" v-show="modifyID !== book.ID">Modificar</b-dropdown-item>
+                  <b-dropdown-item @click.stop="addToLibraryButton(idx)">Añadir a bibliotecas</b-dropdown-item>
+                </b-dropdown>
+              </b-button-group>
             </div>
             <AddToLibraryModal v-if="showModal===idx" :bookId="primaryKeys[idx]" @add="addToLibrary" @cancel="addToLibraryButton"/>
           </b-card>
 
           <!-- componente modificar libro -->
           <b-modal v-if="modifyID === book.ID" v-model="modalModify" size="xl" hide-footer hide-header no-close-on-backdrop>
-            <ModifyBook :bookAux="book"  @delete="deleteBook(book.ID, idx)" @cancel="discardChangesBook" @save="saveChangesBook()"/>
+            <ModifyBook :bookAux="book" @cancel="discardChangesBook" @save="saveChangesBook()"/>
           </b-modal>
         </div>
       </div>
@@ -100,6 +101,9 @@ export default {
     })
   },
   methods: {
+    resetDels () {
+      this.books.forEach(book => (book.confirmDelete = false))
+    },
     refresh () {
       this.books = []
       this.primaryKeys = []
@@ -225,7 +229,7 @@ export default {
 }
 .opt-button {
   top: 10px;
-  width: 106px;
+  width: 164px;
 }
 .text-small {
   bottom: 20px;

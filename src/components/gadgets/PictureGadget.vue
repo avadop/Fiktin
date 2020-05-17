@@ -1,29 +1,23 @@
 <template>
   <div>
     <b-card>
-    <div class="d-flex justify-content-start">
+      <div class="d-flex justify-content-start">
         <h6 class="title">Elija la imagen que desea añadir</h6>
-        <b-button class="ml-auto" variant="outline-info" @click="preview = !preview"><b-icon icon="eye"/></b-button>
-      </div>
-      <div v-show="preview">
-        <hr>
-        <div v-html="htmlTextAux"/>
-        <hr>
       </div>
 
-        <b-container fluid class="col">
-          <b-form-file
-            @change="onFileSelected"
-            class="my-2"
-            placeholder="Selecciona una imagen o arrastrala aquí..."
-            drop-placeholder="Arrastra aquí la imagen..."
-            accept="image/*"
-          ></b-form-file>
-          <b-row class="my-1">
-            <p v-if="this.selectedFile !== '' && this.picture === ''">Espere a que cargue la imagen</p>
-            <b-img v-if="this.picture !== ''" :src="this.picture" fluid width="250%"></b-img>
-          </b-row>
-        </b-container>
+      <b-container fluid class="col">
+        <b-form-file
+          @change="onFileSelected"
+          class="my-2"
+          placeholder="Selecciona una imagen o arrastrala aquí..."
+          drop-placeholder="Arrastra aquí la imagen..."
+          accept="image/*"
+        ></b-form-file>
+        <b-row class="my-1">
+          <p v-if="this.selectedFile !== '' && this.picture === ''">Espere a que cargue la imagen</p>
+          <b-img v-if="this.picture !== ''" :src="this.picture" style="min-height: 200px; max-height: 200px; width: auto;padding-top: 13px; padding-bottom: 13px;"></b-img>
+        </b-row>
+      </b-container>
     </b-card>
 
   </div>
@@ -44,8 +38,7 @@ export default {
   data () {
     return {
       selectedFile: '',
-      picture: this.pictureAux,
-      preview: false
+      picture: this.pictureAux
     }
   },
   watch: {
@@ -81,7 +74,7 @@ export default {
       })
     },
     save: async function () {
-      var htmlText = ('<img src="' + this.picture + '" width="460" height="300" style="padding-top: 13px; padding-bottom: 13px;">')
+      var htmlText = ('<img src="' + this.picture + '" style="min-height: 200px; max-height: 200px; width: auto;padding-top: 13px; padding-bottom: 13px;">')
       this.$emit('html', htmlText, this.picture, this.index)
     }
   }
