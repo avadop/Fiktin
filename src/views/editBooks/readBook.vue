@@ -2,21 +2,17 @@
   <div>
     <LoadingModal v-if="loading"/>
     <div class="buttons">
-      <div class="row d-flex justify-content-between">
-        <b-button variant="light" @click="goBack()"><b-icon icon="chevron-left"></b-icon></b-button>
-        <div class="col" style="max-width: 300px;">
-          <h3 style="padding-top: 15px;">
-            {{ book.title }}
-            <b-button v-if="isBookOfLoggedUser() && isNotPreview()" variant="light" @click="goEdit()" :disabled="book.published===true"><b-icon icon="pencil"/></b-button>
-            <b-button v-if="isBookOfLoggedUser() && isNotPreview()" variant="light" @click="togglePublic()"><b-icon v-if="book.published" icon="eye"/><b-icon v-else icon="eye-slash"/></b-button>
-          </h3>
-        </div>
-        <div class="col" style="padding-top: 20px;">
-          <b-form-select v-model="currentSectionID" :options="sectionsData" style="max-width: 500px;" @change="loadSection(currentSectionID)"></b-form-select>
-        </div>
+      <div class="row d-flex justify-content-start">
+        <h3 style="padding-top: 15px; text-align: left;">
+          <b-button variant="light" @click="goBack()"><b-icon icon="chevron-left"></b-icon></b-button>
+          {{ book.title }}
+          <b-button v-if="isBookOfLoggedUser() && isNotPreview()" variant="light" @click="goEdit()" :disabled="book.published===true"><b-icon icon="pencil"/></b-button>
+          <b-button v-if="isBookOfLoggedUser() && isNotPreview()" variant="light" @click="togglePublic()"><b-icon v-if="book.published" icon="eye"/><b-icon v-else icon="eye-slash"/></b-button>
+        </h3>
       </div>
       <span style="color: red; padding-left: 10px;" v-if="isBookOfLoggedUser() && book.published===true">No se puede editar un libro si este se encuentra publicado</span>
     </div>
+    <b-form-select class="section" v-model="currentSectionID" :options="sectionsData" style="max-width: 500px;" @change="loadSection(currentSectionID)"></b-form-select>
     <div v-if="emptyBook()">
       <h4>Sección vacía</h4>
     </div>
@@ -264,12 +260,20 @@ export default {
 }
 .readBook {
   text-align: left;
-  margin-top: 50px;
+  margin-top: 70px;
   margin: auto;
   margin-bottom: 50px;
   width: 210mm;
   /*width: 60%;*/
   border: 1px solid;
   padding: 20px;
+}
+.section {
+  /*text-align: left;*/
+  /*margin-top: 70px;*/
+  margin: auto;
+  margin-bottom: 10px;/*
+  width: 210mm;
+  padding: 20px;*/
 }
 </style>
