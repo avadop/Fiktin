@@ -18,7 +18,7 @@
       <span style="color: red; padding-left: 10px;" v-if="isBookOfLoggedUser() && book.published===true">No se puede editar un libro si este se encuentra publicado</span>
     </div>
     <div v-if="emptyBook()">
-      <h4>Libro vacio</h4>
+      <h4>Sección vacía</h4>
     </div>
     <div class="readBook" v-else-if="sectionExists">
       <div v-for="(text, index) in sectionGadgets" :key="index">
@@ -236,13 +236,16 @@ export default {
       if (this.sectionGadgets.length === 0) {
         return true
       }
-      var emptyGadgets = ['Normal', 'Header1', 'Header2', 'Header3', 'Picture', 'Video']
       for (let gadget of this.sectionGadgets) {
-        if (emptyGadgets.includes(gadget.component) && (gadget.htmlText === '' || gadget.plainText === '')) {
-          return true
+        if ((gadget.component === 'Header1' || gadget.component === 'Header2' || gadget.component === 'Header3') && gadget.plainText !== '') {
+          return false
+        } else if ((gadget.component === 'Normal' || gadget.component === 'Picture' || gadget.component === 'Video') && gadget.htmlText !== '') {
+          return false
+        } else if (gadget.component === 'CustomBox' && gadget.name !== '') {
+          return false
         }
       }
-      return false
+      return true
     }
   }
 }
