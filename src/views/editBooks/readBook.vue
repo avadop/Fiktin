@@ -13,13 +13,13 @@
       <span style="color: red; padding-left: 10px;" v-if="isBookOfLoggedUser() && book.published===true">No se puede editar un libro si este se encuentra publicado</span>
     </div>
     <b-form-select class="section" v-model="currentSectionID" :options="sectionsData" style="max-width: 500px;" @change="loadSection(currentSectionID)"></b-form-select>
-    <div v-if="emptyBook()">
+    <div v-if="emptyBook() && sectionExists">
       <h4>Sección vacía</h4>
     </div>
-    <div class="readBook" v-else-if="sectionExists">
+    <div class="readBook" v-else-if="!emptyBook() && sectionExists">
       <div v-for="(text, index) in sectionGadgets" :key="index">
         <span v-if="basicGadget(text)" style="word-wrap: break-word;" v-html="text.htmlText"/>
-        <ChangeSectionReading v-if="text.component === 'ChangeSection'"
+        <ChangeSectionReading v-if="text.component === 'ChangeSection' && book.sections.length > 1"
           :htmlText="text.htmlText"
           :next="text.next"
           @change="loadSection"/>
@@ -27,10 +27,10 @@
           :htmlText="text.htmlText"
           :actual="currentSectionID"
           @change="loadSection"/>
-        <DecisionMakingReading v-if="text.component === 'DecisionMaking'"
+        <DecisionMakingReading v-if="text.component === 'DecisionMaking' && book.sections.length > 1"
           :choices="text.choices"
           @chose="loadSection"/>
-        <RiddleReading v-if="text.component === 'Riddle'"
+        <RiddleReading v-if="text.component === 'Riddle' && book.sections.length > 1"
           :numberOfTriesAux="text.numberOfTries"
           :riddleText="text.riddleText"
           :answerText="text.answerText"
@@ -170,21 +170,23 @@ export default {
       this.loading = false
     },
     async loadSection (sectionID) {
-      this.loading = true
-      this.currentSectionID = sectionID
-      store.commit('changeSection', sectionID)
-      this.sectionGadgets = []
-      this.sectionName = ''
-      await sectionsCollection.doc(sectionID).get().then(doc => {
-        if (doc.exists) {
-          this.sectionExists = true
-          this.sectionGadgets = doc.data().gadgets
-          this.sectionName = doc.data().name
-        } else {
-          this.sectionExists = false
-        }
-      })
-      this.loading = false
+      if (sectionID !== '') {
+        this.loading = true
+        this.currentSectionID = sectionID
+        store.commit('changeSection', sectionID)
+        this.sectionGadgets = []
+        this.sectionName = ''
+        await sectionsCollection.doc(sectionID).get().then(doc => {
+          if (doc.exists) {
+            this.sectionExists = true
+            this.sectionGadgets = doc.data().gadgets
+            this.sectionName = doc.data().name
+          } else {
+            this.sectionExists = false
+          }
+        })
+        this.loading = false
+      }
     },
     addBookToLibrary: async function () {
       var a
@@ -232,12 +234,19 @@ export default {
       if (this.sectionGadgets.length === 0) {
         return true
       }
+      var emptyGadgts = ['Normal', 'Header1', 'Header2', 'Header3', 'Picture', 'Video', 'ChangeSection', 'DecisionMaking', 'Riddle']
       for (let gadget of this.sectionGadgets) {
-        if ((gadget.component === 'Header1' || gadget.component === 'Header2' || gadget.component === 'Header3') && gadget.plainText !== '') {
-          return false
-        } else if ((gadget.component === 'Normal' || gadget.component === 'Picture' || gadget.component === 'Video') && gadget.htmlText !== '') {
-          return false
-        } else if (gadget.component === 'CustomBox' && gadget.name !== '') {
+        if (emptyGadgts.includes(gadget.component)) {
+          if ((gadget.component === 'Header1' || gadget.component === 'Header2' || gadget.component === 'Header3') && gadget.plainText !== '') {
+            return false
+          } else if ((gadget.component === 'Normal' || gadget.component === 'Picture' || gadget.component === 'Video') && gadget.htmlText !== '') {
+            return false
+          } else if (gadget.component === 'CustomBox' && gadget.name !== '') {
+            return false
+          } else if ((gadget.component === 'ChangeSection' || gadget.component === 'DecisionMaking' || gadget.component === 'Riddle') && this.book.sections.length > 1) {
+            return false
+          }
+        } else {
           return false
         }
       }
