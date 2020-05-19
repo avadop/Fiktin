@@ -16,12 +16,7 @@ Vue.use(BootstrapVueIcons)
 
 Vue.use(firestorePlugin)
 
-// Vue.use(VueFire)
-
 Vue.config.productionTip = false
-
-Vue.prototype.$eventBus = new Vue()
-// export const eventBus = new Vue()
 
 new Vue({
   router,
