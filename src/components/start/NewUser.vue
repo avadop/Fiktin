@@ -123,7 +123,7 @@
       <b-container fluid class="col">
         <b-container sm="3">
           <label>Imagen de perfil:</label>
-          <b-button v-if="this.picture != null" class="my-2" variant="danger-dark" @click="removeImg"><b-icon variant="danger" icon="x"></b-icon></b-button>
+          <b-button v-if="this.picture != null" class="my-2" variant="danger-dark" @click="removeImg" style="font-size: 16px;"><b-icon variant="danger" icon="x"></b-icon></b-button>
           <b-form-file v-show="this.uploadValue==0 && this.picture == null" @change="onFileSelected"
             class="my-2"
             placeholder="Selecciona una imagen o arrastrala aquí..."
@@ -135,8 +135,8 @@
         </div>
       </b-container>
 
-      <b-button variant="light" @click="switchCreate">Iniciar sesión</b-button>
-      <b-button variant="dark" type="submit" @click="addUser">Crear</b-button>
+      <b-button variant="light" style="font-size: 16px;" @click="switchCreate">Iniciar sesión</b-button>
+      <b-button variant="dark" style="font-size: 16px;" type="submit" @click="addUser">Crear</b-button>
     </form>
   </div>
 </template>

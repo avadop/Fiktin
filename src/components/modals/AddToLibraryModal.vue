@@ -24,8 +24,8 @@
       </b-form-checkbox-group>
     </div>
     <template v-slot:modal-footer>
-      <b-button size="mt-1" variant="outline-danger" @click="cancelButton">Cancelar</b-button>
-      <b-button size="mt-1" variant="outline-success" @click="readyButton">Guardar</b-button>
+      <b-button style="font-size: 16px;" size="mt-1" variant="outline-danger" @click="cancelButton">Cancelar</b-button>
+      <b-button style="font-size: 16px;" size="mt-1" variant="outline-success" @click="readyButton">Guardar</b-button>
     </template>
     </b-modal>
 </template>

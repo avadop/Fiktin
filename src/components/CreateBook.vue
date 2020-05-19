@@ -70,8 +70,8 @@
         <label class="custom-control-label" for="published_id"> Publicar</label>
       </div>
 
-      <b-button variant="outline-secondary" @click="cancelButton">Cancelar</b-button>
-      <b-button variant="dark" @click="createButton" :disabled="repited || title.length < 3 || title.length > 50 || description.length > 250">Crear libro</b-button>
+      <b-button style=" font-size: 16px;" variant="outline-secondary" @click="cancelButton">Cancelar</b-button>
+      <b-button style=" font-size: 16px;" variant="dark" @click="createButton" :disabled="repited || title.length < 3 || title.length > 50 || description.length > 250">Crear libro</b-button>
     </div>
   </div>
 </template>

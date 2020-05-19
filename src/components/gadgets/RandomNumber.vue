@@ -2,7 +2,7 @@
   <b-card>
     <div class="d-flex justify-content-start">
       <h6 class="title">Número aleatorio</h6>
-      <b-button class="ml-auto" variant="outline-info" @click="preparePreview()"><b-icon icon="eye"/></b-button>
+      <b-button style="font-size: 16px;" class="ml-auto" variant="outline-info" @click="preparePreview()"><b-icon icon="eye"/></b-button>
     </div>
     <br>
     <span style="color: red;" v-if="!valid">No hay más secciones a las que saltar. Este gadget solo calculará el número aleatorio en la lectura</span>
@@ -51,11 +51,11 @@
     <b-modal v-model="showPreview" hide-footer hide-header centered >
       <div style="margin-bottom: 15px;">
         <h5>Numero aleatorio</h5>
-        <b-button v-if="!pressedPreview" @click="generateRandomPreview()" variant="outline-info"><b-icon icon="question-diamond"/></b-button>
+        <b-button style="font-size: 16px;" v-if="!pressedPreview" @click="generateRandomPreview()" variant="outline-info"><b-icon icon="question-diamond"/></b-button>
         <span v-else>El número generado es {{ this.numberPreview }}</span>
       </div>
       <div class="d-flex justify-content-center">
-        <b-button id="button-modal-ok" class="mt-1" variant="secondary" block @click="showPreview = false">Ok</b-button>
+        <b-button style="font-size: 16px;" id="button-modal-ok" class="mt-1" variant="secondary" block @click="showPreview = false">Ok</b-button>
       </div>
     </b-modal>
   </b-card>

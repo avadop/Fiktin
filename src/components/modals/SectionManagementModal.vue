@@ -20,39 +20,39 @@
           </td>
           <td>
             <!--Botón de subir-->
-            <b-button variant="outline-secondary" size="sm" v-if="index!==0&&!busy" @click="sectionUp(index)">
+            <b-button variant="outline-secondary" style="font-size: 14px;" size="sm" v-if="index!==0&&!busy" @click="sectionUp(index)">
               <b-icon icon="chevron-up" class="marginLeftButtonSelected"/>
             </b-button>
-            <b-button variant="outline-secondary" size="sm" v-else-if="index==0||busy" disabled @click="sectionUp(index)">
+            <b-button variant="outline-secondary" style="font-size: 14px;" size="sm" v-else-if="index==0||busy" disabled @click="sectionUp(index)">
               <b-icon icon="chevron-up" class="marginLeftButtonSelected"/>
             </b-button>
             <!--Botón de bajar-->
-            <b-button variant="outline-secondary" size="sm" v-if="index!==sectionsData.length-1&&!busy" @click="sectionDown(index)">
+            <b-button variant="outline-secondary" style="font-size: 14px;" size="sm" v-if="index!==sectionsData.length-1&&!busy" @click="sectionDown(index)">
               <b-icon icon="chevron-down" class="marginLeftButtonSelected"/>
             </b-button>
-            <b-button variant="outline-secondary" size="sm" v-else-if="index==sectionsData.length-1||busy" disabled @click="sectionDown(index)">
+            <b-button variant="outline-secondary" style="font-size: 14px;" size="sm" v-else-if="index==sectionsData.length-1||busy" disabled @click="sectionDown(index)">
               <b-icon icon="chevron-down" class="marginLeftButtonSelected"/>
             </b-button>
             <!--Botón de clonar-->
-            <b-button variant="outline-secondary" size="sm" v-if="!busy" @click="sectionClone(index)">
+            <b-button variant="outline-secondary" style="font-size: 14px;" size="sm" v-if="!busy" @click="sectionClone(index)">
               <b-icon icon="layers" class="marginLeftButtonSelected"/>
             </b-button>
-            <b-button variant="outline-secondary" size="sm" v-else-if="busy" disabled @click="sectionClone(index)">
+            <b-button variant="outline-secondary" style="font-size: 14px;" size="sm" v-else-if="busy" disabled @click="sectionClone(index)">
               <b-icon icon="layers" class="marginLeftButtonSelected"/>
             </b-button>
             <!--Botón de eliminar-->
-            <b-button variant="outline-danger" size="sm" v-if="sectionsData.length>1&&!busy" @click="sectionDelete(index)">
+            <b-button variant="outline-danger" style="font-size: 14px;" size="sm" v-if="sectionsData.length>1&&!busy" @click="sectionDelete(index)">
               <b-icon icon="trash-fill" class="marginLeftButtonSelected"/>
             </b-button>
-            <b-button variant="outline-danger" size="sm" v-else-if="sectionsData.length==1||busy" disabled @click="sectionDelete(index)">
+            <b-button variant="outline-danger" style="font-size: 14px;" size="sm" v-else-if="sectionsData.length==1||busy" disabled @click="sectionDelete(index)">
               <b-icon icon="trash-fill" class="marginLeftButtonSelected"/>
             </b-button>
           </td>
         </tr>
         <tr>
           <td colspan="4">
-            <b-button class="block" variant="outline-success" v-if="!busy" @click="newSection">Nueva sección</b-button>
-            <b-button class="block" variant="outline-success" v-else-if="busy" disabled @click="newSection">Nueva sección</b-button>
+            <b-button style="font-size: 16px;" class="block" variant="outline-success" v-if="!busy" @click="newSection">Nueva sección</b-button>
+            <b-button style="font-size: 16px;" class="block" variant="outline-success" v-else-if="busy" disabled @click="newSection">Nueva sección</b-button>
           </td>
         </tr>
       </table>
@@ -67,7 +67,7 @@
       <b-spinner label="Spinning"/>
     </div>
     <template v-slot:modal-footer>
-      <b-button class="size" size="mt-1" variant="outline-secondary" @click="hide">Cerrar</b-button>
+      <b-button style="font-size: 16spx;" class="size" size="mt-1" variant="outline-secondary" @click="hide">Cerrar</b-button>
     </template>
   </b-modal>
 </template>

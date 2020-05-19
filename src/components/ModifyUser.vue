@@ -109,8 +109,8 @@
           </div>
         </div>
 
-        <b-button variant="outline-secondary" class="mr-auto" @click="switchEdit"> Cancelar</b-button>
-        <b-button variant="dark" type="submit" @click="modal = true"> Confirmar</b-button>
+        <b-button variant="outline-secondary" class="mr-auto" @click="switchEdit" style="font-size: 16px;"> Cancelar</b-button>
+        <b-button variant="dark" type="submit" @click="modal = true" style="font-size: 16px;"> Confirmar</b-button>
       </form>
 
       <b-modal id="modal-modify" v-model="modal" hide-footer hide-header no-close-on-backdrop>
@@ -118,8 +118,8 @@
           <p>¿Está seguro que desea aplicar los cambios?</p>
         </div>
         <div class="d-flex justify-content-center">
-          <b-button id="modal-buttons" class="mt-2" variant="outline-secondary" block @click="switchEdit">Cancelar</b-button>
-          <b-button id="modal-buttons" class="mt-2" variant="primary" block @click="update">Confirmar</b-button>
+          <b-button id="modal-buttons" class="mt-2" variant="outline-secondary" style="font-size: 16px;" block @click="switchEdit">Cancelar</b-button>
+          <b-button id="modal-buttons" class="mt-2" variant="primary" style="font-size: 16px;" block @click="update">Confirmar</b-button>
         </div>
       </b-modal>
     </b-card>

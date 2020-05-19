@@ -3,7 +3,7 @@
     <b-card>
       <div class="d-flex justify-content-start">
         <h6 class="title">Adivinanza</h6>
-        <b-button class="ml-auto" variant="outline-info" @click="show = true, numberOfTriesPreview = parseInt(numberOfTries,10)"><b-icon icon="eye"/></b-button>
+        <b-button style="font-size: 16px;" class="ml-auto" variant="outline-info" @click="show = true, numberOfTriesPreview = parseInt(numberOfTries,10)"><b-icon icon="eye"/></b-button>
       </div>
       <span style="color: red;" v-if="!valid">No hay más secciones a las que saltar. Este gadget no se verá al leer el libro</span>
       <br>
@@ -14,8 +14,8 @@
       </b-row>
       <b-row class="right" style="padding-left: 10px">
         <b-col cols="5">
-          <b-button variant="outline-dark" size="sm" v-if="!changeSectionWhenWrong" @click="changeSectionWhenWrong = true, save()">Cambiar de sección al fallar</b-button>
-          <b-button variant="outline-dark" size="sm" v-else @click="noWrongSection()">Continuar lectura al fallar</b-button>
+          <b-button style="font-size: 14px;" variant="outline-dark" size="sm" v-if="!changeSectionWhenWrong" @click="changeSectionWhenWrong = true, save()">Cambiar de sección al fallar</b-button>
+          <b-button style="font-size: 14px;" variant="outline-dark" size="sm" v-else @click="noWrongSection()">Continuar lectura al fallar</b-button>
         </b-col>
         <b-col v-if="changeSectionWhenWrong" style="padding-top: 5px;"><b-form-select size="sm" @change="save()" v-model="wrongSectionID" :options="aux"></b-form-select></b-col>
       </b-row>
@@ -56,14 +56,14 @@
         <div class="d-flex">
           <b-form-input style="margin-top:5px;" v-model="tryText" trim  :formatter="formatAnswer" placeholder="Respuesta"></b-form-input>
           <span v-if="tryText.length > 24" style="color: red;">Estas cerca del limite de caracteres, llevas {{ this.tryText.length}} /30</span>
-          <b-button style="width: 150px;" :disabled="numberOfTriesPreview === 0" variant="primary" block @click="tryAnswer()">Probar</b-button>
+          <b-button style="width: 150px; font-size: 16px;" :disabled="numberOfTriesPreview === 0" variant="primary" block @click="tryAnswer()">Probar</b-button>
         </div>
         <p>Te quedan {{ numberOfTriesPreview }} intentos</p>
         <p v-if="correctPreview === true" style="font-weight: bold;">¡Enhorabuena! ¡has acertado!</p>
         <p v-if="correctPreview === false" style="font-weight: bold;">Has fallado :(</p>
       </div>
       <div class="d-flex justify-content-center">
-        <b-button id="button-modal-ok" class="mt-1" variant="secondary" block @click="show = false, correctPreview = null">Ok</b-button>
+        <b-button style="font-size: 16px;" id="button-modal-ok" class="mt-1" variant="secondary" block @click="show = false, correctPreview = null">Ok</b-button>
       </div>
     </b-modal>
   </div>

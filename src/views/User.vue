@@ -24,8 +24,8 @@
               </div>
               <!-- botones -->
               <div class="d-flex mr-1 buttons">
-                <b-button variant="outline-dark" @click="switchEdit"> Modificar</b-button>
-                <b-button variant="danger" class="mr-auto" @click="modal = true"> Eliminar</b-button>
+                <b-button variant="outline-dark" @click="switchEdit" style="font-size: 16px;"> Modificar</b-button>
+                <b-button variant="danger" class="mr-auto" @click="modal = true" style="font-size: 16px;"> Eliminar</b-button>
               </div>
             </div>
           </div>
@@ -42,8 +42,8 @@
             <span> Una vez realizado dicha operación no se podrá volver atrás </span>
           </div>
           <div id="buttons-layout" class="d-flex justify-content-center">
-            <b-button id="modal-buttons" class="mt-2" variant="primary" block @click="modal = false">Cancelar</b-button>
-            <b-button id="modal-buttons" class="mt-2" variant="outline-danger" block @click="deleteUser">ELIMINAR</b-button>
+            <b-button id="modal-buttons" style="font-size: 16px;" class="mt-2" variant="primary" block @click="modal = false">Cancelar</b-button>
+            <b-button id="modal-buttons" style="font-size: 16px;" class="mt-2" variant="outline-danger" block @click="deleteUser">ELIMINAR</b-button>
           </div>
         </b-modal>
       </div>

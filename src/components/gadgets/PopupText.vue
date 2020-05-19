@@ -3,7 +3,7 @@
     <b-card>
       <div class="d-flex justify-content-start">
         <h6 class="title">Edite su texto emergente</h6>
-        <b-button class="ml-auto" variant="outline-info" @click="preview = !preview"><b-icon icon="eye"/></b-button>
+        <b-button style="font-size: 16px;" class="ml-auto" variant="outline-info" @click="preview = !preview"><b-icon icon="eye"/></b-button>
       </div>
       <div v-show="preview">
         <hr>
@@ -67,8 +67,8 @@
             </b-row>
           </b-container>
           <div class="d-flex justify-content-center">
-            <b-button id="button-modal-return" class="mt-1" variant="outline-secondary" block @click="cancel()">Cancelar</b-button>
-            <b-button id="button-modal-accept" class="mt-1" variant="primary" block @click="uploadPicture()" :disabled="picture === ''">Confirmar</b-button>
+            <b-button style="font-size: 16px;" id="button-modal-return" class="mt-1" variant="outline-secondary" block @click="cancel()">Cancelar</b-button>
+            <b-button style="font-size: 16px;" id="button-modal-accept" class="mt-1" variant="primary" block @click="uploadPicture()" :disabled="picture === ''">Confirmar</b-button>
           </div>
         </div>
       </b-container>

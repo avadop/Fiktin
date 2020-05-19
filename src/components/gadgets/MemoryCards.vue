@@ -2,7 +2,7 @@
   <b-card>
     <div class="d-flex justify-content-start">
       <h6 class="title">Tarjetas de memoria</h6>
-      <b-button class="ml-auto" variant="outline-info" @click="show = true, shufflePreview()"><b-icon icon="eye"/></b-button>
+      <b-button style="font-size: 16px;" class="ml-auto" variant="outline-info" @click="show = true, shufflePreview()"><b-icon icon="eye"/></b-button>
     </div>
     <br>
     <span style="color: red;" v-if="!valid">No hay más secciones a las que saltar. Este gadget no llevará a ninguna sección al resolver el puzzle</span>
@@ -14,8 +14,8 @@
     </b-row>
     <b-row class="right" style="padding-left: 10px">
       <b-col cols="5">
-        <b-button variant="outline-dark" size="sm" v-if="!changeSectionWhenWrong" @click="changeSectionWhenWrong = true, save()">Cambiar de sección al fallar</b-button>
-        <b-button variant="outline-dark" size="sm" v-else @click="noWrongSection()">Continuar lectura al fallar</b-button>
+        <b-button style="font-size: 14px;" variant="outline-dark" size="sm" v-if="!changeSectionWhenWrong" @click="changeSectionWhenWrong = true, save()">Cambiar de sección al fallar</b-button>
+        <b-button style="font-size: 14px;" variant="outline-dark" size="sm" v-else @click="noWrongSection()">Continuar lectura al fallar</b-button>
       </b-col>
       <b-col v-if="changeSectionWhenWrong" style="padding-top: 5px;"><b-form-select size="sm" @change="save()" v-model="sectionNoMoreMoves" :options="sections"></b-form-select></b-col>
     </b-row>
@@ -44,10 +44,10 @@
         <b-form-select size = "sm" style="width: 200px;" v-model="typeChosen" :options="customizationTypes" @change="save()"></b-form-select>
       </b-col>
       <b-col cols="4" v-if="!customized">
-        <b-button variant="outline-dark" size="sm" @click="customized = true, save()">Customizar tarjetas</b-button>
+        <b-button style="font-size: 14px;" variant="outline-dark" size="sm" @click="customized = true, save()">Customizar tarjetas</b-button>
       </b-col>
       <b-col cols="3" v-else>
-        <b-button variant="outline-dark" size="sm" @click="cardsNotCustomized()">Cancelar</b-button>
+        <b-button  style="font-size: 14px;" variant="outline-dark" size="sm" @click="cardsNotCustomized()">Cancelar</b-button>
       </b-col>
     </b-row>
     <div v-if="customized === true" style="padding-top: 5px;">
@@ -89,7 +89,7 @@
       <p v-else>Llevas {{ numberOfMovesPreview }} movimientos de {{ maxNumberOfMoves }} disponibles! Te quedan {{ maxNumberOfMoves - numberOfMovesPreview }}!! </p>
       <p v-if="solved === true" style="color: green;">¡Has resuelto el puzzle!</p>
       <div class="d-flex justify-content-center">
-        <b-button id="button-modal-ok" class="mt-1" variant="secondary" block @click="show = false">Ok</b-button>
+        <b-button style="font-size: 16px;" id="button-modal-ok" class="mt-1" variant="secondary" block @click="show = false">Ok</b-button>
       </div>
     </b-modal>
   </b-card>

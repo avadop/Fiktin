@@ -5,7 +5,7 @@
     <div class="buttons">
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
       <div class="row d-flex justify-content-end">
-        <b-button v-b-tooltip.hover title="Salir sin guardar" variant="light" @click="goBack()"><b-icon icon="chevron-left"/></b-button>
+        <b-button style="font-size: 16px;" v-b-tooltip.hover title="Salir sin guardar" variant="light" @click="goBack()"><b-icon icon="chevron-left"/></b-button>
         <div class="col">
           <h3 class="mr-auto" style="padding-top: 15px;">{{ book.title }}</h3>
         </div>
@@ -13,15 +13,15 @@
           <b-form-select v-model="nextSectionID" :options="sectionsData" @change="changeSection(nextSectionID)"></b-form-select>
         </div>
         <div class="col" style="padding-top: 15px;">
-          <b-button variant="light" size="sm" @click="openManagementSectionModal()"><b-icon icon="gear"/></b-button>
+          <b-button style="font-size: 16px;" variant="light" size="sm" @click="openManagementSectionModal()"><b-icon icon="gear"/></b-button>
         </div>
         <div class="col" style="padding-top: 15px;">
           <b-button variant="light" size="sm" @click="showPreviewSection = true" style="font-size: 16px;">Previsualizar sección</b-button>
         </div>
         <SectionManagementModal v-if="showManagementSectionModal" :name="sectionName" :id="sectionID" :book_title="book.title" :book_author_ID="book.userID" :sectionsList="book.sections" @update="auxUpdateBookSections" @load="refresh" @saveActual="auxSave" @deleteCustomBoxes="auxDeleteCustomBoxes" @cancel="openManagementSectionModal"/>
-        <b-button variant="outline-dark" v-b-tooltip.hover title="Descargar" hidden><b-icon icon="cloud-download"></b-icon></b-button>
-        <b-button variant="outline-dark" v-b-tooltip.hover title="Guardar" @click="save()"><i class="fa fa-save" @mouseup="save()"/></b-button>
-        <b-button variant="dark" @click="goBackAndSave()">Guardar y salir</b-button>
+        <b-button style="font-size: 16px;" variant="outline-dark" v-b-tooltip.hover title="Descargar" hidden><b-icon icon="cloud-download"></b-icon></b-button>
+        <b-button style="font-size: 16px;" variant="outline-dark" v-b-tooltip.hover title="Guardar" @click="save()"><i class="fa fa-save" @mouseup="save()"/></b-button>
+        <b-button style="font-size: 16px;" variant="dark" @click="goBackAndSave()">Guardar y salir</b-button>
       </div>
     </div>
     <div class="row flex-xl-nowrap2">
