@@ -15,8 +15,8 @@
 
           <!-- Right aligned nav items -->
           <b-navbar-nav class="ml-auto">
-            <b-nav-item><router-link to="/user"><div class="h4 nav-ref"><b-icon icon="person"></b-icon></div></router-link></b-nav-item>
-            <b-nav-item><div @click="confirmLogOut" class="h4 nav-ref"><b-icon icon="power"></b-icon></div></b-nav-item>
+            <b-nav-item><router-link to="/user"><div class="h4 nav-ref" style="font-size: 24px;"><b-icon icon="person"></b-icon></div></router-link></b-nav-item>
+            <b-nav-item><div @click="confirmLogOut" class="h4 nav-ref" style="font-size: 24px;"><b-icon icon="power"></b-icon></div></b-nav-item>
           </b-navbar-nav>
         </b-collapse>
 
@@ -30,7 +30,8 @@
 
           <!-- Right aligned nav items -->
           <b-navbar-nav class="ml-auto">
-            <b-nav-item @click="needLogIn('/')"><div class=" h4 nav-ref"><b-icon icon="person"></b-icon></div></b-nav-item>
+            <b-nav-item @click="needLogIn('/')"><div class="nav-ref">Iniciar sesión</div></b-nav-item>
+            <!-- <b-nav-item @click="needLogIn('/')"><div class=" h4 nav-ref"><b-icon icon="person"></b-icon></div></b-nav-item> -->
           </b-navbar-nav>
         </b-collapse>
       </b-navbar>
