@@ -5,11 +5,11 @@
       <div class="d-flex">
         <b-form-input style="margin-top:5px;" v-model="tryText" trim  :formatter="formatAnswer" placeholder="Respuesta"></b-form-input>
         <span v-if="tryText.length > 24" style="color: red;">Estas cerca del limite de caracteres, llevas {{ this.tryText.length}} /30</span>
-        <b-button style="width: 150px;" :disabled="numberOfTries === 0" variant="primary" block @click="tryAnswer()">Probar</b-button>
+        <b-button style="width: 150px; font-size: 16px;" :disabled="numberOfTries === 0" variant="primary" block @click="tryAnswer()">Probar</b-button>
       </div>
       <span v-if="correctPreview === false" style="color: red"> ¡Has fallado! </span>
       <span v-else-if="correctPreview === true" style="color: green"> ¡Has acertado! </span>
-      <p v-else style="font-size: 14px"> Te quedan {{ numberOfTries }} intentos</p>
+      <span style="font-size: 14px"> Te quedan {{ numberOfTries }} intentos</span>
       <b v-if="text != ''"> {{ text }} </b>
     </b-card>
   </div>

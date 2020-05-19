@@ -11,7 +11,7 @@
         <div class="d-flex">
           <b-form-input v-for="(text, index) in solution" :key="index" style="margin-top:5px; margin-right:5px; margin-left: 5px; width: 115px;" v-model="answers[index]" trim  :formatter="limit" placeholder="Respuesta">
           </b-form-input>
-          <b-button style="width: 100px;" :disabled="numberOfTries === 0 || answers.length !== solution.length" variant="primary" block @click="confirm()">Probar</b-button>
+          <b-button style="width: 100px;font-size:16px;" :disabled="numberOfTries === 0 || answers.length !== solution.length" variant="primary" block @click="confirm()">Probar</b-button>
         </div>
       </div>
       <span v-if="correctPreview === false" style="color: red"> ¡Has fallado! </span>
