@@ -30,7 +30,7 @@
 
           <!-- Right aligned nav items -->
           <b-navbar-nav class="ml-auto">
-            <b-nav-item @click="needLogIn('/')"><div class=" h4 nav-ref" style="font-size: 16px;"><b-icon icon="person"></b-icon></div></b-nav-item>
+            <b-nav-item @click="needLogIn('/')" style="font-size: 16px;"><div class=" h4 nav-ref" style="font-size: 16px;"><b-icon icon="person"></b-icon></div></b-nav-item>
           </b-navbar-nav>
         </b-collapse>
       </b-navbar>

@@ -9,7 +9,7 @@
         style="max-width: 20rem; cursor: pointer;"
         class="mb-2"
       >
-        <b-button variant="light" @click.stop="addToLibraryButton(idx)" class="mr-1 add-lib-button">
+        <b-button variant="light" style="font-size: 16px;" @click.stop="addToLibraryButton(idx)" class="mr-1 add-lib-button">
           <b-icon variant="warning" icon="bookmark-fill"></b-icon>
         </b-button>
         <div class="card-img-box">
