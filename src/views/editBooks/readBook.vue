@@ -173,7 +173,6 @@ export default {
       if (sectionID !== '') {
         this.loading = true
         this.currentSectionID = sectionID
-        store.commit('changeSection', sectionID)
         this.sectionGadgets = []
         this.sectionName = ''
         await sectionsCollection.doc(sectionID).get().then(doc => {
@@ -181,6 +180,7 @@ export default {
             this.sectionExists = true
             this.sectionGadgets = doc.data().gadgets
             this.sectionName = doc.data().name
+            store.commit('changeSection', sectionID)
           } else {
             this.sectionExists = false
           }
