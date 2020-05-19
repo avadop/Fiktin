@@ -30,8 +30,8 @@
     </div>
     <br>
     <br>
-    <b-button variant="light" @click="switchCreate">Crear Usuario</b-button>
-    <b-button variant="dark" @click="logIn">Entrar</b-button>
+    <b-button variant="light" style="font-size: 16px;" @click="switchCreate">Crear Usuario</b-button>
+    <b-button variant="dark" style="font-size: 16px;" @click="logIn">Entrar</b-button>
   </div>
 </template>
 
