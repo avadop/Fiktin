@@ -15,8 +15,8 @@
 
           <!-- Right aligned nav items -->
           <b-navbar-nav class="ml-auto">
-            <b-nav-item style="font-size: 16px;"><router-link to="/user" class="h4 nav-ref" ><b-icon icon="person"></b-icon></router-link></b-nav-item>
-            <b-nav-item style="font-size: 16px;"><div @click="confirmLogOut" class="h4 nav-ref"><b-icon icon="power"></b-icon></div></b-nav-item>
+            <b-nav-item><router-link to="/user" class="h4 nav-ref" ><div style=" font-size: 16px;"><b-icon icon="person"></b-icon></div></router-link></b-nav-item>
+            <b-nav-item><div @click="confirmLogOut" class="h4 nav-ref"><b-icon icon="power"></b-icon></div></b-nav-item>
           </b-navbar-nav>
         </b-collapse>
 
@@ -30,7 +30,7 @@
 
           <!-- Right aligned nav items -->
           <b-navbar-nav class="ml-auto">
-            <b-nav-item @click="needLogIn('/')" style="font-size: 16px;"><div class=" h4 nav-ref" style="font-size: 16px;"><b-icon icon="person"></b-icon></div></b-nav-item>
+            <b-nav-item @click="needLogIn('/')"><div class=" h4 nav-ref" style="font-size: 16px;"><b-icon icon="person"></b-icon></div></b-nav-item>
           </b-navbar-nav>
         </b-collapse>
       </b-navbar>
@@ -48,7 +48,7 @@
 
     <b-modal v-model="modalLogIn" hide-footer hide-header no-close-on-backdrop centered>
       <start :urlLogIn="urlLogIn" @loggedIn="logIn"/>
-      <b-button class="mt-2" variant="outline-secondary" size="sm"  block @click="modalLogIn = false">Cancelar</b-button>
+      <b-button class="mt-2" variant="outline-secondary" style="font-size: 14px;" size="sm"  block @click="modalLogIn = false">Cancelar</b-button>
     </b-modal>
   </div>
 </template>
