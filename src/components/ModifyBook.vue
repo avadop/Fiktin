@@ -52,7 +52,7 @@
         </b-row>
         <b-row class="my-1">
           <b-img :src="this.cover" fluid width="250%" alt="No has subido ninguna imagen"></b-img>
-          <b-button v-if="this.cover != null" class="my-2" variant="danger" @click="removeImg">Eliminar</b-button>
+          <b-button style=" font-size: 16px;" v-if="this.cover != null" class="my-2" variant="danger" @click="removeImg">Eliminar</b-button>
         </b-row>
       </b-container>
     </b-container>
@@ -91,8 +91,8 @@
         <label class="custom-control-label" for="published_modify_id"> Publicar</label>
       </div>
 
-      <b-button variant="outline-secondary" @click="cancelButton">Descartar</b-button>
-      <b-button variant="dark" @click="saveButton" :disabled="(this.uploadValue != 0 && this.uploadValue != 100) || repited || title.length < 3 || title.length > 50 || description.length > 250">Guardar</b-button>
+      <b-button style=" font-size: 16px;" variant="outline-secondary" @click="cancelButton">Descartar</b-button>
+      <b-button style=" font-size: 16px;" variant="dark" @click="saveButton" :disabled="(this.uploadValue != 0 && this.uploadValue != 100) || repited || title.length < 3 || title.length > 50 || description.length > 250">Guardar</b-button>
     </div>
   </div>
 </template>
