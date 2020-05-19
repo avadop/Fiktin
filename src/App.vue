@@ -23,14 +23,14 @@
         <!-- Not logged In nav-bar-->
         <b-collapse v-else id="nav-collapse" is-nav>
           <b-navbar-nav>
-            <!-- <b-nav-item><router-link to="/" class="nav-ref">Inicio</router-link></b-nav-item>
+            <b-nav-item><router-link to="/" class="nav-ref">Inicio</router-link></b-nav-item>
             <b-nav-item @click="needLogIn('/books')"><div class="nav-ref">Mis libros</div></b-nav-item>
-            <b-nav-item @click="needLogIn('/libraries')"><div class="nav-ref">Bibliotecas</div></b-nav-item> -->
+            <b-nav-item @click="needLogIn('/libraries')"><div class="nav-ref">Bibliotecas</div></b-nav-item>
           </b-navbar-nav>
 
           <!-- Right aligned nav items -->
           <b-navbar-nav class="ml-auto">
-            <b-nav-item @click="needLogIn('/')"><div class=" h4 nav-ref"><b-icon icon="box-arrow-in-right"></b-icon></div></b-nav-item>
+            <b-nav-item @click="needLogIn('/')"><div class=" h4 nav-ref"><b-icon icon="person"></b-icon></div></b-nav-item>
           </b-navbar-nav>
         </b-collapse>
       </b-navbar>
