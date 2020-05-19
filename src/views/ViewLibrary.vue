@@ -3,7 +3,7 @@
     <b-card class="background-card">
       <!-- Cabecera -->
       <div class="d-flex justify-content-start">
-        <b-button variant="light" @click="goBack()"><b-icon icon="chevron-left"></b-icon></b-button>
+        <b-button variant="light" @click="goBack()" style="font-size: 16px;"><b-icon icon="chevron-left"></b-icon></b-button>
         <div>
           <h4>{{ name }} </h4>
           <h6 class="nBooks" v-if="numberOfBooks===1"> {{ numberOfBooks }} libro</h6>
@@ -65,10 +65,10 @@
           <b-list-group-item variant="danger" v-else>
             <!-- botones subir bajar -->
             <b-button-group v-if="idx !== 0" class="mr-1 move-button">
-              <b-button variant="light" @click.stop="upButton(index)" :disabled="index===0">
+              <b-button variant="light" style="font-size: 16px;" @click.stop="upButton(index)" :disabled="index===0">
                 <b-icon icon="chevron-up"></b-icon>
               </b-button>
-              <b-button variant="light" @click.stop="downButton(index)" :disabled="index===booksList.length-1">
+              <b-button variant="light" style="font-size: 16px;" @click.stop="downButton(index)" :disabled="index===booksList.length-1">
                 <b-icon icon="chevron-down"></b-icon>
               </b-button>
             </b-button-group>
@@ -89,7 +89,7 @@
             </div>
             <!-- boton de eliminar -->
             <div v-if="idx !== 0" class="mr-1 del-button">
-              <b-button variant="danger" class="m-md-2" @click.stop="deleteButton(index)">Eliminar</b-button>
+              <b-button variant="danger" style="font-size: 16px;" class="m-md-2" @click.stop="deleteButton(index)">Eliminar</b-button>
             </div>
           </b-list-group-item>
         </b-list-group>

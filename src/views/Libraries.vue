@@ -7,7 +7,7 @@
       <div v-if="this.internetConnection === 0" class="d-flex justify-content-end">
         <h4 class="mr-auto">Mis bibliotecas</h4>
         <!-- Botón de creación de librería según la conexión. Si no hay, no aparece el botón -->
-        <b-button variant="info" size="sm" class="m-md-2" v-b-modal.modal-create>
+        <b-button variant="info" size="sm" class="m-md-2" v-b-modal.modal-create style="font-size: 14px;">
           <b-icon icon="plus"></b-icon> Crear biblioteca
         </b-button>
       </div>
@@ -41,9 +41,9 @@
                 </div>
                 <!-- Botones -->
                 <div class="m-md-2">
-                  <b-button v-if="(modifying===-1 || modifying !==index) && library.id == searchHistory" variant="outline-dark" @click.stop="btnEmptyHistory(library.id)">Vaciar historial</b-button>
-                  <b-button variant="outline-dark" @click.stop="btnModifyLib(index)">Modificar</b-button>
-                  <b-button variant="danger" @click.stop="btnDeleteHandler(index)">Eliminar</b-button>
+                  <b-button v-if="(modifying===-1 || modifying !==index) && library.id == searchHistory" variant="outline-dark" style="font-size: 16px;" @click.stop="btnEmptyHistory(library.id)">Vaciar historial</b-button>
+                  <b-button variant="outline-dark" @click.stop="btnModifyLib(index)" style="font-size: 16px;">Modificar</b-button>
+                  <b-button variant="danger" @click.stop="btnDeleteHandler(index)" style="font-size: 16px;">Eliminar</b-button>
                   <DeleteLibraryModal v-if="showModal===index" :name="librariesList[index].name" :id="librariesList[index].id" @cancel="btnDeleteHandler" @delete="deleteLib"/>
                 </div>
               </div>

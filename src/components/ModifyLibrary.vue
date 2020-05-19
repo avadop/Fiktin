@@ -75,8 +75,8 @@
 
     <!-- botones -->
     <div class="d-flex justify-content-end">
-      <b-button variant="outline-secondary" @click="cancelButton()">Descartar cambios</b-button>
-      <b-button variant="dark" @click="modifyButton" :disabled="this.name.length <= 0 || checkNames() || !checkDescription()">Guardar</b-button>
+      <b-button variant="outline-secondary" @click="cancelButton()" style="font-size: 16px;">Descartar cambios</b-button>
+      <b-button variant="dark" @click="modifyButton" :disabled="this.name.length <= 0 || checkNames() || !checkDescription()" style="font-size: 16px;">Guardar</b-button>
     </div>
   </div>
 </template>

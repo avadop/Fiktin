@@ -73,8 +73,8 @@
       </b-container>
     </b-container>
     <div class="d-flex justify-content-end">
-      <b-button variant="outline-secondary" @click="cancelButton()">Cancelar</b-button>
-      <b-button variant="dark" @click="createButton" :disabled="this.name.length <= 0 || checkNames() || !checkDescription()">Crear</b-button>
+      <b-button variant="outline-secondary" @click="cancelButton()" style="font-size: 16px;">Cancelar</b-button>
+      <b-button variant="dark" @click="createButton" :disabled="this.name.length <= 0 || checkNames() || !checkDescription()" style="font-size: 16px;">Crear</b-button>
     </div>
 
     <!-- <b-modal id="modal-create-lib" v-model="modalCreate" hide-footer hide-header>
