@@ -40,7 +40,7 @@ export default {
             if (this.number === this.conditions[i].number) this.$emit('change', this.conditions[i].section)
           }
         }
-      }, 700)
+      }, 1200)
     }
   }
 }

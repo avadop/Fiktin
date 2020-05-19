@@ -9,7 +9,7 @@
       </div>
       <span v-if="correctPreview === false" style="color: red"> ¡Has fallado! </span>
       <span v-else-if="correctPreview === true" style="color: green"> ¡Has acertado! </span>
-      <p v-else style="font-size: 14px"> Te quedan {{ numberOfTries }} intentos</p>
+      <span style="font-size: 14px"> Te quedan {{ numberOfTries }} intentos</span>
       <b v-if="text != ''"> {{ text }} </b>
     </b-card>
   </div>

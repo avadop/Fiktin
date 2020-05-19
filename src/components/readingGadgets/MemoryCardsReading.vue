@@ -96,9 +96,7 @@ export default {
           }
         }, 700)
       }
-      if (this.numberOfMoves === this.maxNumberOfMoves && this.numberOfPairsMissing > 0) {
-        setTimeout(() => { this.checkAnswer() }, 700)
-      }
+      if (this.numberOfMoves === this.maxNumberOfMoves && this.numberOfPairsMissing > 0) this.checkAnswer()
       if (this.numberOfCardsFlipped === 2 && (this.cards[this.cardClickedBefore].value !== this.cards[index].value)) {
         setTimeout(() => { this.refresh(index) }, 1000)
       }
@@ -110,9 +108,9 @@ export default {
     },
     checkAnswer () {
       if (this.sectionSolved !== '') {
-        if (this.solved === true) this.$emit('answered', this.sectionSolved)
+        if (this.solved === true) setTimeout(() => { this.$emit('answered', this.sectionSolved) }, 700)
         else {
-          if (this.changeSectionWhenWrong === true) this.$emit('answered', this.sectionNoMoreMoves)
+          if (this.changeSectionWhenWrong === true) setTimeout(() => { this.$emit('answered', this.sectionNoMoreMoves) }, 700)
         }
       }
     }
