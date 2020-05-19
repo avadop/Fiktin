@@ -43,7 +43,7 @@
 
             <!-- Botones -->
             <div>
-              <b-button-group class="mr-3 opt-button">
+              <b-button-group class="mr-3 opt-button" style="font-size: 16px;">
                 <b-button style="font-size: 16px;" v-if="modifyID !== book.ID && !book.confirmDelete" variant="light" @click.stop="book.confirmDelete=true"><b-icon icon="trash-fill"/></b-button>
                 <b-button v-else-if="book.confirmDelete" variant="danger" style=" font-size: 16px; background-color: #dc3545 !important" @click.stop="deleteBook(book.ID, idx)"><b-icon icon="trash-fill"/></b-button>
                 <b-dropdown id="dropdown-1" variant="light" text="Opciones">
