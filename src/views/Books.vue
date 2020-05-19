@@ -46,7 +46,7 @@
               <div class="buttons-div">
                 <b-button v-if="modifyID !== book.ID && !book.confirmDelete" style="font-size: 16px;" variant="light" @click.stop="book.confirmDelete=true"><b-icon icon="trash-fill"/></b-button>
                 <b-button v-else-if="book.confirmDelete" variant="danger" style=" font-size: 16px; background-color: #dc3545 !important" @click.stop="deleteBook(book.ID, idx)"><b-icon icon="trash-fill"/></b-button>
-                <b-dropdown id="dropdown-1" variant="light" text="Opciones">
+                <b-dropdown style="font-size: 16px;" id="dropdown-1" variant="light" text="Opciones">
                   <b-dropdown-item id="modifyButton" @click.stop="modifyBook(book)" v-show="modifyID !== book.ID">Modificar</b-dropdown-item>
                   <b-dropdown-item @click.stop="addToLibraryButton(idx)">Añadir a bibliotecas</b-dropdown-item>
                 </b-dropdown>
