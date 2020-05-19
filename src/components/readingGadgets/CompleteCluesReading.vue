@@ -4,7 +4,7 @@
       <b-form-select v-if="valid" v-model="data[index]" :options="options" size="sm"/>
       <b-form-select v-else disabled v-model="data[index]" :options="options" size="sm"/>
     </div>
-    <p style="font-size: 14px">Selecciona las repuestas correcatas y pulsa solucionar</p>
+    <p style="font-size: 14px">Selecciona las repuestas correctas y pulsa solucionar</p>
     <b-button v-if="valid" variant="outline-dark" @click="check()">Solucionar</b-button>
     <span v-else>Sigue leyendo!</span>
   </div>

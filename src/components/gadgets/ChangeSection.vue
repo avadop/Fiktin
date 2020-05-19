@@ -131,7 +131,6 @@ export default {
       var htmlText = ('<span>' + plainText + '</span>')
       if (this.selectedSectionID === undefined) this.selectedSectionID = ''
       this.$emit('section', htmlText, plainText, this.selectedSectionID, this.index)
-      this.$emit('save')
     },
     formatMaxText (value) {
       return String(value).substring(0, 2000)

@@ -130,8 +130,7 @@
               :selectedSection="text.next"
               :textAux="text.plainText"
               :index="index"
-              @section="saveHTMLAndSection"
-              @save="save"/>
+              @section="saveHTMLAndSection"/>
             <RepeatSection v-if="text.component=='RepeatSection'"
               :actualSection="sectionID"
               :sectionName="sectionName"
