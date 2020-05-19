@@ -2,7 +2,7 @@
   <b-card>
     <div class="d-flex justify-content-start">
       <h6 class="title">Completar pistas</h6>
-      <b-button class="ml-auto" variant="outline-info" @click="preparePreview()"><b-icon icon="eye"/></b-button>
+      <b-button style="font-size: 16px;" class="ml-auto" variant="outline-info" @click="preparePreview()"><b-icon icon="eye"/></b-button>
     </div>
     <span style="color: red;" v-if="!valid">No hay más secciones a las que saltar. Este gadget no cambiará de secciones en la lectura en la lectura</span>
     <br>
@@ -11,8 +11,8 @@
       <b-col><b-form-select size="sm" @change="save()" v-model="onGuess" :options="aux"></b-form-select></b-col>
     </b-row>
     <b-row class="right" style="padding-left: 10px">
-      <b-button variant="outline-dark" size="sm" v-if="!changeSectionWhenWrong" @click="wrong(), save()">Cambiar de sección al fallar</b-button>
-      <b-button variant="outline-dark" size="sm" v-else @click="wrong(), save()">Continuar lectura al fallar</b-button>
+      <b-button style="font-size: 14px;" variant="outline-dark" size="sm" v-if="!changeSectionWhenWrong" @click="wrong(), save()">Cambiar de sección al fallar</b-button>
+      <b-button style="font-size: 14px;" variant="outline-dark" size="sm" v-else @click="wrong(), save()">Continuar lectura al fallar</b-button>
       <!-- <b-col><b-form-checkbox v-model="changeSectionWhenWrong" @change="save()">Cambio de sección al fallar</b-form-checkbox></b-col> -->
       <b-col v-if="changeSectionWhenWrong" style="padding-top: 5px;"><b-form-select size="sm" @change="save()" v-model="onWrong" :options="aux"></b-form-select></b-col>
     </b-row>
@@ -57,12 +57,12 @@
       </div>
       <p style="font-size: 14px">Selecciona las repuestas correcatas y pulsa solucionar</p>
       <div>
-        <b-button v-if="valid" variant="outline-dark" @click="checkPreview()">Solucionar</b-button>
+        <b-button v-if="valid" style="font-size: 16px;" variant="outline-dark" @click="checkPreview()">Solucionar</b-button>
         <p v-if="solvedPreview === true" style="padding-top: 10px; color: green;"> ¡Has resuelto el problema!</p>
         <p v-if="solvedPreview === false" style="padding-top: 10px; color: red;"> ¡Fallaste! Más suerte la próxima vez</p>
       </div>
       <div class="d-flex justify-content-center">
-        <b-button id="button-modal-ok" class="mt-1" variant="secondary" block @click="showPreview = false, solvedPreview = null">Ok</b-button>
+        <b-button style="font-size: 16px;" id="button-modal-ok" class="mt-1" variant="secondary" block @click="showPreview = false, solvedPreview = null">Ok</b-button>
       </div>
     </b-modal>
   </b-card>
