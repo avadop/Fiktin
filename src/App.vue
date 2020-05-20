@@ -31,6 +31,7 @@
           <!-- Right aligned nav items -->
           <b-navbar-nav class="ml-auto">
             <b-nav-item @click="needLogIn('/')"><div class="nav-ref">Iniciar sesión</div></b-nav-item>
+            <b-nav-item @click="createUser('/')"><div class="nav-ref">Crear usuario</div></b-nav-item>
             <!-- <b-nav-item @click="needLogIn('/')"><div class=" h4 nav-ref"><b-icon icon="person"></b-icon></div></b-nav-item> -->
           </b-navbar-nav>
         </b-collapse>
@@ -47,10 +48,12 @@
         <b-button class="mt-2" variant="primary" block @click="modalLogOut = false" style="font-size: 16px;">Cancelar</b-button>
     </b-modal>
 
+    <!-- Log In / Create user-->
     <b-modal v-model="modalLogIn" hide-footer hide-header no-close-on-backdrop centered>
-      <start :urlLogIn="urlLogIn" @loggedIn="logIn"/>
+      <start :urlLogIn="urlLogIn" @loggedIn="logIn" :optionStart="optionStart"/>
       <b-button class="mt-2" variant="outline-secondary" style="font-size: 14px;" size="sm"  block @click="modalLogIn = false">Cancelar</b-button>
     </b-modal>
+
   </div>
 </template>
 
@@ -68,13 +71,20 @@ export default {
       loggedIn: store.state.loggedIn,
       modalLogOut: false,
       modalLogIn: false,
-      urlLogIn: ''
+      urlLogIn: '',
+      optionStart: Boolean
     }
   },
   methods: {
     needLogIn (value) {
       this.urlLogIn = value
       this.modalLogIn = true
+      this.optionStart = true
+    },
+    createUser (value) {
+      this.urlLogIn = value
+      this.modalLogIn = true
+      this.optionStart = false
     },
     logIn: function () {
       this.loggedIn = true
