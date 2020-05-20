@@ -2,7 +2,7 @@
   <b-card>
     <div class="d-flex justify-content-start">
       <h6 class="title">Spoiler</h6>
-      <b-button style="font-size: 16px;" class="ml-auto" variant="outline-info" @click="preview = !preview"><b-icon icon="eye"/></b-button>
+      <b-button style="font-size: 16px;" v-b-tooltip.hover title="Previsualizar gadget" class="ml-auto" variant="outline-info" @click="preview = !preview"><b-icon icon="eye"/></b-button>
     </div>
     <div v-show="preview">
       <hr>

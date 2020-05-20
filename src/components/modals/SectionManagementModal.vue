@@ -67,7 +67,7 @@
       <b-spinner label="Spinning"/>
     </div>
     <template v-slot:modal-footer>
-      <b-button style="font-size: 16spx;" class="size" size="mt-1" variant="outline-secondary" @click="hide">Cerrar</b-button>
+      <b-button style="font-size: 16spx;" class="size" size="mt-1" variant="outline-secondary" @click="hide">Guardar y cerrar</b-button>
     </template>
   </b-modal>
 </template>
