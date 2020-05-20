@@ -23,14 +23,12 @@ export default {
     LogIn
   },
   props: {
-    urlLogIn: String
+    urlLogIn: String,
+    optionStart: String
   },
   data () {
     return {
-      create: {
-        type: Boolean,
-        default: false
-      }
+      create: this.optionStart
     }
   },
   methods: {

@@ -2,7 +2,7 @@
   <b-card>
     <div class="d-flex justify-content-start">
       <h6 class="title">Toma de decisiones</h6>
-      <b-button style="font-size: 16px;" class="ml-auto" variant="outline-info" @click="preparePreview()"><b-icon icon="eye"/></b-button>
+      <b-button style="font-size: 16px;" class="ml-auto" variant="outline-info" v-b-tooltip.hover title="Previsualizar gadget" @click="preparePreview()"><b-icon icon="eye"/></b-button>
     </div>
     <br>
     <span style="color: red;" v-if="!valid">No hay más secciones a las que saltar. Este gadget no se verá al leer el libro</span>

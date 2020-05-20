@@ -2,7 +2,7 @@
   <b-card>
     <div class="d-flex justify-content-start">
       <h6 class="title">Tarjetas de memoria</h6>
-      <b-button style="font-size: 16px;" class="ml-auto" variant="outline-info" @click="show = true, shufflePreview()"><b-icon icon="eye"/></b-button>
+      <b-button style="font-size: 16px;" class="ml-auto" variant="outline-info" v-b-tooltip.hover title="Previsualizar gadget" @click="show = true, shufflePreview()"><b-icon icon="eye"/></b-button>
     </div>
     <br>
     <span style="color: red;" v-if="!valid">No hay más secciones a las que saltar. Este gadget no llevará a ninguna sección al resolver el puzzle</span>

@@ -13,10 +13,10 @@
           <b-form-select v-model="nextSectionID" :options="sectionsData" @change="changeSection(nextSectionID)"></b-form-select>
         </div>
         <div class="col" style="padding-top: 15px;">
-          <b-button style="font-size: 16px;" variant="light" size="sm" @click="openManagementSectionModal()"><b-icon icon="gear"/></b-button>
+          <b-button style="font-size: 16px;" variant="light" size="sm" @click="openManagementSectionModal()">Gestión de secciones</b-button>
         </div>
         <div class="col" style="padding-top: 15px;">
-          <b-button variant="light" size="sm" @click="showPreviewSection = true" style="font-size: 16px;">Previsualizar sección</b-button>
+          <b-button variant="light" size="sm" @click="showPreviewSection = true" style="font-size: 16px;">Previsualizar libro</b-button>
         </div>
         <SectionManagementModal v-if="showManagementSectionModal" :name="sectionName" :id="sectionID" :book_title="book.title" :book_author_ID="book.userID" :sectionsList="book.sections" @update="auxUpdateBookSections" @load="refresh" @saveActual="auxSave" @deleteCustomBoxes="auxDeleteCustomBoxes" @cancel="openManagementSectionModal"/>
         <b-button style="font-size: 16px;" variant="outline-dark" v-b-tooltip.hover title="Descargar" hidden><b-icon icon="cloud-download"></b-icon></b-button>
@@ -35,19 +35,19 @@
             <div class="sidebarBlock" v-if="lastPress!==index" @click="lastElementPressed(index)">
               <span>{{ text.componentName }}</span>
               <div class="h5 lg, verticalLine">
-                <b-icon icon="chevron-up" class="marginLeftButton" @click.stop @mouseup="itemUp(index)">Subir gadget</b-icon>
-                <b-icon icon="chevron-down" class="marginLeftButton" @click.stop @mouseup="itemDown(index)">Bajar gadget</b-icon>
-                <b-icon icon="layers" class="marginLeftButton" @click.stop @mouseup="itemClone(index)">Duplicar gadget</b-icon>
-                <b-icon icon="trash-fill" class="marginLeftButton" @click.stop @mouseup="itemDelete(index)">Eliminar gaget</b-icon>
+                <b-icon icon="chevron-up" class="marginLeftButton" v-b-tooltip.hover title="Subir" @click.stop @mouseup="itemUp(index)">Subir gadget</b-icon>
+                <b-icon icon="chevron-down" class="marginLeftButton" v-b-tooltip.hover title="Bajar" @click.stop @mouseup="itemDown(index)">Bajar gadget</b-icon>
+                <b-icon icon="layers" class="marginLeftButton" v-b-tooltip.hover title="Duplicar" @click.stop @mouseup="itemClone(index)">Duplicar gadget</b-icon>
+                <b-icon icon="trash-fill" class="marginLeftButton" v-b-tooltip.hover title="Eliminar" @click.stop @mouseup="itemDelete(index)">Eliminar gaget</b-icon>
               </div>
             </div>
             <div class="sidebarBlockSelected" v-else @click="lastElementPressed(index)">
               <span>{{ text.componentName }}</span>
               <div class="h5 lg, verticalLine">
-                <b-icon icon="chevron-up" class="marginLeftButtonSelected" @click.stop @mouseup="itemUp(index)">Subir gadget</b-icon>
-                <b-icon icon="chevron-down" class="marginLeftButtonSelected" @click.stop @mouseup="itemDown(index)">Bajar gadget</b-icon>
-                <b-icon icon="layers" class="marginLeftButtonSelected" @click.stop @mouseup="itemClone(index)">Duplicar gadget</b-icon>
-                <b-icon icon="trash-fill" class="marginLeftButtonSelected" @click.stop @mouseup="itemDelete(index)">Eliminar gadget</b-icon>
+                <b-icon icon="chevron-up" class="marginLeftButtonSelected" v-b-tooltip.hover title="Subir" @click.stop @mouseup="itemUp(index)">Subir gadget</b-icon>
+                <b-icon icon="chevron-down" class="marginLeftButtonSelected" v-b-tooltip.hover title="Bajar" @click.stop @mouseup="itemDown(index)">Bajar gadget</b-icon>
+                <b-icon icon="layers" class="marginLeftButtonSelected" v-b-tooltip.hover title="Duplicar" @click.stop @mouseup="itemClone(index)">Duplicar gadget</b-icon>
+                <b-icon icon="trash-fill" class="marginLeftButtonSelected" v-b-tooltip.hover title="Eliminar" @click.stop @mouseup="itemDelete(index)">Eliminar gadget</b-icon>
               </div>
             </div>
           </div>
@@ -292,10 +292,10 @@
 
     <b-modal v-model="showPreviewSection" centered hide-header hide-footer no-close-on-backdrop>
       <h4 style="padding-bottom: 8px;">Previsualizar sección</h4>
-      <p style="text-align: justify;">Para previsualizar la sección actual es necesario guardar los cambios realizados. Si no quiere guardar los cambios realizados le recomendamos que cancele hasta que esté seguro de su decisión.</p>
+      <p style="text-align: justify;">La previsualización empezará en la sección en la que se encuentra ahora mismo, para poder hacerlo es <b>necesario guardar</b> los cambios realizados. Si no quiere guardar los cambios realizados le recomendamos que cancele hasta que esté seguro de su decisión.</p>
       <div class="d-flex justify-content-center">
-        <b-button variant="outline-secondary" style="width: 150px;" @click="showPreviewSection = false">Cancelar</b-button>
-        <b-button variant="primary" style="width: 150px;" @click="sectionPreview()">Aceptar</b-button>
+        <b-button variant="outline-secondary" style="width: 150px; font-size: 16px;" @click="showPreviewSection = false">Cancelar</b-button>
+        <b-button variant="primary" style="width: 150px; font-size: 16px;" @click="sectionPreview()">Aceptar</b-button>
       </div>
     </b-modal>
   </div>

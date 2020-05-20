@@ -2,7 +2,7 @@
   <b-card>
     <div class="d-flex justify-content-start">
       <h6 class="title">Repetición de sección</h6>
-      <b-button style="font-size: 16px;" class="ml-auto" variant="outline-info" @click="preparePreview()"><b-icon icon="eye"/></b-button>
+      <b-button style="font-size: 16px;" class="ml-auto" variant="outline-info" v-b-tooltip.hover title="Previsualizar gadget" @click="preparePreview()"><b-icon icon="eye"/></b-button>
     </div>
     <b-row style="padding-bottom: 10px;">
       <b-col cols="3"><span>Texto (opcional): </span></b-col>

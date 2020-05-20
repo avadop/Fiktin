@@ -4,10 +4,10 @@
     <div class="buttons">
       <div class="row d-flex justify-content-start">
         <h3 style="padding-top: 15px; text-align: left;">
-          <b-button style="font-size: 16px;" variant="light" @click="goBack()"><b-icon icon="chevron-left"></b-icon></b-button>
+          <b-button style="font-size: 16px;" variant="light" v-b-tooltip.hover title="Volver" @click="goBack()"><b-icon icon="chevron-left"></b-icon></b-button>
           {{ book.title }}
-          <b-button style="font-size: 16px;" v-if="isBookOfLoggedUser() && isNotPreview()" variant="light" @click="goEdit()" :disabled="book.published===true"><b-icon icon="pencil"/></b-button>
-          <b-button style="font-size: 16px;" v-if="isBookOfLoggedUser() && isNotPreview()" variant="light" @click="togglePublic()"><b-icon v-if="book.published" icon="eye"/><b-icon v-else icon="eye-slash"/></b-button>
+          <b-button style="font-size: 16px;" v-if="isBookOfLoggedUser() && isNotPreview()" variant="light" v-b-tooltip.hover title="Editar libro" @click="goEdit()" :disabled="book.published===true"><b-icon icon="pencil"/></b-button>
+          <b-button style="font-size: 16px;" v-if="isBookOfLoggedUser() && isNotPreview()" variant="light" v-b-tooltip.hover title="Publicar" @click="togglePublic(), showInfoModal()"><b-icon v-if="book.published" icon="eye"/><b-icon v-else icon="eye-slash"/></b-button>
         </h3>
       </div>
       <span style="color: red; padding-left: 10px;" v-if="isBookOfLoggedUser() && book.published===true">No se puede editar un libro si este se encuentra publicado</span>
@@ -93,6 +93,13 @@
     <div v-else>
       <h1>Vaya, parece que la sección a la que intentas acceder no existe :-(</h1>
     </div>
+
+    <b-modal v-model="showInfoPublic" hide-header hide-footer centered no-close-on-backdrop>
+      <p>Al publicar el libro este se vuelve visible para todo el mundo. Esta opción se puede cambiar cuando se quiera.</p>
+      <div class="d-flex justify-content-center">
+        <b-button style="font-size: 16px; width: 150px;" size="sm" variant="success" @click="showInfoPublic = false">Aceptar</b-button>
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -141,7 +148,8 @@ export default {
       sectionName: '',
       book: store.state.openedBook,
       bookID: store.state.openBookID,
-      customBoxes: []
+      customBoxes: [],
+      showInfoPublic: false
     }
   },
   mounted () {
@@ -251,6 +259,9 @@ export default {
         }
       }
       return true
+    },
+    showInfoModal () {
+      if (this.book.published === true) this.showInfoPublic = true
     }
   }
 }
