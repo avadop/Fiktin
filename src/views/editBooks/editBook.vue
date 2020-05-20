@@ -35,10 +35,10 @@
             <div class="sidebarBlock" v-if="lastPress!==index" @click="lastElementPressed(index)">
               <span>{{ text.componentName }}</span>
               <div class="h5 lg, verticalLine">
-                <b-icon icon="chevron-up" class="marginLeftButton" @click.stop @mouseup="itemUp(index)">Subir gadget</b-icon>
-                <b-icon icon="chevron-down" class="marginLeftButton" @click.stop @mouseup="itemDown(index)">Bajar gadget</b-icon>
-                <b-icon icon="layers" class="marginLeftButton" @click.stop @mouseup="itemClone(index)">Duplicar gadget</b-icon>
-                <b-icon icon="trash-fill" class="marginLeftButton" @click.stop @mouseup="itemDelete(index)">Eliminar gaget</b-icon>
+                <b-icon icon="chevron-up" class="marginLeftButton" v-b-tooltip.hover title="Subir" @click.stop @mouseup="itemUp(index)">Subir gadget</b-icon>
+                <b-icon icon="chevron-down" class="marginLeftButton" v-b-tooltip.hover title="Bajar" @click.stop @mouseup="itemDown(index)">Bajar gadget</b-icon>
+                <b-icon icon="layers" class="marginLeftButton" v-b-tooltip.hover title="Duplicar" @click.stop @mouseup="itemClone(index)">Duplicar gadget</b-icon>
+                <b-icon icon="trash-fill" class="marginLeftButton" v-b-tooltip.hover title="Eliminar" @click.stop @mouseup="itemDelete(index)">Eliminar gaget</b-icon>
               </div>
             </div>
             <div class="sidebarBlockSelected" v-else @click="lastElementPressed(index)">
