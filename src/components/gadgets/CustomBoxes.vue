@@ -1,64 +1,92 @@
 <template>
-  <b-card>
-    <h6 class="title">Casilla personalizada</h6>
-    <br>
-    <span v-if="!validName" style="color: red;">Aviso: Si el nombre de la casilla no es válido, no se verá en la lectura</span>
-    <b-form-group>
-      <span>Uso de la casilla: </span>
-      <b-form-radio-group id="radio-modes" v-if="aux.length > 0" v-model="mode" :options="modeOptions" buttons button-variant="outline-primary" size="sm" @change="checkMode"/>
-      <b-form-radio-group id="radio-modes" v-else v-model="mode" :options="modeOptionsDisabled" buttons button-variant="outline-primary" size="sm" @change="checkMode"/>
-    </b-form-group>
-    <hr>
-    <div v-if="mode == 'read'">
-      <b-row style="margin-bottom: 5px;">
-        <b-col cols=4><span>Texto anterior: </span></b-col>
-        <b-col><b-form-textarea v-model="prevText" rows="3" no-resize placeholder="Texto anterior (opcional)" :formatter="formatText" @blur.native="save"/></b-col>
-      </b-row>
-      <b-row style="margin-bottom: 5px;">
-        <b-col cols=4><span>Leer de casilla: </span></b-col>
-        <b-col><b-form-select id="select-read" v-model="name" :options="aux" @change="save"/></b-col>
-      </b-row>
-      <b-row>
-        <b-col cols=4><span>Texto posterior: </span></b-col>
-        <b-col><b-form-textarea v-model="nextText" rows="3" no-resize placeholder="Texto posterior (opcional)" :formatter="formatText" @blur="save"/></b-col>
-      </b-row>
-    </div>
-    <div v-else-if="mode == 'write'">
-      <b-row style="margin-bottom: 5px;">
-        <b-col cols=6><span>Identificador único: </span></b-col>
-        <b-col><b-form-input v-model="name" :state="nameState" @input.native="nameStateAux" placeholder="Nombre de la casilla" :formatter="formatName" size="sm" @blur="updateAux"/></b-col>
-      </b-row>
-      <b-row style="margin-bottom: 5px;">
-        <b-col><span>Nombre para la lectura: </span></b-col>
-        <b-col><b-form-input v-model="title" type="text" placeholder="Título" :formatter="formatTitle" @blur="save" size="sm"/></b-col>
-      </b-row>
-      <hr>
-      <b-form-group v-if="mode == 'write'">
-        <span>Tipo de contenido: </span>
-        <b-form-radio-group id="radio-type" v-model="type" :options="typeOptions" buttons button-variant="outline-primary" size="sm" @change="changeType"/>
+  <div>
+    <b-card>
+      <div class="d-flex justify-content-start">
+        <h6 class="title">Casilla personalizada</h6>
+        <span>
+            <b-icon class="h4 clickable" variant="info" style="margin-left: 10px; cursor: pointer;" icon="question-circle" @click="customBoxesInfoModal = true"/>
+        </span>
+      </div>
+      <br>
+      <span v-if="!validName" style="color: red;">Aviso: Si el nombre de la casilla no es válido, no se verá en la lectura</span>
+      <b-form-group>
+        <span>Uso de la casilla: </span>
+        <b-form-radio-group id="radio-modes" v-if="aux.length > 0" v-model="mode" :options="modeOptions" buttons button-variant="outline-primary" size="sm" @change="checkMode"/>
+        <b-form-radio-group id="radio-modes" v-else v-model="mode" :options="modeOptionsDisabled" buttons button-variant="outline-primary" size="sm" @change="checkMode"/>
       </b-form-group>
-      <b-row>
-        <b-col cols=6>
-          <span v-if="type == 'string'">Valor por defecto: </span>
-          <span v-else-if="type == 'number'">Valor por defecto: </span>
-        </b-col>
-        <b-col>
-          <b-form-input v-if="type == 'string'" v-model="defaultValue" type="text" placeholder="Texto por defecto" :formatter="formatString" @blur="updateAux" size="sm"/>
-          <b-form-input v-else-if="type == 'number'" v-model="defaultValue" type="number" placeholder="Número por defecto" :formatter="formatNumber" @blur="updateAux" size="sm"/>
-        </b-col>
-      </b-row>
-    </div>
-    <div v-else-if="mode == 'modifyWrite'">
-      <b-row style="margin-bottom: 5px;">
-        <b-col cols=4><span>Modificar la casilla: </span></b-col>
-        <b-col><b-form-select id="select-read" v-model="name" :options="aux" @change="save"/></b-col>
-      </b-row>
-      <b-row style="margin-bottom: 5px;">
-        <b-col><span>Nombre para la lectura: </span></b-col>
-        <b-col><b-form-input v-model="title" type="text" placeholder="Título" :formatter="formatTitle" @blur="save" size="sm"/></b-col>
-      </b-row>
-    </div>
-  </b-card>
+      <hr>
+      <div v-if="mode == 'read'">
+        <b-row style="margin-bottom: 5px;">
+          <b-col cols=4><span>Texto anterior: </span></b-col>
+          <b-col><b-form-textarea v-model="prevText" rows="3" no-resize placeholder="Texto anterior (opcional)" :formatter="formatText" @blur.native="save"/></b-col>
+        </b-row>
+        <b-row style="margin-bottom: 5px;">
+          <b-col cols=4><span>Leer de casilla: </span></b-col>
+          <b-col><b-form-select id="select-read" v-model="name" :options="aux" @change="save"/></b-col>
+        </b-row>
+        <b-row>
+          <b-col cols=4><span>Texto posterior: </span></b-col>
+          <b-col><b-form-textarea v-model="nextText" rows="3" no-resize placeholder="Texto posterior (opcional)" :formatter="formatText" @blur="save"/></b-col>
+        </b-row>
+      </div>
+      <div v-else-if="mode == 'write'">
+        <b-row style="margin-bottom: 5px;">
+          <b-col cols=6><span>Identificador único: </span></b-col>
+          <b-col><b-form-input v-model="name" :state="nameState" @input.native="nameStateAux" placeholder="Nombre de la casilla" :formatter="formatName" size="sm" @blur="updateAux"/></b-col>
+        </b-row>
+        <b-row style="margin-bottom: 5px;">
+          <b-col><span>Nombre para la lectura: </span></b-col>
+          <b-col><b-form-input v-model="title" type="text" placeholder="Título" :formatter="formatTitle" @blur="save" size="sm"/></b-col>
+        </b-row>
+        <hr>
+        <b-form-group v-if="mode == 'write'">
+          <span>Tipo de contenido: </span>
+          <b-form-radio-group id="radio-type" v-model="type" :options="typeOptions" buttons button-variant="outline-primary" size="sm" @change="changeType"/>
+        </b-form-group>
+        <b-row>
+          <b-col cols=6>
+            <span v-if="type == 'string'">Valor por defecto: </span>
+            <span v-else-if="type == 'number'">Valor por defecto: </span>
+          </b-col>
+          <b-col>
+            <b-form-input v-if="type == 'string'" v-model="defaultValue" type="text" placeholder="Texto por defecto" :formatter="formatString" @blur="updateAux" size="sm"/>
+            <b-form-input v-else-if="type == 'number'" v-model="defaultValue" type="number" placeholder="Número por defecto" :formatter="formatNumber" @blur="updateAux" size="sm"/>
+          </b-col>
+        </b-row>
+      </div>
+      <div v-else-if="mode == 'modifyWrite'">
+        <b-row style="margin-bottom: 5px;">
+          <b-col cols=4><span>Modificar la casilla: </span></b-col>
+          <b-col><b-form-select id="select-read" v-model="name" :options="aux" @change="save"/></b-col>
+        </b-row>
+        <b-row style="margin-bottom: 5px;">
+          <b-col><span>Nombre para la lectura: </span></b-col>
+          <b-col><b-form-input v-model="title" type="text" placeholder="Título" :formatter="formatTitle" @blur="save" size="sm"/></b-col>
+        </b-row>
+      </div>
+    </b-card>
+
+    <b-modal v-model="customBoxesInfoModal" size="lg" hide-header hide-footer centered>
+      <h4>Información sobre el gadget</h4>
+      <div style="text-align: justify;">
+        <p style="margin-top: 20px;">Para la utilización de este gadget es necesario saber ciertas cosas de su funcionamiento:</p>
+        <ul style="padding-right: 20px;">
+          <li>Es necesario tener <b>mínimo dos gadgets</b> de casilla personalizada, uno para permitir al lector escribir su parámetro personalizado y otro para mostrar este parámetro en la lectura</li>
+          <li>El <b>identificador único </b> o nombre de la casilla en el modo de escribir representa a qué casilla personalizada harán referencia las de lectura o modificar.
+            En caso de tener varias casillas personalizadas (en modo escritura), permitirá diferenciarlas a la hora de mostrar el contenido en la lectura del libro</li>
+        </ul>
+        <p style="margin-top: 20px;">Información más detallada sobre los usos de las casillas: </p>
+        <ul style="padding-right: 20px;">
+          <li><b>Leer: </b>Este uso se puede utilizar solamente cuando haya al menos una casilla con el uso de escribir definida, ya que se encargará de mostrar en cualquier
+          parte del libro el contenido que el lector haya indicado en la casilla personaliza con el uso de escribir</li>
+          <li><b>Escribir: </b>Esta es el tipo de casilla personalizada básica, donde indicarás en el libro qué contenido está siendo personalizado
+          y le permitirás al lector introducir aquí el dato que quiera durante la lectura del libro. Se da la opción de que sea texto o números.</li>
+          <li><b>Modificar escribir: </b>Si en algún momento del libro te gustaría darle la posibilidad al lector de cambiar el valor que introdujo durante algún momento de la lectura,
+          esta es la casilla indicada, es igual que la casilla de escritura sólo que modifica el valor sobre una ya existente, cambiando también el valor de todas las apariciones personalizadas durante el libro.</li>
+        </ul>
+      </div>
+    </b-modal>
+  </div>
 </template>
 
 <script>
@@ -93,7 +121,8 @@ export default {
       title: '',
       prevText: '',
       nextText: '',
-      validName: true
+      validName: true,
+      customBoxesInfoModal: false
     }
   },
   watch: {

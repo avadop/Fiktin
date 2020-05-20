@@ -44,10 +44,10 @@
             <div class="sidebarBlockSelected" v-else @click="lastElementPressed(index)">
               <span>{{ text.componentName }}</span>
               <div class="h5 lg, verticalLine">
-                <b-icon icon="chevron-up" class="marginLeftButtonSelected" @click.stop @mouseup="itemUp(index)">Subir gadget</b-icon>
-                <b-icon icon="chevron-down" class="marginLeftButtonSelected" @click.stop @mouseup="itemDown(index)">Bajar gadget</b-icon>
-                <b-icon icon="layers" class="marginLeftButtonSelected" @click.stop @mouseup="itemClone(index)">Duplicar gadget</b-icon>
-                <b-icon icon="trash-fill" class="marginLeftButtonSelected" @click.stop @mouseup="itemDelete(index)">Eliminar gadget</b-icon>
+                <b-icon icon="chevron-up" class="marginLeftButtonSelected" v-b-tooltip.hover title="Subir" @click.stop @mouseup="itemUp(index)">Subir gadget</b-icon>
+                <b-icon icon="chevron-down" class="marginLeftButtonSelected" v-b-tooltip.hover title="Bajar" @click.stop @mouseup="itemDown(index)">Bajar gadget</b-icon>
+                <b-icon icon="layers" class="marginLeftButtonSelected" v-b-tooltip.hover title="Duplicar" @click.stop @mouseup="itemClone(index)">Duplicar gadget</b-icon>
+                <b-icon icon="trash-fill" class="marginLeftButtonSelected" v-b-tooltip.hover title="Eliminar" @click.stop @mouseup="itemDelete(index)">Eliminar gadget</b-icon>
               </div>
             </div>
           </div>
