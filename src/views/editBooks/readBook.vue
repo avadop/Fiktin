@@ -198,16 +198,18 @@ export default {
     },
     addBookToLibrary: async function () {
       var a
-      await librariesCollection.doc(this.searchNick).get().then(doc => {
-        if (doc.exists) {
-          a = doc.data().array_keys
-        }
-      })
-      a.unshift(this.bookID)
-      if (a.length > 20) a.splice(20, a.length - 20)
-      await librariesCollection.doc(this.searchNick).update({
-        array_keys: a
-      })
+      if (this.bookID !== '') {
+        await librariesCollection.doc(this.searchNick).get().then(doc => {
+          if (doc.exists) {
+            a = doc.data().array_keys
+          }
+        })
+        a.unshift(this.bookID)
+        if (a.length > 20) a.splice(20, a.length - 20)
+        await librariesCollection.doc(this.searchNick).update({
+          array_keys: a
+        })
+      }
     },
     // Los que su html se pueda poner directamente se añaden aqui
     basicGadget (value) {
