@@ -71,14 +71,14 @@
       <div style="text-align: justify;">
         <p style="margin-top: 20px;">Para la utilización de este gadget es necesario saber ciertas cosas de su funcionamiento:</p>
         <ul style="padding-right: 20px;">
-          <li>Es necesario tener <b>mínimo dos gadgets</b> de casilla personalizada, uno para permitir al lector escribir su parámetro personalizado y otro para mostrar este parámetro en la lectura</li>
+          <li>Es necesario tener <b>mínimo dos gadgets</b> de casilla personalizada, uno para permitir al lector escribir su parámetro personalizado y otro para mostrar este parámetro en la lectura.</li>
           <li>El <b>identificador único </b> o nombre de la casilla en el modo de escribir representa a qué casilla personalizada harán referencia las de lectura o modificar.
-            En caso de tener varias casillas personalizadas (en modo escritura), permitirá diferenciarlas a la hora de mostrar el contenido en la lectura del libro</li>
+            En caso de tener varias casillas personalizadas (en modo escritura), permitirá diferenciarlas a la hora de mostrar el contenido en la lectura del libro.</li>
         </ul>
         <p style="margin-top: 20px;">Información más detallada sobre los usos de las casillas: </p>
         <ul style="padding-right: 20px;">
           <li><b>Leer: </b>Este uso se puede utilizar solamente cuando haya al menos una casilla con el uso de escribir definida, ya que se encargará de mostrar en cualquier
-          parte del libro el contenido que el lector haya indicado en la casilla personaliza con el uso de escribir</li>
+          parte del libro el contenido que el lector haya indicado en la casilla personaliza con el uso de escribir.</li>
           <li><b>Escribir: </b>Esta es el tipo de casilla personalizada básica, donde indicarás en el libro qué contenido está siendo personalizado
           y le permitirás al lector introducir aquí el dato que quiera durante la lectura del libro. Se da la opción de que sea texto o números.</li>
           <li><b>Modificar escribir: </b>Si en algún momento del libro te gustaría darle la posibilidad al lector de cambiar el valor que introdujo durante algún momento de la lectura,
