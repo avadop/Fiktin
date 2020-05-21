@@ -15,7 +15,7 @@
         ></b-form-file>
         <b-row class="my-1">
           <p v-if="this.selectedFile !== '' && this.picture === ''">Espere a que cargue la imagen</p>
-          <b-img v-if="this.picture !== ''" :src="this.picture" style="min-height: 200px; max-height: 200px; width: auto;padding-top: 13px; padding-bottom: 13px;"></b-img>
+          <b-img v-if="this.picture !== ''" :src="this.picture" style="min-width: 710px; max-width: 710px; height: auto;padding-top: 13px; padding-bottom: 13px;"></b-img>
         </b-row>
       </b-container>
     </b-card>
@@ -74,7 +74,7 @@ export default {
       })
     },
     save: async function () {
-      var htmlText = ('<img src="' + this.picture + '" style="min-height: 200px; max-height: 200px; width: auto;padding-top: 13px; padding-bottom: 13px;">')
+      var htmlText = ('<img src="' + this.picture + '" style="min-width: 751.7px; max-width: 751.7px; height: auto;padding-top: 13px; padding-bottom: 13px;">')
       this.$emit('html', htmlText, this.picture, this.index)
     }
   }
