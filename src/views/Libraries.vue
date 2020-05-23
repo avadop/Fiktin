@@ -210,12 +210,10 @@ export default {
      * Cada vez que se presiona el botón de crear biblioteca en el componente "CreateLibrary" se llama a este método.
      * Su procedimiento es:
      *  Refresca la página.
-     *  Llama a "btnCreateNewLib()".
      */
     createLibrary () {
       this.modalCreate = false
       this.refresh()
-      this.btnCreateNewLib() // me da que esto no hace nada (Andrea)
     },
 
     /**
