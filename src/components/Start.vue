@@ -24,7 +24,7 @@ export default {
   },
   props: {
     urlLogIn: String,
-    optionStart: String
+    optionStart: Boolean
   },
   data () {
     return {
