@@ -42,8 +42,8 @@
                 <!-- Botones -->
                 <div class="m-md-2">
                   <b-button v-if="(modifying===-1 || modifying !==index) && library.id == searchHistory" variant="outline-dark" style="font-size: 16px;" @click.stop="btnEmptyHistory(library.id)">Vaciar historial</b-button>
-                  <b-button variant="outline-dark" @click.stop="btnModifyLib(index)" style="font-size: 16px;">Modificar</b-button>
-                  <b-button variant="danger" @click.stop="btnDeleteHandler(index)" style="font-size: 16px;">Eliminar</b-button>
+                  <b-button variant="outline-dark" v-if="library.id != searchHistory" @click.stop="btnModifyLib(index)" style="font-size: 16px;">Modificar</b-button>
+                  <b-button variant="danger" v-if="library.id != searchHistory" @click.stop="btnDeleteHandler(index)" style="font-size: 16px;">Eliminar</b-button>
                   <DeleteLibraryModal v-if="showModal===index" :name="librariesList[index].name" :id="librariesList[index].id" @cancel="btnDeleteHandler" @delete="deleteLib"/>
                 </div>
               </div>
