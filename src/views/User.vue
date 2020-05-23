@@ -96,7 +96,7 @@ export default {
         })
       })
       await booksCollection.where('user_id', '==', this.userKey)
-        .where('published', '==', false).get().then(snapshot => {
+        .get().then(snapshot => {
           snapshot.forEach(doc => {
             booksCollection.doc(doc.id).delete()
           })
