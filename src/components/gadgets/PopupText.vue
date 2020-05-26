@@ -2,7 +2,7 @@
   <div>
     <b-card>
       <div class="d-flex justify-content-start">
-        <h6 class="title">Edite su texto emergente</h6>
+        <h6 class="title">Edite su anotación</h6>
         <b-button style="font-size: 16px;" class="ml-auto" variant="outline-info" @click="preview = !preview"><b-icon icon="eye"/></b-button>
       </div>
       <div v-show="preview">
