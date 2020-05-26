@@ -98,7 +98,7 @@
 </template>
 
 <script>
-import { booksCollection, storageFirebase } from '../firebase.js'
+import { booksCollection, storageFirebase, defaultImageBook } from '../firebase.js'
 import { store } from '../store/index.js'
 
 export default {
@@ -162,6 +162,7 @@ export default {
     },
     async saveButton () {
       this.modalModify = false
+      if (this.cover === null) this.cover = defaultImageBook
       await booksCollection.doc(this.bookAux.ID).update({
         title: this.title,
         author: this.author,
