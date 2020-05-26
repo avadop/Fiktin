@@ -94,7 +94,7 @@ export default {
   data () {
     return {
       librariesList: [],
-      searchNick: store.state.userNick.concat('_mis_obras').toLowerCase(),
+      // searchNick: store.state.userNick.concat('_mis_obras').toLowerCase(),
       searchHistory: store.state.userNick.concat('_historial').toLowerCase(),
       showModal: -1,
       modifying: -1,
@@ -134,26 +134,26 @@ export default {
       await librariesCollection.where('user_id', '==', userID).get().then(snapshot => {
         snapshot.forEach(doc => {
           // Comprobamos que no se agregue la biblioteca de la variable "searchNick"
-          if (doc.id !== this.searchNick) {
-            // Comprobamos que siempre se muestre el historial delante del resto de bibliotecas
-            if (doc.id === this.searchHistory) {
-              librariesListAux.unshift({ // insertamos en la primera posición del array
-                id: doc.id,
-                name: doc.data().name,
-                description: doc.data().description,
-                privacy: doc.data().privacy,
-                numberOfBooks: doc.data().array_keys.length
-              })
-            } else {
-              librariesListAux.push({
-                id: doc.id,
-                name: doc.data().name,
-                description: doc.data().description,
-                privacy: doc.data().privacy,
-                numberOfBooks: doc.data().array_keys.length
-              })
-            }
+          // if (doc.id !== this.searchNick) {
+          // Comprobamos que siempre se muestre el historial delante del resto de bibliotecas
+          if (doc.id === this.searchHistory) {
+            librariesListAux.unshift({ // insertamos en la primera posición del array
+              id: doc.id,
+              name: doc.data().name,
+              description: doc.data().description,
+              privacy: doc.data().privacy,
+              numberOfBooks: doc.data().array_keys.length
+            })
+          } else {
+            librariesListAux.push({
+              id: doc.id,
+              name: doc.data().name,
+              description: doc.data().description,
+              privacy: doc.data().privacy,
+              numberOfBooks: doc.data().array_keys.length
+            })
           }
+          // }
         })
       })
       this.librariesList = librariesListAux
