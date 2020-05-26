@@ -292,7 +292,10 @@ export default {
         bookAux.nick = doc2.data().nick
         bookAux.name = doc2.data().name
       })
-      this.$router.push({ name: 'readBook', params: { book: bookAux, bookID: this.referencesList[idx] } })
+      store.commit('openBookID', this.referencesList[idx])
+      store.commit('openBook', bookAux)
+      store.commit('changeSection', bookAux.sections[0])
+      this.$router.push({ name: 'readBook' })
     },
 
     upperCase (title) {
