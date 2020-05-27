@@ -229,7 +229,13 @@ export default {
           await this.$emit('load', this.id)
         }
         await this.$emit('cancel')
-      } else window.alert('Debes dar un nombre válido a todas las secciones (nombres vacíos o solo con espacios no son válidos)')
+      } else {
+        window.alert('Debes dar un nombre válido a todas las secciones (nombres vacíos o solo con espacios no son válidos). Los cambios no se guardarán')
+        // Es necesario poner este cancel para evitar comportamientos inesperados, ya que siempre que se
+        // entra a este método, el modal se cierra (porque se le llama al hacer @hide), por lo que el
+        // valor de la variable que se encarga de abrirlo y cerrarlo debe estar correctamente.
+        await this.$emit('cancel')
+      }
     },
     extractIDs () {
       var a = []
