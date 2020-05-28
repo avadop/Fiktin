@@ -16,11 +16,11 @@
 
         <div id="optionsCheckbox" label="Opciones de reproduccion">
             <b-form-checkbox id="checkbox-autoplay" v-model="autoplay"
-              name="checkbox-autoplay" value="true" unchecked-value="false" @change="save()">
+              name="checkbox-autoplay" value="true" unchecked-value="false">
               Autorreproducción
             </b-form-checkbox>
             <b-form-checkbox id="checkbox-loop" v-model="loop"
-              name="checkbox-loop" value="true" unchecked-value="false" @change="save()">
+              name="checkbox-loop" value="true" unchecked-value="false">
               Bucle
             </b-form-checkbox>
         </div>
