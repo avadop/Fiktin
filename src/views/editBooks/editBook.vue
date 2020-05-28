@@ -116,13 +116,15 @@
               :htmlTextAux="text.htmlText"
               :index="index"
               :pictureAux="text.url"
-              @html="saveHTMLMultimedia"/>
+              @html="saveHTMLPicture"/>
             <VideoGadget v-if="text.component==='Video'"
               :index="index"
               :htmlTextAux="text.htmlText"
               :bookID="bookID"
               :videoAux="text.url"
-              @html="saveHTMLMultimedia"/>
+              :autoplayAux="text.autoplay"
+              :loopAux="text.loop"
+              @html="saveHTMLVideo"/>
 
             <ChangeSection v-if="text.component=='ChangeSection'"
               :actualSection="sectionID"
@@ -461,7 +463,7 @@ export default {
       else if (this.data[index].component === 'Spoiler') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'Spoiler', componentName: 'Spoiler' })
 
       else if (this.data[index].component === 'Picture') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, url: this.data[index].url, component: 'Picture', componentName: 'Imagen' })
-      else if (this.data[index].component === 'Video') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, url: this.data[index].url, component: 'Video', componentName: 'Vídeo' })
+      else if (this.data[index].component === 'Video') this.data.splice(index + 1, 0, { htmlText: this.data[index].htmlText, url: this.data[index].url, autoplay: this.data[index].autoplay, loop: this.data[index].loop, component: 'Video', componentName: 'Vídeo' })
 
       else if (this.data[index].component === 'ChangeSection') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, next: this.data[index].next, component: 'ChangeSection', componentName: 'Cambio de sección' })
       else if (this.data[index].component === 'RepeatSection') this.data.splice(index + 1, 0, { plainText: this.data[index].plainText, htmlText: this.data[index].htmlText, component: 'RepeatSection', componentName: 'Repetición de sección' })
@@ -558,7 +560,7 @@ export default {
       this.data.splice(this.lastPress + 1, 0, { htmlText: '', url: '', component: 'Picture', componentName: 'Imagen' })
     },
     addVideo () {
-      this.data.splice(this.lastPress + 1, 0, { htmlText: '', url: '', component: 'Video', componentName: 'Vídeo' })
+      this.data.splice(this.lastPress + 1, 0, { htmlText: '', url: '', autoplay: 'false', loop: 'false', component: 'Video', componentName: 'Vídeo' })
     },
     addSectionChange () {
       if (this.sectionsData.length > 1) {
@@ -837,9 +839,15 @@ export default {
       this.data[index].mainText = mainText
       this.data[index].hyperlinkText = hyperlinkText
     },
-    saveHTMLMultimedia (htmlText, url, index) {
+    saveHTMLPicture (htmlText, url, index) {
       this.data[index].htmlText = htmlText
       this.data[index].url = url
+    },
+    saveHTMLVideo (htmlText, url, autoplay, loop, index) {
+      this.data[index].htmlText = htmlText
+      this.data[index].url = url
+      this.data[index].autoplay = autoplay
+      this.data[index].loop = loop
     },
     saveHTML (htmlText, index) {
       this.data[index].htmlText = htmlText

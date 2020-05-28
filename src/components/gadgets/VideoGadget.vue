@@ -16,11 +16,11 @@
 
         <div id="optionsCheckbox" label="Opciones de reproduccion">
             <b-form-checkbox id="checkbox-autoplay" v-model="autoplay"
-              name="checkbox-autoplay" value="true" unchecked-value="false">
+              name="checkbox-autoplay" value="true" unchecked-value="false" @change="save()">
               Autorreproducción
             </b-form-checkbox>
             <b-form-checkbox id="checkbox-loop" v-model="loop"
-              name="checkbox-loop" value="true" unchecked-value="false">
+              name="checkbox-loop" value="true" unchecked-value="false" @change="save()">
               Bucle
             </b-form-checkbox>
         </div>
@@ -44,18 +44,26 @@ export default {
     index: Number,
     bookID: String,
     htmlTextAux: String,
-    videoAux: String
+    videoAux: String,
+    autoplayAux: String,
+    loopAux: String
   },
   data () {
     return {
       selectedFile: '',
       video: this.videoAux,
-      autoplay: false,
-      loop: false
+      autoplay: this.autoplayAux,
+      loop: this.loopAux
     }
   },
   watch: {
     video () {
+      this.save()
+    },
+    autoplay () {
+      this.save()
+    },
+    loop () {
       this.save()
     }
   },
@@ -88,17 +96,15 @@ export default {
     },
     save: async function () {
       var htmlText = '<video width="460" height="300" style="padding-top: 13px; padding-bottom: 13px;" controls'
-      if (this.autoplay) {
+      if (this.autoplay === 'true') {
         htmlText = htmlText + ' autoplay '
       }
-      if (this.loop) {
+      if (this.loop === 'true') {
         htmlText = htmlText + ' loop '
       }
       htmlText = htmlText + '><source src="' + this.video + '">No se puede reproducir el video en este navegador</video>'
 
-      this.autoplay = false
-      this.loop = false
-      this.$emit('html', htmlText, this.video, this.index)
+      this.$emit('html', htmlText, this.video, this.autoplay, this.loop, this.index)
     }
   }
 }
