@@ -56,7 +56,7 @@
         <!-- etiquetas -->
         <div>
           <label for="tags-basic">Etiquetas</label>
-          <b-form-tags input-id="tags-basic" v-model="tags" class="mb-2" placeholder="Añade una etiqueta..." @keydown.space.prevent></b-form-tags>
+          <b-form-tags input-id="tags-basic" v-model="tags" class="mb-2" add-button-text="Añadir" placeholder="Añade una etiqueta..." @keydown.space.prevent></b-form-tags>
         </div>
       </b-container>
 
