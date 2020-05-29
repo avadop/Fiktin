@@ -220,7 +220,7 @@ export default {
 
                 librariesCollection.doc(historial).set({
                   name: 'Historial',
-                  description: ('Aqui se guardaran los ultimos libros consultados de ' + this.newNick),
+                  description: '(Aqui se guardaran los ultimos libros consultados de ' + this.newNick + ')',
                   privacy: 'private',
                   nick: this.newNick,
                   array_keys: [],
