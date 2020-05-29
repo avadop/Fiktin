@@ -173,6 +173,7 @@ export default {
       store.commit('openBookID', this.primaryKeys[idx])
       store.commit('openBook', book)
       store.commit('changeSection', book.sections[0])
+      store.commit('switchSectionPreview', false) // Nos aseguramos de que desde aquí nunca se entre en preview
       this.$router.push({ name: 'readBook' })
     },
     description (desc) {

@@ -415,6 +415,7 @@ export default {
       store.commit('changeSection', sectionID)
       await booksCollection.doc(this.bookID).get().then(doc => {
         this.temporalCustomBoxes = doc.data().customBoxes
+        this.book.sections = doc.data().sections
       })
       for (var i = 0; i < this.book.sections.length; ++i) {
         await sectionsCollection.doc(this.book.sections[i]).get().then(doc => {
