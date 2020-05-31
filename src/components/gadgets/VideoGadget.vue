@@ -57,14 +57,20 @@ export default {
     }
   },
   watch: {
-    index () {
-      this.refresh()
-    },
     autoplay () {
       this.save()
     },
     loop () {
       this.save()
+    },
+    autoplayAux () {
+      this.refresh()
+    },
+    loopAux () {
+      this.refresh()
+    },
+    videoAux () {
+      this.refresh()
     }
   },
   methods: {
