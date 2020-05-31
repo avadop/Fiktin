@@ -15,12 +15,12 @@
         ></b-form-file>
 
         <div id="optionsCheckbox" label="Opciones de reproduccion">
-            <b-form-checkbox id="checkbox-autoplay" v-model="autoplay"
-              name="checkbox-autoplay" value="true" unchecked-value="false">
+            <b-form-checkbox v-model="autoplay"
+              value="true" unchecked-value="false" >
               Autorreproducción
             </b-form-checkbox>
-            <b-form-checkbox id="checkbox-loop" v-model="loop"
-              name="checkbox-loop" value="true" unchecked-value="false">
+            <b-form-checkbox v-model="loop"
+              value="true" unchecked-value="false" >
               Bucle
             </b-form-checkbox>
         </div>
@@ -57,8 +57,8 @@ export default {
     }
   },
   watch: {
-    video () {
-      this.save()
+    index () {
+      this.refresh()
     },
     autoplay () {
       this.save()
@@ -68,6 +68,11 @@ export default {
     }
   },
   methods: {
+    refresh () {
+      this.autoplay = this.autoplayAux
+      this.loop = this.loopAux
+      this.video = this.videoAux
+    },
     onFileSelected () {
       if (this.selectedFile !== '' && this.selectedFile !== event.target.files[0]) {
         const storageRef = storageFirebase.ref(`/${store.state.userNick.toLowerCase()}/books/${this.bookID}/multimedia/${this.index + '_gadget_' + this.selectedFile.name}`)
@@ -91,6 +96,7 @@ export default {
         // downloadURL
         task.snapshot.ref.getDownloadURL().then((url) => {
           this.video = url
+          this.save()
         })
       })
     },

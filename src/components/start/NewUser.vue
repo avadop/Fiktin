@@ -218,7 +218,7 @@ export default {
                   nick_to_search: this.newNick.toLowerCase()
                 })
 
-                librariesCollection.doc(historial).set({
+                await librariesCollection.doc(historial).set({
                   name: 'Historial',
                   description: '(Aqui se guardaran los ultimos libros consultados de ' + this.newNick + ')',
                   privacy: 'private',

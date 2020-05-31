@@ -230,7 +230,10 @@
         <hr>
 
         <span class="clickable" @click="addTitle()"><b-icon icon="fonts"/> Título </span>
+        <br/>
+        <span>Opciones del gadget:</span>
         <h5>
+          <span style="font-size:15px; margin-right:5px;">Opciones del gadget:</span>
           <b-icon icon="type-h1" class="buttonNormal" v-if="header1Active!=1" @mousedown="onLiveEditComponent($event, 'Header1')">Añadir título 1</b-icon>
           <b-icon icon="type-h1" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Header1')">Añadir título 1</b-icon>
           <b-icon icon="type-h2" class="buttonNormal" v-if="header2Active!=1" @mousedown="onLiveEditComponent($event, 'Header2')">Añadir título 2</b-icon>
@@ -241,6 +244,8 @@
         <hr>
 
         <span class="clickable" @click="addNormal()"><b-icon icon="justify-left"/> Texto normal </span>
+        <br/>
+        <span>Opciones del gadget:</span>
         <h5>
           <b-icon icon="type-bold" class="buttonNormal" v-if="boldActive!=1" @mousedown="onLiveEditComponent($event, 'Bold')">Bold</b-icon>
           <b-icon icon="type-bold" class="buttonPressed" v-else @mousedown="onLiveEditComponent($event, 'Bold')">Bold</b-icon>
