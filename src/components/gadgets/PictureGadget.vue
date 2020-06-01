@@ -9,7 +9,7 @@
         <b-form-file
           @change="onFileSelected"
           class="my-2"
-          placeholder="Selecciona una imagen o arrastrala aquí..."
+          placeholder="Selecciona una imagen"
           drop-placeholder="Arrastra aquí la imagen..."
           accept="image/*"
         ></b-form-file>

@@ -126,7 +126,7 @@
           <b-button v-if="this.picture != null" class="my-2" variant="danger-dark" @click="removeImg" style="font-size: 16px;"><b-icon variant="danger" icon="x"></b-icon></b-button>
           <b-form-file v-show="this.uploadValue==0 && this.picture == null" @change="onFileSelected"
             class="my-2"
-            placeholder="Selecciona una imagen o arrastrala aquí..."
+            placeholder="Selecciona una imagen"
             drop-placeholder="Arrastra aquí la imagen..."
             accept="image/*"></b-form-file>
         </b-container>

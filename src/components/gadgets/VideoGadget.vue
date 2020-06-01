@@ -9,7 +9,7 @@
         <b-form-file
           @change="onFileSelected"
           class="my-2"
-          placeholder="Selecciona un video o arrastrala aquí..."
+          placeholder="Selecciona un video"
           drop-placeholder="Arrastra aquí el video..."
           accept="video/*"
         ></b-form-file>
