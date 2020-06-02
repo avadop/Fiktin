@@ -27,7 +27,7 @@
                 </div>
                 <div>
                   <!-- botones subir bajar -->
-                  <b-button-group v-if="idx !== 0" class="mr-1 move-button">
+                  <b-button-group v-if="historial === false" class="mr-1 move-button">
                     <b-button variant="light" style="font-size: 16px;" @click.stop="upButton(index)" :disabled="index===0">
                       <b-icon icon="chevron-up"></b-icon>
                     </b-button>
@@ -54,7 +54,7 @@
                     </b-card-text>
                   </div>
                   <!-- boton de eliminar -->
-                  <div v-if="idx !== 0" class="mr-1 del-button">
+                  <div v-if="historial === false" class="mr-1 del-button">
                     <b-button variant="danger" style="font-size: 16px;" class="m-md-2" @click.stop="deleteButton(index)">Eliminar</b-button>
                   </div>
                 </div>
@@ -64,7 +64,7 @@
           <!--En caso de libro no encontrado o error-->
           <b-list-group-item variant="danger" v-else>
             <!-- botones subir bajar -->
-            <b-button-group v-if="idx !== 0" class="mr-1 move-button">
+            <b-button-group v-if="historial === false" class="mr-1 move-button">
               <b-button variant="light" style="font-size: 16px;" @click.stop="upButton(index)" :disabled="index===0">
                 <b-icon icon="chevron-up"></b-icon>
               </b-button>
@@ -88,7 +88,7 @@
               </b-card-text>
             </div>
             <!-- boton de eliminar -->
-            <div v-if="idx !== 0" class="mr-1 del-button">
+            <div v-if="historial === false" class="mr-1 del-button">
               <b-button variant="danger" style="font-size: 16px;" class="m-md-2" @click.stop="deleteButton(index)">Eliminar</b-button>
             </div>
           </b-list-group-item>
@@ -107,7 +107,8 @@ export default {
   props: {
     libID: String,
     name: String,
-    idx: Number
+    idx: Number,
+    historial: Boolean
   },
   /**
    * booksList: Array con los datos de los libros. Contiene, además de los datos del propio libro, el campo found para indicar si el libro existe y está publicado. Adquiere los valores:

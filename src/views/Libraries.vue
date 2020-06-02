@@ -240,7 +240,9 @@ export default {
      * Llama a la vista "ViewLibrary" para mostrar el contenido de la biblioteca seleccionada
      */
     viewLibrary (id, name, nBooks, index) {
-      if (this.modifying === -1 && !this.opened) this.$router.push({ name: 'viewLibrary', params: { libID: id, name: name, numberOfBooks: nBooks, idx: index } })
+      var isHistorial = false
+      if (this.librariesList[index].id === this.searchHistory) { isHistorial = true }
+      if (this.modifying === -1 && !this.opened) this.$router.push({ name: 'viewLibrary', params: { libID: id, name: name, numberOfBooks: nBooks, idx: index, historial: isHistorial } })
     }
   }
 }
